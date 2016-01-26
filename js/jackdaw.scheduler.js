@@ -166,6 +166,8 @@ function Playsound(which,slice,pitch,keyid){
         }
         sound[soundname+slice+"_"+pitch] = context.createBufferSource();
         sound[soundname+slice+"_"+pitch].buffer = bufferLoader.bufferList[soundname];
+
+        Jackdaw.Waveformdisplay.drawbuffer(sound[soundname+slice+"_"+pitch].buffer);
         
         // console.log("Bufferlength of ",which,sound[soundname+slice+"_"+pitch].buffer.duration," pitch = ",pitch);
         
@@ -253,6 +255,7 @@ function getbufferedsound(){
         newSource.buffer = newBuffer;
         // newSource.connect( context.destination );
         // newSource.start(0); 
+        Jackdaw.Waveformdisplay.drawbuffer(newBuffer)
         bufferLoader.bufferList["sample"]=newBuffer;
         drumsound="sample"
         console.log("recording buffer = ",bufferLoader.bufferList);

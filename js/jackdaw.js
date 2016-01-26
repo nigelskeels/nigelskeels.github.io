@@ -3,9 +3,9 @@ var Jackdaw = ( function( ) {
   function Init(){  
   	window.addEventListener("load", 
       function(){
-  		  Jackdaw.Scheduler.init() 
-        Jackdaw.Midi.init() 
-                
+  		  Jackdaw.Scheduler.init(); 
+        Jackdaw.Midi.init(); 
+        Jackdaw.Waveformdisplay.init();          
       }
     );
   }
