@@ -1,16 +1,13 @@
 <!DOCTYPE html>
-<!-- <html manifest="jackdawsampler.appcache"> -->
-<html>
+<html manifest="sampler.appcache">
 <head>
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="viewport" content="width=device-width">
-  <link rel="stylesheet" href="css/piano.css">
-  
+
   <style>
     body{font-family: sans-serif;}
     button {
-        height:35px;
-        width:60px;
+        height:40px;
+        width:100px;
         margin:10px;
         border-radius: 5px;
         -webkit-touch-callout: none;
@@ -24,85 +21,52 @@
         display: inline-block;
     }
     #butts{
-      width:640px;
+      width:960px;
     }
     .pressed {
         background-color: #999;
     }
     input[type=range].vertical
     {
-        width: 50px;
-        margin:15px 42px 41px 15px;
+        writing-mode: bt-lr; /* IE */
+        -webkit-appearance: slider-vertical; /* WebKit */
+        width: 72px;
+        height: 100px;
+        padding: 0px 20px;
     }
     #functions_x button{
-        width:30px;
-        height:30px;
+        width:40px;
+        height:40px;
         border-radius: 50%;
-        margin:12px 23px 20px 23px;
+        margin:12px 39px 20px 37px;
     }
     #functions_x button.square{
       border-radius: 5px;
     }
     #functions_y{
       position: absolute;
-      top:0px;
-      left:656px;
+      top:8px;
+      left:998px;
     }
     #functions_y button{
       display: block;
-      width:30px;
-      height:30px;
-      margin-bottom:25px;
+      width:40px;
+      height:40px;
+      margin-bottom:20px;
       border-radius: 50%;
     }
     #functions_y label{
       position: absolute;
-      left: 43px;
+      top:23px;
+      left: 17px;
       font-size: 12px;
-      margin-top: 10px;
     }
-    #sliders{
-      position: absolute;
-      width: 500px;
-      top: 14px;
-      left: 750px;
-    }
-   
-    #transport button{
-        height:35px;
-        width:60px;
-        margin:10px;
-        border-radius: 5px;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        text-align: left;
-        padding-top:15px;
-        display: inline-block;
-        font-size: 11px;
-    }
-    #transport{
-      position: absolute;
-      width: 420px;
-      top: 166px;
-      left: 750px;
-    }
-    ul#piano{
-      margin-left: 12px;
-    }
-    li < .anchor .down{
-      background-color: #cccccc!important;
-    }
-
   </style>
   <script type="text/javascript" src="js/jackdaw.js"></script>
   <script type="text/javascript" src="js/jackdaw.bufferloader.js" ></script>
   <script type="text/javascript" src="js/jackdaw.scheduler.js"></script>
   <script type="text/javascript" src="js/jackdaw.midi.js"></script>
-  <script type="text/javascript" src="js/recorder.js"></script>
+
 
   <title>Jackdaw Sampler</title>
 </head>
@@ -121,22 +85,15 @@
     <button class="square"></button>
   </div>
   <div id="functions_y">
-    <label for="songmode">Song / Pattern</label><button id="songmode"></button>
-     <label for="stepmode">Step</label><button id="stepmode"></button>
-    <label for="slicemode">Sample</label><button id="samplemode"></button>
+    <button id="slicemode"></button><label for="slicemode">Slice</label>
+    <button></button>
+    <button></button>
+    <button></button>
+    <button></button>
+    <button></button>
     <button></button>
     <button></button>
   </div>
-  
-  <div id="transport">
-    <button>Sustain</button>
-    <button>Octup</button>
-    <button>Octdown</button>
-    <button onclick="Jackdaw.Scheduler.stoprecording(this);">Stop</button>
-    <button onclick="Jackdaw.Scheduler.startrecording(this);">Rec</button>
-    <button>Shift</button>
-  </div>
-
   <div id="sliders">
     <input type="range" min="0" max="128" value="0" oninput="Jackdaw.Scheduler.changeslider('slider1',this.value);" class="vertical">
     <input type="range" min="0" max="128" value="0" oninput="Jackdaw.Scheduler.changeslider('slider2',this.value);" class="vertical">
@@ -146,27 +103,8 @@
     <input type="range" min="0" max="128" value="0" oninput="Jackdaw.Scheduler.changeslider('slider6',this.value);" class="vertical">
     <input type="range" min="0" max="128" value="0" oninput="Jackdaw.Scheduler.changeslider('slider7',this.value);" class="vertical">
     <input type="range" min="0" max="128" value="0" oninput="Jackdaw.Scheduler.changeslider('slider8',this.value);" class="vertical">
+    <input type="range" min="0" max="128" value="0" oninput="Jackdaw.Scheduler.changeslider('slider9',this.value);" class="vertical">
   </div>
-
-  
-  <ul id="piano">
-    <li><div id="key_1" class="anchor"></div></li>
-    <li><div id="key_3" class="anchor"></div><span id="key_2"></span></li>
-    <li><div id="key_5" class="anchor"></div><span id="key_4"></span></li>
-    <li><div id="key_6" class="anchor"></div></li>
-    <li><div id="key_8" class="anchor"></div><span id="key_7"></span></li>
-    <li><div id="key_10" class="anchor"></div><span id="key_9"></span></li>
-    <li><div id="key_12" class="anchor"></div><span id="key_11"></span></li>
-    <li><div id="key_13" class="anchor"></div></li>
-    <li><div id="key_15" class="anchor"></div><span id="key_14"></span></li>
-    <li><div id="key_17" class="anchor"></div><span id="key_16"></span></li>
-    <li><div id="key_18" class="anchor"></div></li>
-    <li><div id="key_20" class="anchor"></div><span id="key_19"></span></li>
-    <li><div id="key_22" class="anchor"></div><span id="key_21"></span></li>
-    <li><div id="key_24" class="anchor"></div><span id="key_23"></span></li>
-    <li><div id="key_25" class="anchor"></div></li>
-  </ul>
-
 
 
   Play mode
@@ -175,7 +113,7 @@
     <input type="radio" name="padplaymode" onchange="Jackdaw.Scheduler.setpadplaymode(this.value)" value="oneshot">One shot 
   </radiogroup><br><br>
   slices
-  <input type="text" value="40" onChange="slices=this.value;Jackdaw.init();" >
+  <input type="text" value="64" onChange="slices=this.value;Jackdaw.init();" >
   <br>
   <br>
   <div id="midistatus"></div>
