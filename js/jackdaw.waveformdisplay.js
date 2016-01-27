@@ -11,18 +11,17 @@ function Init(){
 
 function Drawbuffer(buffer,_zoom) {
 
-    
     if(buffer!=undefined){
         lastbuffer = buffer;
     }else{
         buffer = lastbuffer; 
     }
-    
-    context.clearRect(0, 0, canvas.width, canvas.height);
 
     var width =  _zoom || canvas.width;
     var height = canvas.height;
     var context = canvas.getContext('2d');
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
 
     var data = buffer.getChannelData( 0 );
     var step = Math.ceil( data.length / width );
