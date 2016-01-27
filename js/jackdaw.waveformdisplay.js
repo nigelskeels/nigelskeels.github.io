@@ -1,6 +1,7 @@
 Jackdaw.Waveformdisplay = ( function( window, undefined ) {
 
 var canvas;
+var lastbuffer;
 
 function Init(){
     console.log("Hello waveformdisplay")
@@ -8,13 +9,20 @@ function Init(){
 }
 
 
-function Drawbuffer(buffer) {
+function Drawbuffer(buffer,_zoom) {
+
     
-    var width = canvas.width;
+    if(buffer!=undefined){
+        lastbuffer = buffer;
+    }else{
+        buffer = lastbuffer; 
+    }
+    
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    var width =  _zoom || canvas.width;
     var height = canvas.height;
     var context = canvas.getContext('2d');
-
-    context.clearRect(0, 0, width, height);
 
     var data = buffer.getChannelData( 0 );
     var step = Math.ceil( data.length / width );
@@ -32,6 +40,8 @@ function Drawbuffer(buffer) {
         context.fillRect(i,(1+min)*amp,1,Math.max(1,(max-min)*amp));
     }
 }
+
+
 
 
 return{
