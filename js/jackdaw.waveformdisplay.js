@@ -50,3 +50,6 @@ return{
 
 
 } )( window );
+
+//to zoom in 
+// Jackdaw.Waveformdisplay.drawbuffer(undefined,"100000")

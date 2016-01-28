@@ -5,7 +5,8 @@ var Jackdaw = ( function( ) {
       function(){
   		  Jackdaw.Scheduler.init(); 
         Jackdaw.Midi.init(); 
-        Jackdaw.Waveformdisplay.init();          
+        Jackdaw.Waveformdisplay.init();
+        Jackdaw.Ui.init();           
       }
     );
   }
