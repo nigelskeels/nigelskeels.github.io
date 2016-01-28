@@ -101,6 +101,7 @@ function Stopsound(which,slice,pitch,keyid){
         var soundname = which;    
         if(sound[soundname+slice+"_"+pitch]!=undefined){
                 sound[soundname+slice+"_"+pitch].stop();
+                delete sound[soundname+slice+"_"+pitch];
         }
     }
 }
