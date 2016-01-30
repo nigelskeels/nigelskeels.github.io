@@ -53,8 +53,19 @@ function Init(){
         pianokeyup(e);
     });
 
-
+    var functions_y_buttons = document.getElementById("functions_y").addEventListener("mousedown",y_but_down)
 }
+
+function y_but_down(e){
+    var functions_y_buttons = e.target.parentNode.getElementsByTagName("button");
+    for (var i = 0; i < functions_y_buttons.length; i++) {
+        functions_y_buttons[i].className="";
+    }
+
+    console.info("y_but_down = ",e,e.target.id);
+    e.target.className="buttonRed";
+}
+
 
 function Setpadplaymode(_playmode){
     playmode=_playmode;
