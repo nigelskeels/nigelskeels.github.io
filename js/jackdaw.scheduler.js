@@ -6,6 +6,7 @@ var drumsound="amen";
 var bufferLoader;
 var playmode="noteon";
 
+
 Jackdaw.Scheduler = ( function( window, undefined ) {
 
 var context = null;
@@ -47,7 +48,7 @@ function Playsound(which,slice,pitch,keyid){
 
         console.log("play sound ",which,slice,pitch);
 
-        Jackdaw.Ui.setbuttonstate(slice,true,keyid)
+        Jackdaw.Ui.setbuttonstate(slice,true,keyid,"buttonRed")
         lastsliceplayed=slice;
         
         var soundname = which;
@@ -95,7 +96,7 @@ function Stopsound(which,slice,pitch,keyid){
     var which = drumsound;
     var pitch = pitch || "1";
 
-    Jackdaw.Ui.setbuttonstate(slice,false,keyid)
+    Jackdaw.Ui.setbuttonstate(slice,false,keyid,"buttonRed")
 
     if(playmode=="noteon"){
         var soundname = which;    

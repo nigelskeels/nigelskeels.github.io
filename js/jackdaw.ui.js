@@ -2,6 +2,7 @@
 Jackdaw.Ui = ( function( window, undefined ) {
 
 var keysdownarray = [];
+var mode = "pattern";
 
 function Init(){
 
@@ -53,7 +54,9 @@ function Init(){
         pianokeyup(e);
     });
 
-    var functions_y_buttons = document.getElementById("functions_y").addEventListener("mousedown",y_but_down)
+    var functions_y_buttons = document.getElementById("functions_y").addEventListener("mousedown",y_but_down);
+
+    set_xlabels("pattern");
 }
 
 function y_but_down(e){
@@ -61,9 +64,46 @@ function y_but_down(e){
     for (var i = 0; i < functions_y_buttons.length; i++) {
         functions_y_buttons[i].className="";
     }
-
     console.info("y_but_down = ",e,e.target.id);
     e.target.className="buttonRed";
+    set_xlabels(e.target.id);
+}
+
+
+function set_xlabels(mode){
+
+    var labeltext = {   
+                        "buttons":{
+                            "pattern":["New","Copy","Insert","Move","Chain","Complete","","Delete","Shift"],
+                               "step":["Track 1","Track 2","Track 3","Track 4","Track 5","Track 6","Track 7","Track 8","Shift"],
+                              "voice":["Quantalise +","Quantalise -","Length","Active Step","","","","Delete","Shift"],
+                             "sample":["Slices +","Slices -","Import","Insert","Keymode","Drummode","Reverse","Delete","Shift"],
+                                 "fx":["Track 1","Track 2","Track 3","Track 4","Track 5","Track 6","Track 7","Track 8","Shift"]
+                         },
+                         "sliders":{
+                            "pattern":["Vol 1","Vol 2","Vol 3","Vol 4","Vol 5","Vol 6","Vol 7","Vol 8"],
+                               "step":["Vol 1","Vol 2","Vol 3","Vol 4","Vol 5","Vol 6","Vol 7","Vol 8"],
+                              "voice":["Vol 1","Vol 2","Vol 3","Vol 4","Vol 5","Vol 6","Vol 7","Vol 8"],
+                             "sample":["Start","Start Fine","Length","Length Fine","Attack","Decay","Sustain","Release"],
+                                 "fx":["Vol 1","Vol 2","Vol 3","Vol 4","Vol 5","Vol 6","Vol 7","Vol 8"] 
+
+                         }
+                    }
+
+
+    
+
+    var functions_x_labels = document.getElementById("functions_x").getElementsByTagName("label");
+    for (var i = 0; i < functions_x_labels.length; i++) {
+        functions_x_labels[i].innerHTML=labeltext.buttons[mode][i];
+        console.info("set_xlabels",functions_x_labels[i]);
+    }
+
+    var functions_x_sliders = document.getElementById("sliders").getElementsByTagName("label");
+    for (var i = 0; i < functions_x_sliders.length; i++) {
+        functions_x_sliders[i].innerHTML=labeltext.sliders[mode][i];
+        console.info("functions_x_sliders",functions_x_sliders[i]);
+    }
 }
 
 
@@ -114,11 +154,12 @@ function keyuptest(e){
 
 }
 
-function Setbuttonstate(slice,pressedstate,keyid){
+function Setbuttonstate(slice,pressedstate,keyid,colour){
     // console.log("setbuttonstate",slice)
     var but = document.getElementById("slice"+slice);
             if(pressedstate==true){
-                but.className="pressed";
+
+                but.className=colour;
             }else{
                 but.className="";
             }
