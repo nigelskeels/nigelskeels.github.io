@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!-- <html manifest="jackdawsampler.appcache"> -->
+<html>
+<head>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width">
+ 
+ 
+  <title>Jackdaw Sampler</title>
+</head>
+
+<body>
+  
+  
+
+    <script>
+  // var chunks = [];
+  var images;
+  var decodedBuffer;
+  var count=0;
+
+  window.AudioContext = window.AudioContext || window.webkitAudioContext;
+  var context = new AudioContext();
+  var otherbuffer = context.createBuffer(2, 22050, 44100);
+
+
+
+  document.addEventListener("DOMContentLoaded",function(){
+
+             images = ["sounds/snaredry.wav","sounds/snare.wav","sounds/kick.wav","sounds/hihat.wav"];
+           // images = ["sounds/snaredry.wav"];
+            var lastone=false;
+
+            for(var i = 0; i < images.length; i++) {
+                var data = images[i];
+                if(images.length-1==i){
+                  lastone=true;
+                }
+                loadimagesandcombine(data,images.length);
+            }
+
+  });
+  
+
+  function loadimagesandcombine(file,howmany){
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', file, true);
+      xhr.responseType = 'arraybuffer';
+
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+              
+                context.decodeAudioData(this.response, function(buffer) {
+                  count++;
+                  otherbuffer = appendBuffer(otherbuffer, buffer)
+                  console.log("Appended buffer",otherbuffer)
+                  
+                  if(count==howmany){
+                      playsound();
+                  }
+                }, 
+                  function(e){console.log("error ",e)}
+                );
+        }
+      };
+      xhr.send();
+  }
+
+  function appendBuffer(buffer1, buffer2) {
+      var numberOfChannels = Math.min( buffer1.numberOfChannels, buffer2.numberOfChannels );
+      var tmp = context.createBuffer( numberOfChannels, (buffer1.length + buffer2.length), buffer1.sampleRate );
+      for (var i=0; i<numberOfChannels; i++) {
+        var channel = tmp.getChannelData(i);
+        channel.set( buffer1.getChannelData(i), 0);
+        channel.set( buffer2.getChannelData(i), buffer1.length);
+      }
+      return tmp;
+  };
+
+
+  function playsound(){
+        var source = context.createBufferSource();
+        source.buffer = otherbuffer;                    
+        source.connect(context.destination);       
+        source.start(0);                   
+  }
+
+
+
+
+</script>
+</body>
