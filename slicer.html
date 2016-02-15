@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!-- <html manifest="jackdawsampler.appcache"> -->
+<html>
+<head>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width">
+ 
+ 
+  <title>Jackdaw Slicer</title>
+</head>
+
+<body>
+  
+  
+
+    <script>
+  
+    var slicestomake=40;
+
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    var context = new AudioContext();
+    var slicesarray=[];
+
+
+    document.addEventListener("DOMContentLoaded",function(){
+
+              // images = ["sounds/snaredry.wav","sounds/snare.wav","sounds/kick.wav","sounds/hihat.wav"];
+               file = "sounds/Amen-break.wav";
+
+               var xhr = new XMLHttpRequest();
+                xhr.open('GET', file, true);
+                xhr.responseType = 'arraybuffer';
+
+                xhr.onload = function(e) {
+                  if (this.status == 200) {
+                          context.decodeAudioData(this.response, function(buffer) {
+                            slicer(buffer); 
+                          }, 
+                            function(e){console.log("error ",e)}
+                          );
+                  }
+                };
+                xhr.send();
+    });
+    
+    
+    function slicer(buffer1){
+        var numberOfChannels = buffer1.numberOfChannels;
+        var slicesize = parseInt(buffer1.length/slicestomake);
+
+        for (var s=0; s<slicestomake; s++) {
+
+          var tmp = context.createBuffer( numberOfChannels, slicesize, buffer1.sampleRate );
+
+          for (var i=0; i<numberOfChannels; i++) {
+            var channel = tmp.getChannelData(i);
+            var fromslice=s*slicesize
+            var toslice=(s+1)*slicesize
+            channel.set( buffer1.getChannelData(i).slice(fromslice,toslice), 0);
+          }
+          // return tmp;
+          slicesarray.push(tmp);
+
+          // button
+          var but = document.createElement("button");
+          but.id="but"+s;
+          but.innerHTML=s;
+          (function(which){
+            but.addEventListener("click",function(){
+              playsound(slicesarray[which])
+            })
+          })(s)
+
+          document.body.appendChild(but);
+        }
+        
+        console.log(slicesarray)
+        // playsound(slicesarray[3]);
+    }
+
+    function playsound(thisbuffer){
+          var source = context.createBufferSource();
+          source.buffer = thisbuffer;                    
+          source.connect(context.destination);       
+          source.start(0);                   
+    }
+
+
+
+
+</script>
+</body>
