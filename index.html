@@ -34,6 +34,9 @@
         width: 50px;
         margin:15px 42px 41px 15px;
     }
+    #functions_x{
+      position: relative;
+    }
     #functions_x button{
         width:30px;
         height:30px;
@@ -42,6 +45,12 @@
     }
     #functions_x button.square{
       border-radius: 5px;
+    }
+    #functions_x label{
+      position: absolute;
+      margin-left: 25px;
+      font-size: 12px;
+      margin-top: -4px;
     }
     #functions_y{
       position: absolute;
@@ -63,9 +72,15 @@
     }
     #sliders{
       position: absolute;
-      width: 500px;
+      width: 445px;
       top: 14px;
       left: 750px;
+    }
+    #sliders label{
+      position: absolute;
+      font-size: 12px;
+      margin-top: -5px;
+      margin-left: 15px;
     }
    
     #transport button{
@@ -111,6 +126,12 @@
       padding-left: 10px;
       margin-bottom:4px ;
     }
+    .buttonRed{
+      background-color: #FF8080;
+    }
+    .buttonGreen{
+      background-color: #9FFD86;
+    }
 
   </style>
   <script type="text/javascript" src="js/jackdaw.js"></script>
@@ -127,22 +148,23 @@
 <body>
   <div id="butts"></div>
   <div id="functions_x">
-    <button></button>
-    <button></button>
-    <button></button>
-    <button></button>
-    <button></button>
-    <button></button>
-    <button></button>
-    <button></button>
-    <button class="square"></button>
+    <label for="x1"></label><button id="x1"></button>
+    <label for="x2"></label><button id="x2"></button>
+    <label for="x3"></label><button id="x3"></button>
+    <label for="x4"></label><button id="x4"></button>
+    <label for="x5"></label><button id="x5"></button>
+    <label for="x6"></label><button id="x6"></button>
+    <label for="x7"></label><button id="x7"></button>
+    <label for="x8"></label><button id="x8"></button>
+    <label for="x9"></label><button id="x9" class="square"></button>
   </div>
   <div id="functions_y">
-    <label for="songmode">Song / Pattern</label><button id="songmode"></button>
-    <label for="stepmode">Step</label><button id="stepmode"></button>
-    <label for="slicemode">Voice</label><button id="voice"></button>
-    <label for="slicemode">Sample</label><button id="samplemode"></button>
-    <button></button>
+    <label for="pattern">Song / Pattern</label><button id="pattern" class="buttonRed"></button>
+    <label for="step">Step</label><button id="step"></button>
+    <label for="voice">Voice</label><button id="voice"></button>
+    <label for="sample">Sample</label><button id="sample"></button>
+    <label for="fx">Fx</label><button id="fx"></button>
+    
   </div>
   
   <div id="transport">
@@ -155,14 +177,14 @@
   </div>
 
   <div id="sliders">
-    <input type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider1',this.value);" class="vertical">
-    <input type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider2',this.value);" class="vertical">
-    <input type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider3',this.value);" class="vertical">
-    <input type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider4',this.value);" class="vertical">
-    <input type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider5',this.value);" class="vertical">
-    <input type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider6',this.value);" class="vertical">
-    <input type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider7',this.value);" class="vertical">
-    <input type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider8',this.value);" class="vertical">
+    <label for="slider1"></label><input id="slider1" type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider1',this.value);" class="vertical">
+    <label for="slider2"></label><input id="slider2" type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider2',this.value);" class="vertical">
+    <label for="slider3"></label><input id="slider3" type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider3',this.value);" class="vertical">
+    <label for="slider4"></label><input id="slider4" type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider4',this.value);" class="vertical">
+    <label for="slider5"></label><input id="slider5" type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider5',this.value);" class="vertical">
+    <label for="slider6"></label><input id="slider6" type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider6',this.value);" class="vertical">
+    <label for="slider7"></label><input id="slider7" type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider7',this.value);" class="vertical">
+    <label for="slider8"></label><input id="slider8" type="range" min="0" max="128" value="0" oninput="Jackdaw.Ui.changeslider('slider8',this.value);" class="vertical">
   </div>
 
   
