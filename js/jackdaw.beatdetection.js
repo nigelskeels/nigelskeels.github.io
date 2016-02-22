@@ -14,9 +14,7 @@ function Calculatetempo(incommingbuffer){
 
     var text = document.querySelector('#text');
 
-
-   
-          var context = new (window.AudioContext || window.webkitAudioContext) ();
+          // var context = new (window.AudioContext || window.webkitAudioContext) ();
           
 
             // Create offline context

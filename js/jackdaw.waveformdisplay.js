@@ -5,12 +5,13 @@ var lastbuffer;
 
 function Init(){
     console.log("Hello waveformdisplay")
-    canvas = document.getElementById("waveform");
 }
 
 
 function Drawbuffer(buffer,_zoom) {
 
+    canvas = document.getElementById("waveform");
+    
     if(buffer!=undefined){
         lastbuffer = buffer;
     }else{
@@ -38,6 +39,10 @@ function Drawbuffer(buffer,_zoom) {
         }
         context.fillRect(i,(1+min)*amp,1,Math.max(1,(max-min)*amp));
     }
+    //draw diagonal line test
+        context.moveTo(0,0);
+        context.lineTo(200,100);
+        context.stroke();
 }
 
 

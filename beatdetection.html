@@ -5,8 +5,16 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width">
   <script type="text/javascript" src="js/jackdaw.beatdetection.js"></script>
+  <script type="text/javascript" src="js/jackdaw.Waveformdisplay.js"></script>
  
   <title>Jackdaw Beatdetection</title>
+  <style type="text/css">
+    svg {
+       fill:orange;
+       position: absolute;
+       left: 9px;
+    }
+  </style>
 </head>
 
 <body>
@@ -15,8 +23,8 @@
   
 <div id="text"></div>
 
-<div id="svg"></div>
-
+<svg width="750" height="200" id="svg"></svg>
+<canvas id="waveform" width="750" height="200"></canvas>
 
 <script>
 
@@ -29,7 +37,7 @@
              Jackdaw.Beatdetection.init();
 
               // images = ["sounds/snaredry.wav","sounds/snare.wav","sounds/kick.wav","sounds/hihat.wav"];
-               file = "sounds/drums.wav";
+               file = "sounds/Beat102.wav";
 
                var xhr = new XMLHttpRequest();
                 xhr.open('GET', file, true);
@@ -39,6 +47,11 @@
                   if (this.status == 200) {
                           Jackdaw.Beatdetection.calculatetempo(this.response); 
                           
+                          context.decodeAudioData(this.response, function(buffer) {
+                            Jackdaw.Waveformdisplay.drawbuffer(buffer)
+                          }, 
+                            function(e){console.log("error ",e)}
+                          );
                           // context.decodeAudioData(this.response, function(buffer) {
                           //   Jackdaw.Beatdetection.calculatetempo(buffer); 
                           // }, 
