@@ -112,21 +112,21 @@
                 // var uint8Array = new Uint8Array(chunks);
                 var reader = new FileReader();
                 reader.onload = function() {
-                   var dataURI = reader.result;
-                    
+                   // var dataURI = decodeURIComponent(reader.result);
+                    var ab = reader.result
                   
 
-                    var byteString = atob(dataURI.split(',')[1]);
+                    // var byteString = atob(dataURI.split(',')[1]);
 
                     // separate out the mime component
                     // var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
 
                     // write the bytes of the string to an ArrayBuffer
-                    var ab = new ArrayBuffer(byteString.length);
+                    // var ab = new ArrayBuffer(byteString.length);
                     var ia = new Uint8Array(ab);
-                    for (var i = 0; i < byteString.length; i++) {
-                        ia[i] = byteString.charCodeAt(i);
-                    }
+                    // for (var i = 0; i < ab.byteLength; i++) {
+                    //     ia[i] = byteString.charCodeAt(i);
+                    // }
 
                     console.log("uint array",ia,ia.length);
 
@@ -154,8 +154,8 @@
 
                   // deferred.resolve();
                 };
-                // reader.readAsArrayBuffer(blob);
-                reader.readAsDataURL(blob);
+                reader.readAsArrayBuffer(blob);
+                // reader.readAsDataURL(blob);
 
 
 
