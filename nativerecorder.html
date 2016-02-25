@@ -72,29 +72,84 @@
                // clipContainer.appendChild(audio);
                // soundClips.appendChild(clipContainer);
                // audio.controls = true;
-               var blob = new Blob(chunks, { 'type' : 'audio/wav' });
+               // var blob = new Blob([].concat(chunks), { 'type' : 'audio/wav' });
+               var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+
+               // var audioURL = window.URL.createObjectURL(blob);
+               
+
+               
+
+
+               console.log("test",audioURL);
+
+                // var xhr = new XMLHttpRequest();
+                // xhr.open('GET', audioURL, true);
+                // xhr.responseType = 'arraybuffer';
+
+                // xhr.onload = function(e) {
+                //   if (this.status == 200) {
+                        
+                //           context.decodeAudioData(this.response, function(buffer) {
+                //              playsound(buffer); 
+                //           }, 
+                //             function(e){console.log("error ",e)}
+                //           );
+                //   }
+                // };
+                // xhr.send();
+
+                 // var reader = new FileReader();
+                 //  reader.onload = function(){
+                 //      var generatedBuffer = reader.result;
+                 //      console.log("generatedBuffer",generatedBuffer);
+                 //  }
+                 //  reader.readAsDataURL(blob);
 
                // var araybuf = new ArrayBuffer(chunks.length)
 
+
+                // var uint8Array = new Uint8Array(chunks);
+                // var reader = new FileReader();
+                reader.onload = function() {
+                  var generatedBuffer = reader.result;
+                    console.log("buffy lenb",generatedBuffer.byteLength)
+                  
+                     var otherbuffer = context.createBuffer(2, generatedBuffer.byteLength, context.sampleRate);
+                     var channel0 = otherbuffer.getChannelData(0);
+                     channel0.set( generatedBuffer, 0);
+                     var channel1 = otherbuffer.getChannelData(1);
+                     channel1.set( generatedBuffer, 0);
+                      playsound(otherbuffer); 
+
+
+                    // context.decodeAudioData(otherbuffer, function(buffer) {
+                    //   playsound(buffer); 
+                    // }, 
+                    // function(e){console.log("error ",e)}
+                    // );
+
+                  // deferred.resolve();
+                };
+                // reader.readAsArrayBuffer(blob);
+                reader.readAsDataURL(blob);
 
 
 
 
               //  chunks = [];
-              //var audioURL = window.URL.createObjectURL(blob);
                 // audio.src = audioURL;
-              var reader = new FileReader();
-              reader.onload = function(buf){
+              // var reader = new FileReader();
+              // reader.onload = function(buf){
                 
-                console.log("reader",buf.target.result);
-                
-                context.decodeAudioData(buf.target.result, function(buffer) {
-                  playsound(buffer); 
-                }, 
-                  function(e){console.log("error ",e)}
-                );
-              }
-              reader.readAsDataURL(blob);
+              //   console.log("reader",buf.target.result);
+                // context.decodeAudioData(chunks, function(buffer) {
+                //   playsound(buffer); 
+                // }, 
+                //   function(e){console.log("error ",e)}
+                // );
+              // }
+              // //reader.readAsDataURL(blob);
               // reader.readAsArrayBuffer(araybuf);
 
             }
