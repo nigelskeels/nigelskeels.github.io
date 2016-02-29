@@ -3,7 +3,7 @@ var Jackdaw = ( function( ) {
   function Init(){  
   	window.addEventListener("load", 
       function(){
-  		  Jackdaw.Scheduler.init(); 
+  		  Jackdaw.Realtimeinteraction.init(); 
         Jackdaw.Midi.init(); 
         Jackdaw.Waveformdisplay.init();
         Jackdaw.Ui.init();           

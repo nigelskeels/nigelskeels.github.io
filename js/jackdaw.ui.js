@@ -3,6 +3,7 @@ Jackdaw.Ui = ( function( window, undefined ) {
 
 var keysdownarray = [];
 var mode = "pattern";
+var labeltext;
 
 function Init(){
 
@@ -18,21 +19,21 @@ function Init(){
         (function(_slicebutton,_i,_drumsound){
             
             _slicebutton.addEventListener("mousedown", function(){
-               Jackdaw.Scheduler.playsound(_drumsound,_i,1,13);
+               Jackdaw.Realtimeinteraction.playsound(_drumsound,_i,1,13);
             });
             
             _slicebutton.addEventListener("mouseup", function(){
-               Jackdaw.Scheduler.stopsound(_drumsound,_i,1,13);
+               Jackdaw.Realtimeinteraction.stopsound(_drumsound,_i,1,13);
             });
 
             _slicebutton.addEventListener("touchstart", function(e){
                e.preventDefault();
-               Jackdaw.Scheduler.playsound(_drumsound,_i,1,13);
+               Jackdaw.Realtimeinteraction.playsound(_drumsound,_i,1,13);
             });
 
             _slicebutton.addEventListener("touchend", function(e){
                e.preventDefault();
-               Jackdaw.Scheduler.stopsound(_drumsound,_i,1,13);
+               Jackdaw.Realtimeinteraction.stopsound(_drumsound,_i,1,13);
             });
             
         })(slicebutton,i,drumsound)
@@ -55,38 +56,58 @@ function Init(){
     });
 
     var functions_y_buttons = document.getElementById("functions_y").addEventListener("mousedown",y_but_down);
+    var functions_x_buttons = document.getElementById("functions_x").addEventListener("mousedown",x_but_down);
 
     set_xlabels("pattern");
 }
 
 function y_but_down(e){
     var functions_y_buttons = e.target.parentNode.getElementsByTagName("button");
-    for (var i = 0; i < functions_y_buttons.length; i++) {
-        functions_y_buttons[i].className="";
+    if(e.target.localName=="button"){
+        for (var i = 0; i < functions_y_buttons.length; i++) {
+            functions_y_buttons[i].className="";
+        }
+        console.info("y_but_down = ",e,e.target.id);
+            e.target.className="buttonRed";
+            
+        set_xlabels(e.target.id);
     }
-    console.info("y_but_down = ",e,e.target.id);
-    e.target.className="buttonRed";
-    set_xlabels(e.target.id);
+}
+
+function x_but_down(e){
+    var functions_x_buttons = e.target.parentNode.getElementsByTagName("button");
+    if(e.target.localName=="button"){
+        // for (var i = 0; i < functions_x_buttons.length; i++) {
+        //     functions_x_buttons[i].className="";
+        // }
+        // console.info("x_but_down = ",e,e.target.id.slice(1));
+        // e.target.className="buttonRed";
+        console.log("xbut", labeltext["buttons"][mode][e.target.id.slice(1)-1][0])
+        if(labeltext["buttons"][mode][e.target.id.slice(1)-1][1]!=undefined){
+            console.log("xbut function to call", labeltext["buttons"][mode][e.target.id.slice(1)-1][1])
+            labeltext["buttons"][mode][e.target.id.slice(1)-1][1];
+        }
+    }
 }
 
 
-function set_xlabels(mode){
+function set_xlabels(_mode){
+    mode=_mode;
 
-    var labeltext = {   
+    labeltext = {   
                         "buttons":{
-                            "pattern":["New","Copy","Insert","Move","Chain","Complete","","Delete","Shift"],
-                               "step":["Track 1","Track 2","Track 3","Track 4","Track 5","Track 6","Track 7","Track 8","Shift"],
-                              "voice":["Quantalise +","Quantalise -","Length","Active Step","","","","Delete","Shift"],
-                             "sample":["Slices +","Slices -","Import","Insert","Keymode","Drummode","Reverse","Delete","Shift"],
-                                 "fx":["Track 1","Track 2","Track 3","Track 4","Track 5","Track 6","Track 7","Track 8","Shift"]
+                            "pattern":[["New"],["Copy"],["Insert"],["Move"],["Chain"],["Complete"],[""],["Delete"],["Shift"]],
+                               "step":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"],["Shift"]],
+                              "voice":[["Quantalise +"],["Quantalise -"],["Length"],["Active Step"],[""],[""],[""],["Delete"],["Shift"]],
+                             "sample":[["Slices +"],["Slices -"],["Import"],["Insert"],["Keymode","function(){console.log('hello')()}"],["Drummode"],["Reverse"],["Delete"],["Shift"]],
+                                 "fx":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"],["Shift"]]
                          },
                          "sliders":{
-                            "pattern":["Vol 1","Vol 2","Vol 3","Vol 4","Vol 5","Vol 6","Vol 7","Vol 8"],
-                               "step":["Vol 1","Vol 2","Vol 3","Vol 4","Vol 5","Vol 6","Vol 7","Vol 8"],
-                              "voice":["Vol 1","Vol 2","Vol 3","Vol 4","Vol 5","Vol 6","Vol 7","Vol 8"],
-                             "sample":["Start","Start Fine","Length","Length Fine","Attack","Decay","Sustain","Release"],
-                                 "fx":["Vol 1","Vol 2","Vol 3","Vol 4","Vol 5","Vol 6","Vol 7","Vol 8"] 
-
+                            "pattern":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
+                               "step":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
+                              "voice":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
+                             "sample":[["Start"],["Start Fine"],["Length"],["Length Fine"],["Attack"],["Decay"],["Sustain"],["Release"]],
+                                 "fx":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]] 
                          }
                     }
 
@@ -95,14 +116,14 @@ function set_xlabels(mode){
 
     var functions_x_labels = document.getElementById("functions_x").getElementsByTagName("label");
     for (var i = 0; i < functions_x_labels.length; i++) {
-        functions_x_labels[i].innerHTML=labeltext.buttons[mode][i];
-        console.info("set_xlabels",functions_x_labels[i]);
+        functions_x_labels[i].innerHTML=labeltext.buttons[mode][i][0];
+        console.info("set_xlabels",functions_x_labels[i][0]);
     }
 
     var functions_x_sliders = document.getElementById("sliders").getElementsByTagName("label");
     for (var i = 0; i < functions_x_sliders.length; i++) {
-        functions_x_sliders[i].innerHTML=labeltext.sliders[mode][i];
-        console.info("functions_x_sliders",functions_x_sliders[i]);
+        functions_x_sliders[i].innerHTML=labeltext.sliders[mode][i][0];
+        console.info("functions_x_sliders",functions_x_sliders[i][0]);
     }
 }
 
@@ -118,14 +139,14 @@ function pianokeydown(e){
 
     console.info("pianokeydown",e.target.id, rate);
 
-    Jackdaw.Scheduler.playsound(drumsound,lastsliceplayed,rate,e.target.id.replace("key_",""))
+    Jackdaw.Realtimeinteraction.playsound(drumsound,lastsliceplayed,rate,e.target.id.replace("key_",""))
 }
 
 function pianokeyup(e){
     var rate = (e.target.id.replace("key_","") *0.06)+0.24;
     
     console.info("pianokeyup",e.target.id);
-    Jackdaw.Scheduler.stopsound(drumsound,lastsliceplayed,rate,e.target.id.replace("key_",""))
+    Jackdaw.Realtimeinteraction.stopsound(drumsound,lastsliceplayed,rate,e.target.id.replace("key_",""))
 }
 
 
@@ -134,7 +155,7 @@ function keydowntest(e){
 
         var rate = ((e.which-48) *0.06)+0.24;
         // Playsound(drumsound,e.which-48);
-        Jackdaw.Scheduler.playsound(drumsound,lastsliceplayed,rate,(e.which-48));
+        Jackdaw.Realtimeinteraction.playsound(drumsound,lastsliceplayed,rate,(e.which-48));
         keysdownarray.push(e.which)          
         console.log("Keydown",e.which-48,rate)
         
@@ -150,7 +171,7 @@ function keyuptest(e){
     keysdownarray.splice(pos,1);
     console.log("Keyup",e.which-48);
     // Stopsound(drumsound,e.which-48);
-    Jackdaw.Scheduler.stopsound(drumsound,lastsliceplayed,rate,(e.which-48));
+    Jackdaw.Realtimeinteraction.stopsound(drumsound,lastsliceplayed,rate,(e.which-48));
 
 }
 

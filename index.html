@@ -136,7 +136,7 @@
   </style>
   <script type="text/javascript" src="js/jackdaw.js"></script>
   <script type="text/javascript" src="js/jackdaw.bufferloader.js" ></script>
-  <script type="text/javascript" src="js/jackdaw.scheduler.js"></script>
+  <script type="text/javascript" src="js/jackdaw.realtimeinteraction.js"></script>
   <script type="text/javascript" src="js/jackdaw.midi.js"></script>
   <script type="text/javascript" src="js/jackdaw.waveformdisplay.js"></script>
   <script type="text/javascript" src="js/jackdaw.ui.js"></script>
@@ -171,8 +171,8 @@
     <button>Sustain</button>
     <button>Octup</button>
     <button>Octdown</button>
-    <button onclick="Jackdaw.Scheduler.stoprecording(this);">Stop</button>
-    <button onclick="Jackdaw.Scheduler.startrecording(this);">Rec</button>
+    <button onclick="Jackdaw.Realtimeinteraction.stoprecording(this);">Stop</button>
+    <button onclick="Jackdaw.Realtimeinteraction.startrecording(this);">Rec</button>
     <button>Shift</button>
   </div>
 
@@ -210,8 +210,8 @@
 
   Play mode
   <radiogroup>
-    <input type="radio" name="padplaymode" onchange="Jackdaw.Scheduler.setpadplaymode(this.value)" value="noteon" checked>Note On
-    <input type="radio" name="padplaymode" onchange="Jackdaw.Scheduler.setpadplaymode(this.value)" value="oneshot">One shot 
+    <input type="radio" name="padplaymode" onchange="Jackdaw.Realtimeinteraction.setpadplaymode(this.value)" value="noteon" checked>Note On
+    <input type="radio" name="padplaymode" onchange="Jackdaw.Realtimeinteraction.setpadplaymode(this.value)" value="oneshot">One shot 
   </radiogroup><br><br>
   slices
   <input type="text" value="40" onChange="slices=this.value;Jackdaw.init();" >
