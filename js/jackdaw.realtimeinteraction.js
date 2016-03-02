@@ -6,7 +6,7 @@ var bufferLoader;
 var playmode="noteon";
 
 
-Jackdaw.Realtimeinteraction = ( function( window, undefined ) {
+Jackdaw.Realtimeinteraction = ( function() {
 
 var context = null;
 var recorder;
@@ -157,4 +157,4 @@ return{
 };
 
 
-} )( window );
+} )(  );

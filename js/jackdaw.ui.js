@@ -1,5 +1,5 @@
 
-Jackdaw.Ui = ( function( window, undefined ) {
+Jackdaw.Ui = ( function(  ) {
 
 var keysdownarray = [];
 var mode = "pattern";
@@ -56,23 +56,47 @@ function Init(){
     });
 
     var functions_y_buttons = document.getElementById("functions_y").addEventListener("mousedown",y_but_down);
+    var functions_y_buttons = document.getElementById("functions_y").addEventListener("mouseup",y_but_up);
     var functions_x_buttons = document.getElementById("functions_x").addEventListener("mousedown",x_but_down);
 
     set_xlabels("pattern");
 }
 
+var lastbeforeshift = "pattern";
+
+
 function y_but_down(e){
     var functions_y_buttons = e.target.parentNode.getElementsByTagName("button");
     if(e.target.localName=="button"){
-        for (var i = 0; i < functions_y_buttons.length; i++) {
-            functions_y_buttons[i].className="";
+        
+        if(e.target.id!="shift"){        
+            for (var i = 0; i < functions_y_buttons.length; i++) {
+                functions_y_buttons[i].className="";
+            }
+            lastbeforeshift=e.target.id;
+
+            console.info("y_but_down = ",e,e.target.id);
+
+                
         }
-        console.info("y_but_down = ",e,e.target.id);
-            e.target.className="buttonRed";
-            
+        e.target.className="buttonRed";
         set_xlabels(e.target.id);
     }
 }
+
+function y_but_up(e){
+    var functions_y_buttons = e.target.parentNode.getElementsByTagName("button");
+    if(e.target.localName=="button"){
+        
+        if(e.target.id=="shift"){    
+            console.log("shift but up");        
+            set_xlabels(lastbeforeshift);
+            e.target.className="";
+        }
+    }
+}
+
+
 
 function x_but_down(e){
     var functions_x_buttons = e.target.parentNode.getElementsByTagName("button");
@@ -96,18 +120,20 @@ function set_xlabels(_mode){
 
     labeltext = {   
                         "buttons":{
-                            "pattern":[["New"],["Copy"],["Insert"],["Move"],["Chain"],["Complete"],[""],["Delete"],["Shift"]],
-                               "step":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"],["Shift"]],
-                              "voice":[["Quantalise +"],["Quantalise -"],["Length"],["Active Step"],[""],[""],[""],["Delete"],["Shift"]],
-                             "sample":[["Slices +"],["Slices -"],["Import"],["Insert"],["Keymode","function(){console.log('hello')()}"],["Drummode"],["Reverse"],["Delete"],["Shift"]],
-                                 "fx":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"],["Shift"]]
+                            "pattern":[["New"],["Copy"],["Insert"],["Move"],["Chain"],["Complete"],[""],["Delete"]],
+                               "step":[["Quantalise +"],["Quantalise -"],["Length"],["Active Step"],[""],[""],[""],["Delete"]],
+                              "voice":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]],
+                             "sample":[["Slices +"],["Slices -"],["Import"],["Insert"],["Keymode","function(){console.log('hello')()}"],["Drummode"],["Reverse"],["Delete"]],
+                                 "fx":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]],
+                              "shift":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]]
                          },
                          "sliders":{
                             "pattern":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
                                "step":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
                               "voice":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
                              "sample":[["Start"],["Start Fine"],["Length"],["Length Fine"],["Attack"],["Decay"],["Sustain"],["Release"]],
-                                 "fx":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]] 
+                                 "fx":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
+                              "shift":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]]  
                          }
                     }
 
@@ -211,4 +237,4 @@ return{
 };
 
 
-} )( window );
+} )(  );
