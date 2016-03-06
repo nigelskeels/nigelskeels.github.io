@@ -136,6 +136,7 @@
   </style>
   <script type="text/javascript" src="js/jackdaw.js"></script>
   <script type="text/javascript" src="js/jackdaw.bufferloader.js" ></script>
+  <script type="text/javascript" src="js/jackdaw.scheduler.js"></script>
   <script type="text/javascript" src="js/jackdaw.realtimeinteraction.js"></script>
   <script type="text/javascript" src="js/jackdaw.midi.js"></script>
   <script type="text/javascript" src="js/jackdaw.waveformdisplay.js"></script>
@@ -168,12 +169,12 @@
   </div>
   
   <div id="transport">
-    <button>Sustain</button>
-    <button>Octup</button>
-    <button>Octdown</button>
-    <button onclick="Jackdaw.Realtimeinteraction.stoprecording(this);">Stop</button>
-    <button onclick="Jackdaw.Realtimeinteraction.startrecording(this);">Rec</button>
-    <button>Shift</button>
+    <button id="sustain">Sustain</button>
+    <button id="octup">Octup</button>
+    <button id="octdown">Octdown</button>
+    <button id="playstop">Stop</button>
+    <button id="record">Rec</button>
+    <button id="shift2">Shift</button>
   </div>
 
   <div id="sliders">

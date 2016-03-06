@@ -4,6 +4,8 @@ Jackdaw.Ui = ( function(  ) {
 var keysdownarray = [];
 var mode = "pattern";
 var labeltext;
+var currenttrackediting = 1;
+var lastbeforeshift = "pattern";
 
 function Init(){
 
@@ -60,9 +62,34 @@ function Init(){
     var functions_x_buttons = document.getElementById("functions_x").addEventListener("mousedown",x_but_down);
 
     set_xlabels("pattern");
+
+    var transportcontrols = document.getElementById("transport").addEventListener("mousedown",transportbuts_mousedown)
+
 }
 
-var lastbeforeshift = "pattern";
+
+function transportbuts_mousedown(e){
+    var functions_y_buttons = e.target.parentNode.getElementsByTagName("button");
+    if(e.target.localName=="button"){
+        console.log("transportbuts_mousedown",e.target.id);
+        if(mode=="sample"){
+            if(e.target.id=="record"){
+                Jackdaw.Realtimeinteraction.startrecording();
+            }
+            if(e.target.id=="playstop"){
+                Jackdaw.Realtimeinteraction.stoprecording();
+            }
+        }
+        else{
+            if(e.target.id=="playstop"){
+                console.info("play pattern")
+            }
+
+        }
+
+    }
+
+}
 
 
 function y_but_down(e){
@@ -111,6 +138,12 @@ function x_but_down(e){
             console.log("xbut function to call", labeltext["buttons"][mode][e.target.id.slice(1)-1][1])
             labeltext["buttons"][mode][e.target.id.slice(1)-1][1];
         }
+
+        if(mode=="shift" || mode=="voice"){
+           console.log("shifting",e.target.id.slice(1)); 
+           currenttrackediting=e.target.id.slice(1);
+           set_xlabels(mode);
+        }
     }
 }
 
@@ -138,18 +171,29 @@ function set_xlabels(_mode){
                     }
 
 
-    
+    //reset all x button leds
+    var x_buttons = document.getElementById("functions_x").getElementsByTagName("button");
+    for (var x = 0; x < x_buttons.length; x++) {
+        x_buttons[x].className="";
+
+        if(_mode =="shift" || mode=="voice"){
+            if(x==currenttrackediting-1){
+                x_buttons[x].className="buttonRed";                
+            }                   
+        }
+    }
+
 
     var functions_x_labels = document.getElementById("functions_x").getElementsByTagName("label");
     for (var i = 0; i < functions_x_labels.length; i++) {
         functions_x_labels[i].innerHTML=labeltext.buttons[mode][i][0];
-        console.info("set_xlabels",functions_x_labels[i][0]);
+        // console.info("set_xlabels",labeltext.buttons[mode][i][0]);
     }
 
     var functions_x_sliders = document.getElementById("sliders").getElementsByTagName("label");
     for (var i = 0; i < functions_x_sliders.length; i++) {
         functions_x_sliders[i].innerHTML=labeltext.sliders[mode][i][0];
-        console.info("functions_x_sliders",functions_x_sliders[i][0]);
+        // console.info("functions_x_sliders",labeltext.sliders[mode][i][0]);
     }
 }
 
