@@ -1,7 +1,13 @@
-Jackdaw.StorageManager = ( function( ) {
+Jackdaw.Storagemanager = ( function( ) {
 
   function Init(){
-    console.log("Hello ")
+    console.log("Hello ");
+    
+    // if(which==undefined){
+      which=Object.keys(patterns)[0];  
+    // }
+    // Which=which;
+    patt=patterns[which];
   }
 
   function Save(patterns){
@@ -22,7 +28,7 @@ Jackdaw.StorageManager = ( function( ) {
                              "snap":96,
                           "pattern":[]
                         }
-      Init();
+      // Init();
   }
 
   function Removepattern(which){
@@ -57,6 +63,7 @@ Jackdaw.StorageManager = ( function( ) {
 }( ));
 
 
+var patt;
 
 var patterns =  {
 

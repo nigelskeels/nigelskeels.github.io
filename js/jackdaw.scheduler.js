@@ -166,10 +166,10 @@ function ResetToStart(){
         loopcount = 0;
         current16thNoteTotal = 0;
         totalbeatsplayed=0;
-        var x = document.getElementsByTagName("STYLE")[0];
-        x.innerHTML=".beatnum1 { outline: solid #999999 3px!important;  }";
-        var x = document.getElementsByTagName("STYLE")[1];
-        x.innerHTML="#timelinebeat1 { border-left: solid red 1px!important;  }";
+        // var x = document.getElementsByTagName("STYLE")[0];
+        // x.innerHTML=".beatnum1 { outline: solid #999999 3px!important;  }";
+        // var x = document.getElementsByTagName("STYLE")[1];
+        // x.innerHTML="#timelinebeat1 { border-left: solid red 1px!important;  }";
 }
 
 function draw() {
@@ -186,8 +186,8 @@ function draw() {
     
     if(last16thNoteDrawn != currentNote){
         var adjustedNote = currentNote+1;            
-        var x = document.getElementsByTagName("STYLE")[0];
-        x.innerHTML=".beatnum"+adjustedNote+"{ outline: solid #999999 3px!important;  }";
+        // var x = document.getElementsByTagName("STYLE")[0];
+        // x.innerHTML=".beatnum"+adjustedNote+"{ outline: solid #999999 3px!important;  }";
 
         // console.log("beatNumber", adjustedNote );
         if(songplay==true){
@@ -240,3 +240,4 @@ return{
 
 
 } )( window );
+

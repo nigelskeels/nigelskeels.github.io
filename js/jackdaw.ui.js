@@ -83,6 +83,7 @@ function transportbuts_mousedown(e){
         else{
             if(e.target.id=="playstop"){
                 console.info("play pattern")
+                Jackdaw.Scheduler.play(); 
             }
 
         }

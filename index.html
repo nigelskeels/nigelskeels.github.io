@@ -5,135 +5,8 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="css/piano.css">
-  
-  <style>
-    #sampler{font-family: sans-serif;}
-    button {
-        height:35px;
-        width:60px;
-        margin:10px;
-        border-radius: 5px;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        text-align: left;
-        padding-top:15px;
-        display: inline-block;
-    }
-    #butts{
-      width:640px;
-    }
-    .pressed {
-        background-color: #999;
-    }
-    input[type=range].vertical
-    {
-        width: 50px;
-        margin:15px 42px 41px 15px;
-    }
-    #functions_x{
-      position: relative;
-    }
-    #functions_x button{
-        width:30px;
-        height:30px;
-        border-radius: 50%;
-        margin:12px 23px 20px 23px;
-    }
-    #functions_x button.square{
-      border-radius: 5px;
-    }
-    #functions_x label{
-      position: absolute;
-      margin-left: 25px;
-      font-size: 12px;
-      margin-top: -4px;
-    }
-    #functions_y{
-      position: absolute;
-      top:0px;
-      left:656px;
-    }
-    #functions_y button{
-      display: block;
-      width:30px;
-      height:30px;
-      margin-bottom:25px;
-      border-radius: 50%;
-    }
-    #functions_y label{
-      position: absolute;
-      left: 43px;
-      font-size: 12px;
-      margin-top: 10px;
-    }
-    #sliders{
-      position: absolute;
-      width: 445px;
-      top: 14px;
-      left: 750px;
-    }
-    #sliders label{
-      position: absolute;
-      font-size: 12px;
-      margin-top: -5px;
-      margin-left: 15px;
-    }
-   
-    #transport button{
-        height:35px;
-        width:60px;
-        margin:10px;
-        border-radius: 5px;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        text-align: left;
-        padding-top:15px;
-        display: inline-block;
-        font-size: 11px;
-    }
-    #transport{
-      position: absolute;
-      width: 420px;
-      top: 166px;
-      left: 750px;
-    }
-    ul#piano{
-      margin-left: 12px;
-    }
-    li < .anchor .down{
-      background-color: #cccccc!important;
-    }
-    
-    #instructions{
-      color: #999;
-      margin: 20px;
-      border: solid 1px #999;
-      width:800px;
-    }
+  <link rel="stylesheet" href="css/apc25key.css">
 
-    #instructions ol, #instructions li{
-      list-style: disc;
-      font-size: 12px;
-      margin-left:20px;
-      padding-left: 10px;
-      margin-bottom:4px ;
-    }
-    .buttonRed{
-      background-color: #FF8080;
-    }
-    .buttonGreen{
-      background-color: #9FFD86;
-    }
-
-  </style>
   <script type="text/javascript" src="js/jackdaw.js"></script>
   <script type="text/javascript" src="js/jackdaw.bufferloader.js" ></script>
   <script type="text/javascript" src="js/jackdaw.storagemanager.js" ></script>
@@ -148,6 +21,7 @@
 </head>
 
 <body>
+ <div id="sampler">
   <div id="butts"></div>
   <div id="functions_x">
     <label for="x1"></label><button id="x1"></button>
@@ -234,4 +108,5 @@
 
         
     </script>
+</div>
 </body>

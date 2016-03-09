@@ -5,10 +5,10 @@ var Jackdaw = ( function( ) {
       function(){
   		  Jackdaw.Realtimeinteraction.init(); 
         Jackdaw.Scheduler.init();
+        Jackdaw.Storagemanager.init()  
         Jackdaw.Midi.init(); 
         Jackdaw.Waveformdisplay.init();
         Jackdaw.Ui.init();           
-        Jackdaw.Storagemanager.init()  
       }
     );
   }
