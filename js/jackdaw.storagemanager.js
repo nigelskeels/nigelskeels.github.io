@@ -1,63 +1,7 @@
-Jackdaw.DrumPatternManager = ( function( ) {
+Jackdaw.StorageManager = ( function( ) {
 
   function Init(){
-    var drumpatternmanager = document.getElementById("drumpatternmanager");
-    drumpatternmanager.innerHTML="";
-
-    // Load();
-
-    for(i in patterns){
-      if(i!="Blank"){
-        (function(i){
-          var pattname = document.createElement("div");
-          pattname.className="pattname"
-          pattname.innerHTML=  '<a data-patternname="'+i+'"><i class="icon-playlist"></i>'+pattname.innerHTML+i+'</a>';
-          // pattname.dataset.patternname = i;
-          pattname.draggable=true;
-
-
-          pattname.addEventListener( "click",         
-            function(){ 
-              console.log("Select pattern ",i);
-              Jackdaw.DrumGrid.init(patterns,i); 
-          });
-
-          pattname.addEventListener( "dragstart",         
-            function(e){ 
-                var dragdiv = document.createElement("div")
-                dragdiv.id="dragdiv";
-                dragdiv.className="patternblock";
-                dragdiv.innerHTML=i;
-                dragdiv.style.width=(patterns[i].beats*20)-1 +"px";
-                dragdiv.style.position="relative";
-                 document.getElementById("hidden").appendChild(dragdiv)
-                e.dataTransfer.setDragImage(dragdiv, 0, 0);
-                // firefox fix
-                e.dataTransfer.setData('Text', this.id);
-                console.log("dragstart",dragdiv)
-
-          });
-
-          pattname.addEventListener("dragend",function(){
-              var dragdiv =  document.getElementById("dragdiv")
-              console.log("dragend")
-              dragdiv.parentNode.removeChild(dragdiv);              
-          })
-
-          var removebut = document.createElement("button");
-          removebut.innerHTML="x";
-          removebut.className="removebut"
-
-          removebut.addEventListener( "click",         
-            function(){ 
-              Removepattern(i); 
-          });
-
-          pattname.appendChild(removebut);
-          drumpatternmanager.appendChild(pattname);
-        }(i))
-      }
-    }
+    console.log("Hello ")
   }
 
   function Save(patterns){
