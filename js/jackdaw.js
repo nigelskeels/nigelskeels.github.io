@@ -4,10 +4,11 @@ var Jackdaw = ( function( ) {
   	window.addEventListener("load", 
       function(){
   		  Jackdaw.Realtimeinteraction.init(); 
-        Jackdaw.Scheduler.init() 
+        Jackdaw.Scheduler.init();
         Jackdaw.Midi.init(); 
         Jackdaw.Waveformdisplay.init();
         Jackdaw.Ui.init();           
+        Jackdaw.Storagemanager.init()  
       }
     );
   }
