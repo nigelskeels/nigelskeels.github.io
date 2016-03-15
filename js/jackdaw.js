@@ -21,4 +21,4 @@ var Jackdaw = ( function( ) {
 } (  ));
 
 
-var sounds = {"amen":"sounds/Amen-break.wav","git":"sounds/Guitar1.wav"};
+var sounds = {"git":"sounds/Guitar1.wav","amen":"sounds/Amen-break.wav"};

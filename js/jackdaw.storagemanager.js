@@ -65,8 +65,19 @@ Jackdaw.Storagemanager = ( function( ) {
 
 var patt;
 
+//in patterns the array values are [track,beat,subbeat,volume]
+//proposed new version  values are [track,beat,subbeat,length,sound,volume,pitch]
+
 var patterns =  {
 
+          "Another beat":{
+                         "tracks":4,
+                          "beats":4,
+                           "snap":96,
+                        "pattern":[
+                                    [1,1,0,1],[2,2,0,0.5],[1,3,0,1],[2,4,0,0.5]
+                                  ]
+                    },
           "Blue Monday":{
                          "tracks":4,
                           "beats":8,
@@ -81,14 +92,6 @@ var patterns =  {
                            "snap":96,
                         "pattern":[
                                     [1,1,0,0.7],[1,2,0,0.7],[1,3,0,0.7],[1,4,0,0.7],[1,5,0,0.7],[1,6,0,0.7],[1,7,0,0.7],[1,8,0,0.7],[2,1,0,1],[2,2,0,1],[2,3,0,1],[2,3,96,1],[2,3,192,1],[2,3,288,1],[2,4,0,1],[2,4,96,1],[2,4,192,1],[2,4,288,1],[2,5,0,1],[2,6,0,1],[2,7,0,1],[2,8,0,1]
-                                  ]
-                    },
-          "Another beat":{
-                         "tracks":4,
-                          "beats":4,
-                           "snap":96,
-                        "pattern":[
-                                    [2,1,0,1],[2,2,0,0.5],[2,3,0,0.5],[2,4,0,0.5]
                                   ]
                     },
           "Last beat":{
