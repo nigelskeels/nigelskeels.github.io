@@ -1,7 +1,7 @@
 var sound = {};
 var slices = 40;
 var lastsliceplayed=1;
-var drumsound="Drumkit3";
+var drumsound="drumkit3";
 var bufferLoader;
 var playmode="noteon";
 

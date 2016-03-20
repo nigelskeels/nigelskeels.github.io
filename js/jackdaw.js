@@ -3,9 +3,9 @@ var Jackdaw = ( function( ) {
   function Init(){  
   	window.addEventListener("load", 
       function(){
-  		  Jackdaw.Realtimeinteraction.init(); 
-        Jackdaw.Scheduler.init();
         Jackdaw.Storagemanager.init()  
+        Jackdaw.Realtimeinteraction.init(); 
+        Jackdaw.Scheduler.init();
         Jackdaw.Midi.init(); 
         Jackdaw.Waveformdisplay.init();
         Jackdaw.Ui.init();           
@@ -21,4 +21,4 @@ var Jackdaw = ( function( ) {
 } (  ));
 
 
-var sounds = {"git":"sounds/Guitar1.wav","amen":"sounds/Amen-break.wav","Drumkit3":"sounds/drumkit3.wav"};
+// var sounds = {"git":"sounds/Guitar1.wav","drumkit3":"sounds/drumkit3.wav","amen":"sounds/Amen-break.wav"};
