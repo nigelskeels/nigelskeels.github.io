@@ -1,15 +1,50 @@
+var currenttrackselected = 1;
 
 Jackdaw.Ui = ( function(  ) {
 
 var keysdownarray = [];
 var mode = "pattern";
-var labeltext;
-var currenttrackediting = 1;
 var lastbeforeshift = "pattern";
+var padlights = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+var labeltext = {   
+                    "buttons":{
+                        "pattern":[["New"],["Copy"],["Insert"],["Move"],["Chain"],["Complete"],[""],["Delete"]],
+                           "step":[["Quantalise +"],["Quantalise -"],["Length"],["Active Step"],[""],[""],[""],["Delete"]],
+                          "voice":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]],
+                         "sample":[
+                                    ["Slices +"],
+                                    ["Slices -"],
+                                    ["Import"],
+                                    ["Insert"],
+                                    ["Keymode", function(){ 
+                                                              console.log('hello keymode');
+                                                              Setpadlights([1,2,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+                                                          }
+                                    ],
+                                    ["Drummode"],["Reverse"],["Delete"]
+                                  ],
+                             "fx":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]],
+                          "shift":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]]
+                     },
+                     "sliders":{
+                        "pattern":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
+                           "step":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
+                          "voice":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
+                         "sample":[["Start"],["Start Fine"],["Length"],["Length Fine"],["Attack"],["Decay"],["Sustain"],["Release"]],
+                             "fx":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
+                          "shift":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]]  
+                     }
+            }
+
+
+
 
 function Init(){
 
     console.log("Hello ui");
+
+
 
     for (var i = 1; i <= slices; i++) {
         var slicebutton = document.createElement("button");
@@ -41,7 +76,8 @@ function Init(){
         })(slicebutton,i,drumsound)
 
     };
-
+    
+    Setpadlights();
 
     document.addEventListener("keydown", keydowntest);
     document.addEventListener("keyup",keyuptest);
@@ -104,7 +140,6 @@ function y_but_down(e){
             lastbeforeshift=e.target.id;
 
             console.info("y_but_down = ",e,e.target.id);
-
                 
         }
         e.target.className="buttonRed";
@@ -136,13 +171,18 @@ function x_but_down(e){
         // e.target.className="buttonRed";
         console.log("xbut", labeltext["buttons"][mode][e.target.id.slice(1)-1][0])
         if(labeltext["buttons"][mode][e.target.id.slice(1)-1][1]!=undefined){
-            console.log("xbut function to call", labeltext["buttons"][mode][e.target.id.slice(1)-1][1])
             labeltext["buttons"][mode][e.target.id.slice(1)-1][1];
+
+            //this triggers the function if there is one stored in the array.
+            if(labeltext["buttons"][mode][e.target.id.slice(1)-1][1]!=undefined){
+                // console.info("xbut function to call", labeltext["buttons"][mode][e.target.id.slice(1)-1][1])
+                labeltext["buttons"][mode][e.target.id.slice(1)-1][1]();
+            }
         }
 
         if(mode=="shift" || mode=="voice"){
            console.log("shifting",e.target.id.slice(1)); 
-           currenttrackediting=e.target.id.slice(1);
+           currenttrackselected=e.target.id.slice(1);
            set_xlabels(mode);
         }
     }
@@ -151,39 +191,18 @@ function x_but_down(e){
 
 function set_xlabels(_mode){
     mode=_mode;
-
-    labeltext = {   
-                        "buttons":{
-                            "pattern":[["New"],["Copy"],["Insert"],["Move"],["Chain"],["Complete"],[""],["Delete"]],
-                               "step":[["Quantalise +"],["Quantalise -"],["Length"],["Active Step"],[""],[""],[""],["Delete"]],
-                              "voice":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]],
-                             "sample":[["Slices +"],["Slices -"],["Import"],["Insert"],["Keymode","function(){console.log('hello')()}"],["Drummode"],["Reverse"],["Delete"]],
-                                 "fx":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]],
-                              "shift":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]]
-                         },
-                         "sliders":{
-                            "pattern":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
-                               "step":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
-                              "voice":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
-                             "sample":[["Start"],["Start Fine"],["Length"],["Length Fine"],["Attack"],["Decay"],["Sustain"],["Release"]],
-                                 "fx":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
-                              "shift":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]]  
-                         }
-                    }
-
-
+ 
     //reset all x button leds
     var x_buttons = document.getElementById("functions_x").getElementsByTagName("button");
     for (var x = 0; x < x_buttons.length; x++) {
         x_buttons[x].className="";
 
         if(_mode =="shift" || mode=="voice"){
-            if(x==currenttrackediting-1){
+            if(x==currenttrackselected-1){
                 x_buttons[x].className="buttonRed";                
             }                   
         }
     }
-
 
     var functions_x_labels = document.getElementById("functions_x").getElementsByTagName("label");
     for (var i = 0; i < functions_x_labels.length; i++) {
@@ -197,12 +216,45 @@ function set_xlabels(_mode){
         // console.info("functions_x_sliders",labeltext.sliders[mode][i][0]);
     }
 }
+    
+
+function Setpadlights(_padlights){
+    // var padlights = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    
+    if(_padlights){
+        padlights = _padlights;
+    }
+
+    var butts = document.getElementById("butts").getElementsByTagName("button");
+    for (var i = 0; i < butts.length; i++) {
+        switch(padlights[i]) {
+            case 1:
+                //red
+                butts[i].className="buttonRed";
+                break;
+            case 2:
+                //green
+                butts[i].className="buttonGreen";
+                break;
+            case 3:
+                //flash red
+                butts[i].className="buttonRedblink";
+                break;
+            case 4:
+                //flash green
+                butts[i].className="buttonGreenblink";
+                break;
+            default:
+                //off
+                butts[i].className="";
+        }
+    };
+}
 
 
 function Setpadplaymode(_playmode){
     playmode=_playmode;
     console.info("setpadplaymode ",playmode);
-
 }
 
 function pianokeydown(e){
@@ -243,18 +295,23 @@ function keyuptest(e){
     console.log("Keyup",e.which-48);
     // Stopsound(drumsound,e.which-48);
     Jackdaw.Realtimeinteraction.stopsound(drumsound,lastsliceplayed,rate,(e.which-48));
-
 }
 
 function Setbuttonstate(slice,pressedstate,keyid,colour){
     // console.log("setbuttonstate",slice)
-    var but = document.getElementById("slice"+slice);
+    // var but = document.getElementById("slice"+slice);
             if(pressedstate==true){
-
-                but.className=colour;
+                // but.className=colour;
+                if(colour=="buttonRed"){
+                    padlights[slice-1]=1;
+                }
+                if(colour=="buttonGreen"){
+                    padlights[slice-1]=2;
+                }
             }else{
-                but.className="";
+                padlights[slice-1]=0;
             }
+            Setpadlights()
 
     var key = document.getElementById("key_"+keyid);
            if(key!=null){
@@ -278,7 +335,8 @@ function Changeslider(which,value){
 return{
               init:Init,
     setbuttonstate:Setbuttonstate,
-      changeslider:Changeslider
+      changeslider:Changeslider,
+      setpadlights:Setpadlights
 };
 
 

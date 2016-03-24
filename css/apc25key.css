@@ -123,3 +123,22 @@
     .buttonGreen{
       background-color: #9FFD86;
     }
+
+    @-webkit-keyframes backgroundblinker { 
+    50% { background-color: transparent; } 
+    }
+    @keyframes backgroundblinker { 
+       50% { background-color: transparent; } 
+    }
+    
+    .buttonRedblink{
+      background-color: #FF8080;
+      animation: backgroundblinker .5s step-end infinite alternate;
+        -webkit-animation: backgroundblinker .5s step-end infinite alternate;
+    }
+
+    .buttonGreenblink{
+      background-color: #9FFD86;
+      animation: backgroundblinker .5s step-end infinite alternate;
+        -webkit-animation: backgroundblinker .5s step-end infinite alternate;
+    }
