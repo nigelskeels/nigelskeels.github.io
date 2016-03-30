@@ -69,7 +69,7 @@ function Playsound(which,slice,pitch,keyid){
         // console.log("Slicelength = ",slicelength)
 
         var starttime = (slicelength*(slice-1));
-        console.log("Currenttime = ",context.currentTime," starttime = ",starttime, " Endtime = ", starttime+slice+length)
+        console.info("Currenttime = ",context.currentTime," starttime = ",starttime, " Endtime = ", starttime+slice+length)
 
         sound[soundname+slice+"_"+pitch].connect(context.destination);                    
         sound[soundname+slice+"_"+pitch].loop = true;

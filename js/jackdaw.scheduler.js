@@ -82,21 +82,53 @@ function scheduleNote( beatNumber, time, totalsubbeat, totalbeatsplayed) {
             if(patt.pattern[p][0]==t+1){    
                if(patt.pattern[p][1]==Math.floor(beatNumber/ppb+1) && patt.pattern[p][2]==beatNumber%(ppb) ){
                     // console.log("p - ",beatNumber);
-                    var soundname = Object.keys(sounds)[t];
+                    // var soundname = Object.keys(sounds)[t];
+                    var soundname = trackvoices[t][0];
+                    var pitchmodeslice = trackvoices[t][1]
+                    
+                    if(pitchmodeslice==false){
+                    //drummodemode
+                    var pitch="1";
+                    var slice = patt.pattern[p][5];
+                    }
+                    else{
+                    //pitchmode
+
+                    var pitch=patt.pattern[p][5];
+
+                    var slice=pitchmodeslice;
+                    }
+
+
+
                     sound[soundname] = context.createBufferSource();
                     sound[soundname].buffer = bufferLoader.bufferList[soundname];
 
+
+                    if(pitch!="1"){
+                        var rate = (pitch *0.06)+0.24;
+                        sound[soundname].playbackRate.value=rate;
+                    }
                     sound[soundname].volumeNode = context.createGain();
                     sound[soundname].volumeNode.gain.value=patt.pattern[p][3];
                     sound[soundname].connect(sound[soundname].volumeNode);
                     sound[soundname].volumeNode.connect(context.destination);
 
 
-
+                    var amountslices=trackvoices[t][3]
+                    var slicelength=sound[soundname].buffer.duration/(amountslices);
+                    var starttime = (slicelength*(slice-1));
                     // sound[soundname].connect(context.destination);
+
                     
-                    sound[soundname].start( time );
-                    sound[soundname].stop( time + noteLength );
+                    // sound[soundname].start( time );
+                    // sound[soundname].stop( time + noteLength );
+                    console.info("trigger =",time,starttime,slicelength)
+                    sound[soundname].start(time,starttime,slicelength);
+                    sound[soundname].stop( time + slicelength );
+                    
+                     // sound[soundname].loopStart = starttime; 
+                     // sound[soundname].loopEnd = starttime+slicelength;
                 }                
             }
         }            

@@ -72,23 +72,27 @@ var sounds = {"git":"sounds/Guitar1.wav","drumkit3":"sounds/drumkit3.wav","amen"
 
 // trackvoices [ sound ,slicetoplay for pitch or false for drums, oneshot/repeat, total slices for this sound OR slicepoint times [[in,out],[in,out],[in,out]]
 var trackvoices =  [
-                     ["drumkit3", false,  true,  40],
-                     ["git",          1,  true,  40],
-                     ["git",         12,  true,  40],
-                     ["amen",         5, false,  [0,1.23] ]
+                     ["drumkit3",  false,  true,  40],
+                     ["git",          12,  true,  [0,1.23]],
+                     ["git",          6,  true, 80],
+                     ["amen",          1,  true, 40]
                    ];
 
 //in patterns the array values are [track,beat,subbeat,volume]
-//proposed new version  values are [track,beat,subbeat,volume,length,keypressvalue,samplemode]
+//proposed new version  values are [track,beat,subbeat,volume,length,keypressvalue]
 
 var patterns =  {
 
           "Another beat":{
                          "tracks":4,
-                          "beats":4,
+                          "beats":8,
                            "snap":96,
                         "pattern":[
-                                    [1,1,0,1],[2,2,0,0.5],[1,3,0,1],[2,4,0,0.5]
+                                    // [2,1,0,1],[2,2,0,0.5],[2,3,0,1],[2,4,0,0.5]
+                                    // [1,1,0,1,1,1]
+                                    [1,1,0,1,1,1],[1,2,0,1,1,3],[1,3,0,1,1,1],[1,4,0,0.5,1,3],
+                                    [1,5,0,1,1,1],[1,6,0,1,1,3],[1,7,0,1,1,1],[1,8,0,0.5,1,3],[1,7,120,1,0.4,8],[1,7,220,1,0.4,10],[1,8,80,1,1,24]
+                                    , [3,1,0,1,1,13] ,[3,2,0,1,1,13],[3,3,0,1,1,14],[3,4,0,0.5,1,16],[3,6,0,1,1,6],[3,6,100,1,1,6],[3,6,200,1,1,6],[3,6,300,1,1,12],[3,8,0,1,1,8]
                                   ]
                     },
 
@@ -106,7 +110,7 @@ var patterns =  {
           // "Blank":{
           //                "tracks":4,
           //                 "beats":1,
-          //                  "snap":384,
+          //                  "snap":384
           //               "pattern":[]
           //           }
 }
