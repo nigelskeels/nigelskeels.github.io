@@ -9,10 +9,42 @@ var padlights = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 var labeltext = {   
                     "buttons":{
-                        "pattern":[["New"],["Copy"],["Insert"],["Move"],["Chain"],["Complete"],[""],["Delete"]],
-                           "step":[["Quantalise +"],["Quantalise -"],["Length"],["Active Step"],[""],[""],[""],["Delete"]],
-                          "voice":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]],
+                        "pattern":[
+                                    function(){
+                                        console.info("pattern trigger something");
+                                    },
+                                    ["New"],["Copy"],["Insert"],["Move"],["Chain"],["Complete"],[""],["Delete"]
+                                  ],
+                           "step":[
+                                    function(){
+                                        console.info("step trigger something");
+                                    },
+                                    ["Quantalise +"],["Quantalise -"],["Length"],["Active Step"],[""],[""],[""],["Delete"]
+                                  ],
+                          "voice":[
+                                    function(){
+                                        console.info("Voice trigger something",bufferLoader.bufferList);
+                                        var lightsetting = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] 
+                                        
+                                        var count=0;
+                                        for(i in bufferLoader.bufferList){
+                                            if( bufferLoader.bufferList.hasOwnProperty( i ) ) {
+                                                console.info("Voice trigger buffy = ",i);
+                                                lightsetting[count]=1;
+                                                count++;
+                                            } 
+
+                                        }
+
+                                        Setpadlights(lightsetting)
+
+                                    },
+                                    ["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]
+                                  ],
                          "sample":[
+                                    function(){
+                                        console.info("sample trigger something");
+                                    },
                                     ["Slices +"],
                                     ["Slices -"],
                                     ["Import"],
@@ -24,8 +56,18 @@ var labeltext = {
                                     ],
                                     ["Drummode"],["Reverse"],["Delete"]
                                   ],
-                             "fx":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]],
-                          "shift":[["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]]
+                             "fx":[
+                                    function(){
+                                        console.info("fx trigger something");
+                                    },
+                                    ["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]
+                                  ],
+                          "shift":[
+                                    function(){
+                                        console.info("shift trigger something");
+                                    },
+                                    ["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]
+                                  ]
                      },
                      "sliders":{
                         "pattern":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]],
@@ -36,7 +78,6 @@ var labeltext = {
                           "shift":[["Vol 1"],["Vol 2"],["Vol 3"],["Vol 4"],["Vol 5"],["Vol 6"],["Vol 7"],["Vol 8"]]  
                      }
             }
-
 
 
 
@@ -56,21 +97,21 @@ function Init(){
         (function(_slicebutton,_i,_drumsound){
             
             _slicebutton.addEventListener("mousedown", function(){
-               Jackdaw.Realtimeinteraction.playsound(_drumsound,_i,1,13);
+                numberbuttonpressdown(_drumsound,_i);
             });
             
             _slicebutton.addEventListener("mouseup", function(){
-               Jackdaw.Realtimeinteraction.stopsound(_drumsound,_i,1,13);
+                numberbuttonpressup(_drumsound,_i);
             });
 
             _slicebutton.addEventListener("touchstart", function(e){
                e.preventDefault();
-               Jackdaw.Realtimeinteraction.playsound(_drumsound,_i,1,13);
+               numberbuttonpressdown(_drumsound,_i);
             });
 
             _slicebutton.addEventListener("touchend", function(e){
                e.preventDefault();
-               Jackdaw.Realtimeinteraction.stopsound(_drumsound,_i,1,13);
+               numberbuttonpressup(_drumsound,_i);
             });
             
         })(slicebutton,i,drumsound)
@@ -104,6 +145,36 @@ function Init(){
 }
 
 
+function numberbuttonpressdown(drumsound,i){
+   if(mode=="sample"){
+        Jackdaw.Realtimeinteraction.playsound(drumsound,i,1,13);
+   }
+   switch(mode) {
+        case "pattern":
+            break;
+        case "step":
+            break;
+        case "voice":
+            break;
+        case "sample":
+            Jackdaw.Realtimeinteraction.playsound(drumsound,i,1,13);
+            break;
+        case "fx":
+            break;
+        case "shift":
+            break;
+        default:
+            // default;
+    }
+}
+
+function numberbuttonpressup(drumsound,i){
+   if(mode=="sample"){
+        Jackdaw.Realtimeinteraction.stopsound(drumsound,i,1,13);
+   }
+}
+
+
 function transportbuts_mousedown(e){
     var functions_y_buttons = e.target.parentNode.getElementsByTagName("button");
     if(e.target.localName=="button"){
@@ -133,6 +204,9 @@ function y_but_down(e){
     var functions_y_buttons = e.target.parentNode.getElementsByTagName("button");
     if(e.target.localName=="button"){
         
+        labeltext.buttons[e.target.id][0]();
+
+
         if(e.target.id!="shift"){        
             for (var i = 0; i < functions_y_buttons.length; i++) {
                 functions_y_buttons[i].className="";
@@ -140,7 +214,6 @@ function y_but_down(e){
             lastbeforeshift=e.target.id;
 
             console.info("y_but_down = ",e,e.target.id);
-                
         }
         e.target.className="buttonRed";
         set_xlabels(e.target.id);
@@ -160,35 +233,6 @@ function y_but_up(e){
 }
 
 
-
-function x_but_down(e){
-    var functions_x_buttons = e.target.parentNode.getElementsByTagName("button");
-    if(e.target.localName=="button"){
-        // for (var i = 0; i < functions_x_buttons.length; i++) {
-        //     functions_x_buttons[i].className="";
-        // }
-        // console.info("x_but_down = ",e,e.target.id.slice(1));
-        // e.target.className="buttonRed";
-        console.log("xbut", labeltext["buttons"][mode][e.target.id.slice(1)-1][0])
-        if(labeltext["buttons"][mode][e.target.id.slice(1)-1][1]!=undefined){
-            labeltext["buttons"][mode][e.target.id.slice(1)-1][1];
-
-            //this triggers the function if there is one stored in the array.
-            if(labeltext["buttons"][mode][e.target.id.slice(1)-1][1]!=undefined){
-                // console.info("xbut function to call", labeltext["buttons"][mode][e.target.id.slice(1)-1][1])
-                labeltext["buttons"][mode][e.target.id.slice(1)-1][1]();
-            }
-        }
-
-        if(mode=="shift" || mode=="voice"){
-           console.log("shifting",e.target.id.slice(1)); 
-           currenttrackselected=e.target.id.slice(1);
-           set_xlabels(mode);
-        }
-    }
-}
-
-
 function set_xlabels(_mode){
     mode=_mode;
  
@@ -197,7 +241,7 @@ function set_xlabels(_mode){
     for (var x = 0; x < x_buttons.length; x++) {
         x_buttons[x].className="";
 
-        if(_mode =="shift" || mode=="voice"){
+        if(_mode =="shift" || mode=="voice" || mode=="fx" ){
             if(x==currenttrackselected-1){
                 x_buttons[x].className="buttonRed";                
             }                   
@@ -206,7 +250,7 @@ function set_xlabels(_mode){
 
     var functions_x_labels = document.getElementById("functions_x").getElementsByTagName("label");
     for (var i = 0; i < functions_x_labels.length; i++) {
-        functions_x_labels[i].innerHTML=labeltext.buttons[mode][i][0];
+        functions_x_labels[i].innerHTML=labeltext.buttons[mode][i+1][0];
         // console.info("set_xlabels",labeltext.buttons[mode][i][0]);
     }
 
@@ -216,11 +260,41 @@ function set_xlabels(_mode){
         // console.info("functions_x_sliders",labeltext.sliders[mode][i][0]);
     }
 }
+
+
+function x_but_down(e){
+    var functions_x_buttons = e.target.parentNode.getElementsByTagName("button");
+    if(e.target.localName=="button"){
+        // for (var i = 0; i < functions_x_buttons.length; i++) {
+        //     functions_x_buttons[i].className="";
+        // }
+        // console.info("x_but_down = ",e,e.target.id.slice(1));
+        // e.target.className="buttonRed";
+        console.log("xbut", labeltext["buttons"][mode][e.target.id.slice(1)][0])
+        if(labeltext["buttons"][mode][e.target.id.slice(1)][1]!=undefined){
+            labeltext["buttons"][mode][e.target.id.slice(1)][1];
+
+            //this triggers the function if there is one stored in the array.
+            if(labeltext["buttons"][mode][e.target.id.slice(1)][1]!=undefined){
+                // console.info("xbut function to call", labeltext["buttons"][mode][e.target.id.slice(1)-1][1])
+                labeltext["buttons"][mode][e.target.id.slice(1)][1]();
+            }
+        }
+
+        if(mode=="shift" || mode=="voice" || mode=="fx" ){
+           console.log("shifting",e.target.id.slice(1)); 
+           currenttrackselected=e.target.id.slice(1);
+           set_xlabels(mode);
+        }
+    }
+}
+
+
     
 
 function Setpadlights(_padlights){
     // var padlights = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-    
+
     if(_padlights){
         padlights = _padlights;
     }
@@ -267,7 +341,6 @@ function pianokeydown(e){
 
 function pianokeyup(e){
     var rate = (e.target.id.replace("key_","") *0.06)+0.24;
-    
     console.info("pianokeyup",e.target.id);
     Jackdaw.Realtimeinteraction.stopsound(drumsound,lastsliceplayed,rate,e.target.id.replace("key_",""))
 }
@@ -275,21 +348,17 @@ function pianokeyup(e){
 
 function keydowntest(e){
     if(keysdownarray.indexOf(e.which)==-1){
-
         var rate = ((e.which-48) *0.06)+0.24;
         // Playsound(drumsound,e.which-48);
         Jackdaw.Realtimeinteraction.playsound(drumsound,lastsliceplayed,rate,(e.which-48));
         keysdownarray.push(e.which)          
         console.log("Keydown",e.which-48,rate)
-        
     }
     // console.log("keysdownarray",keysdownarray)
 }
 
 function keyuptest(e){
-    
     var rate = ((e.which-48) *0.06)+0.24;
-
     var pos = keysdownarray.indexOf(e.which)
     keysdownarray.splice(pos,1);
     console.log("Keyup",e.which-48);
