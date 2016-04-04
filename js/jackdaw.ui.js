@@ -11,13 +11,29 @@ var labeltext = {
                     "buttons":{
                         "pattern":[
                                     function(){
+                                        //init pattern mode
                                         console.info("pattern trigger something");
+                                    },
+                                    function(which){
+                                        //pattern mode number key press down
+                                        console.info("pattern mode number button press down = ",which);
+                                    },
+                                    function(which){
+                                        //pattern mode number key press up 
+                                        console.info("pattern mode number button press up = ",which);
                                     },
                                     ["New"],["Copy"],["Insert"],["Move"],["Chain"],["Complete"],[""],["Delete"]
                                   ],
                            "step":[
                                     function(){
+                                        //init step mode
                                         console.info("step trigger something");
+                                    },
+                                    function(which){
+                                        console.info("step mode number button press down = ",which);
+                                    },
+                                    function(which){
+                                        console.info("step mode number button press up = ",which);
                                     },
                                     ["Quantalise +"],["Quantalise -"],["Length"],["Active Step"],[""],[""],[""],["Delete"]
                                   ],
@@ -39,11 +55,26 @@ var labeltext = {
                                         Setpadlights(lightsetting)
 
                                     },
+                                    function(which){
+                                        console.info("voice mode number button press down = ",which);
+                                    },
+                                    function(which){
+                                        console.info("voice mode number button press up = ",which);
+                                    },
                                     ["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]
                                   ],
                          "sample":[
                                     function(){
                                         console.info("sample trigger something");
+                                    },
+                                    function(which){
+                                        console.info("sample mode number button press down = ",which);
+                                        Jackdaw.Realtimeinteraction.playsound(drumsound,which,1,13);
+
+                                    },
+                                    function(which){
+                                        console.info("sample mode number button press up = ",which);
+                                        Jackdaw.Realtimeinteraction.stopsound(drumsound,which,1,13);
                                     },
                                     ["Slices +"],
                                     ["Slices -"],
@@ -60,11 +91,24 @@ var labeltext = {
                                     function(){
                                         console.info("fx trigger something");
                                     },
+                                    function(which){
+                                        console.info("fx mode number button press down = ",which);
+                                    },
+                                    function(which){
+                                        console.info("fx mode number button press up = ",which);
+                                    },
+
                                     ["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]
                                   ],
                           "shift":[
                                     function(){
                                         console.info("shift trigger something");
+                                    },
+                                    function(which){
+                                        console.info("shift mode number button press down = ",which);
+                                    },
+                                    function(which){
+                                        console.info("shift mode number button press up = ",which);
                                     },
                                     ["Track 1"],["Track 2"],["Track 3"],["Track 4"],["Track 5"],["Track 6"],["Track 7"],["Track 8"]
                                   ]
@@ -141,37 +185,15 @@ function Init(){
     set_xlabels("pattern");
 
     var transportcontrols = document.getElementById("transport").addEventListener("mousedown",transportbuts_mousedown)
-
 }
 
 
 function numberbuttonpressdown(drumsound,i){
-   if(mode=="sample"){
-        Jackdaw.Realtimeinteraction.playsound(drumsound,i,1,13);
-   }
-   switch(mode) {
-        case "pattern":
-            break;
-        case "step":
-            break;
-        case "voice":
-            break;
-        case "sample":
-            Jackdaw.Realtimeinteraction.playsound(drumsound,i,1,13);
-            break;
-        case "fx":
-            break;
-        case "shift":
-            break;
-        default:
-            // default;
-    }
+   labeltext.buttons[mode][1](i);
 }
 
 function numberbuttonpressup(drumsound,i){
-   if(mode=="sample"){
-        Jackdaw.Realtimeinteraction.stopsound(drumsound,i,1,13);
-   }
+   labeltext.buttons[mode][2](i);
 }
 
 
@@ -250,7 +272,7 @@ function set_xlabels(_mode){
 
     var functions_x_labels = document.getElementById("functions_x").getElementsByTagName("label");
     for (var i = 0; i < functions_x_labels.length; i++) {
-        functions_x_labels[i].innerHTML=labeltext.buttons[mode][i+1][0];
+        functions_x_labels[i].innerHTML=labeltext.buttons[mode][i+3][0];
         // console.info("set_xlabels",labeltext.buttons[mode][i][0]);
     }
 
@@ -270,14 +292,17 @@ function x_but_down(e){
         // }
         // console.info("x_but_down = ",e,e.target.id.slice(1));
         // e.target.className="buttonRed";
-        console.log("xbut", labeltext["buttons"][mode][e.target.id.slice(1)][0])
-        if(labeltext["buttons"][mode][e.target.id.slice(1)][1]!=undefined){
-            labeltext["buttons"][mode][e.target.id.slice(1)][1];
+        console.log("xbut test", e.target.id.slice(1) )
+        var which = parseInt(e.target.id.slice(1))+2;
+        console.log("xbut", labeltext["buttons"][mode][(which)][0])
+
+        if(labeltext["buttons"][mode][which][1]!=undefined){
+            labeltext["buttons"][mode][which][1];
 
             //this triggers the function if there is one stored in the array.
-            if(labeltext["buttons"][mode][e.target.id.slice(1)][1]!=undefined){
+            if(labeltext["buttons"][mode][which][1]!=undefined){
                 // console.info("xbut function to call", labeltext["buttons"][mode][e.target.id.slice(1)-1][1])
-                labeltext["buttons"][mode][e.target.id.slice(1)][1]();
+                labeltext["buttons"][mode][which][1]();
             }
         }
 
