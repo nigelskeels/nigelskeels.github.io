@@ -13,10 +13,31 @@ var labeltext = {
                                     function(){
                                         //init pattern mode
                                         console.info("pattern trigger something");
+
+                                        var lightsetting = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] 
+                                        var count=0;
+
+                                        console.info("what patterns",patterns,selectedpattern);
+                                        for(i in patterns){
+                                             if( patterns.hasOwnProperty( i ) ) {
+                                                console.info("patttty = ",i);
+                                                if(i==selectedpattern){
+                                                    lightsetting[count]=1;
+                                                }else{
+                                                    lightsetting[count]=2;
+                                                }
+                                                count++;
+                                             }
+                                        }
+                                        Setpadlights(lightsetting)
+
+
                                     },
                                     function(which){
                                         //pattern mode number key press down
                                         console.info("pattern mode number button press down = ",which);
+                                        selectedpattern=Object.keys(patterns)[which-1];
+                                        labeltext.buttons["pattern"][0]();  
                                     },
                                     function(which){
                                         //pattern mode number key press up 
@@ -45,7 +66,7 @@ var labeltext = {
                                         var count=0;
                                         for(i in bufferLoader.bufferList){
                                             if( bufferLoader.bufferList.hasOwnProperty( i ) ) {
-                                                console.info("Voice trigger buffy = ",i);
+                                                // console.info("Voice trigger buffy = ",i);
                                                 lightsetting[count]=1;
                                                 count++;
                                             } 
@@ -184,7 +205,10 @@ function Init(){
 
     set_xlabels("pattern");
 
-    var transportcontrols = document.getElementById("transport").addEventListener("mousedown",transportbuts_mousedown)
+    var transportcontrols = document.getElementById("transport").addEventListener("mousedown",transportbuts_mousedown);
+    
+    //now start in pattern mode
+    labeltext.buttons["pattern"][0]();  
 }
 
 
@@ -235,7 +259,7 @@ function y_but_down(e){
             }
             lastbeforeshift=e.target.id;
 
-            console.info("y_but_down = ",e,e.target.id);
+            // console.info("y_but_down = ",e,e.target.id);
         }
         e.target.className="buttonRed";
         set_xlabels(e.target.id);

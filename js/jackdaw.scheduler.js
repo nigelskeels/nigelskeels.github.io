@@ -30,6 +30,7 @@ var timerWorker = null;         // The Web Worker used to fire timer messages
 
 var loopcount = 0;
 var volumeNode;
+var secondsPerBeat;
 
 // First, let's shim the requestAnimationFrame API, with a setTimeout fallback
 window.requestAnimFrame = (function(){
@@ -45,13 +46,13 @@ window.requestAnimFrame = (function(){
 
 function nextNote() {
     // Advance current note and time by a 16th note...
-    var secondsPerBeat = 0.5 / tempo;    // Notice this picks up the CURRENT 
+    secondsPerBeat = 0.5 / tempo;    // Notice this picks up the CURRENT 
                                           // tempo value to calculate beat length.
     nextNoteTime += 0.25 * secondsPerBeat;    // Add beat length to last beat time
     current16thNoteTotal++;
     totalbeatsplayed = Math.floor(current16thNoteTotal/ppb)+1;
     current16thNote++;    // Advance the beat number, wrap to zero
-    if (current16thNote >= ppb*patt.beats) {
+    if (current16thNote >= ppb*patterns[selectedpattern].beats) {
         current16thNote = 0;
     }
 }
@@ -60,8 +61,8 @@ function scheduleNote( beatNumber, time, totalsubbeat, totalbeatsplayed) {
     // console.log("scheduleNote", beatNumber, time);
     // push the note on the queue, even if we're not playing.
     // 
-    if( (beatNumber)%(patt.snap)==0 ){
-      // console.log("beatNumber", (beatNumber+1), (beatNumber+1)%(patt.snap) );
+    if( (beatNumber)%(patterns[selectedpattern].snap)==0 ){
+      // console.log("beatNumber", (beatNumber+1), (beatNumber+1)%(patterns[selectedpattern].snap) );
       notesInQueue.push( { note: beatNumber, time: time, subbeattotal:totalsubbeat, totalbeatsplayed:totalbeatsplayed } );
 
       if(songplay==true){
@@ -77,28 +78,27 @@ function scheduleNote( beatNumber, time, totalsubbeat, totalbeatsplayed) {
 
 
 
-    for (var p = 0; p < patt.pattern.length; p++) {
-        for (var t = 0; t < patt.tracks; t++) {
-            if(patt.pattern[p][0]==t+1){    
-               if(patt.pattern[p][1]==Math.floor(beatNumber/ppb+1) && patt.pattern[p][2]==beatNumber%(ppb) ){
+    for (var p = 0; p < patterns[selectedpattern].pattern.length; p++) {
+        for (var t = 0; t < patterns[selectedpattern].tracks; t++) {
+            if(patterns[selectedpattern].pattern[p][0]==t+1){    
+               if(patterns[selectedpattern].pattern[p][1]==Math.floor(beatNumber/ppb+1) && patterns[selectedpattern].pattern[p][2]==beatNumber%(ppb) ){
                     // console.log("p - ",beatNumber);
                     // var soundname = Object.keys(sounds)[t];
                     var soundname = trackvoices[t][0];
-                    var pitchmodeslice = trackvoices[t][1]
+                    var pitchmodeslice = trackvoices[t][1];
+
+
                     
                     if(pitchmodeslice==false){
-                    //drummodemode
-                    var pitch="1";
-                    var slice = patt.pattern[p][5];
+                        //drummodemode
+                        var pitch="1";
+                        var slice = patterns[selectedpattern].pattern[p][5];
                     }
                     else{
-                    //pitchmode
-
-                    var pitch=patt.pattern[p][5];
-
-                    var slice=pitchmodeslice;
+                        //pitchmode
+                        var pitch=patterns[selectedpattern].pattern[p][5];
+                        var slice=pitchmodeslice;
                     }
-
 
 
                     sound[soundname] = context.createBufferSource();
@@ -110,7 +110,7 @@ function scheduleNote( beatNumber, time, totalsubbeat, totalbeatsplayed) {
                         sound[soundname].playbackRate.value=rate;
                     }
                     sound[soundname].volumeNode = context.createGain();
-                    sound[soundname].volumeNode.gain.value=patt.pattern[p][3];
+                    sound[soundname].volumeNode.gain.value=patterns[selectedpattern].pattern[p][3];
                     sound[soundname].connect(sound[soundname].volumeNode);
                     sound[soundname].volumeNode.connect(context.destination);
 
@@ -118,17 +118,26 @@ function scheduleNote( beatNumber, time, totalsubbeat, totalbeatsplayed) {
                     var amountslices=trackvoices[t][3]
                     var slicelength=sound[soundname].buffer.duration/(amountslices);
                     var starttime = (slicelength*(slice-1));
-                    // sound[soundname].connect(context.destination);
 
-                    
-                    // sound[soundname].start( time );
-                    // sound[soundname].stop( time + noteLength );
+            console.info("oneshot ",trackvoices[t][2], " note length",patterns[selectedpattern].pattern[p][4]);        
                     console.info("trigger =",time,starttime,slicelength)
-                    sound[soundname].start(time,starttime,slicelength);
-                    sound[soundname].stop( time + slicelength );
                     
-                     // sound[soundname].loopStart = starttime; 
-                     // sound[soundname].loopEnd = starttime+slicelength;
+                    if(trackvoices[t][2]==true){
+                        //oneshot
+                        sound[soundname].start(time,starttime,slicelength);
+                        sound[soundname].stop( time + slicelength );
+                    }else{
+                        //looping
+                        sound[soundname].loop = true;
+                        sound[soundname].start(time,starttime);
+                        sound[soundname].loopStart = starttime; 
+                        sound[soundname].loopEnd = starttime+slicelength;
+                        // sound[soundname].stop( time + patterns[selectedpattern].pattern[p][4] );
+                        //the length needs to be calculated beats and subbeat relative to tempo here.
+                        // sound[soundname].stop( time + (slicelength*2) );
+                        sound[soundname].stop( time + (slicelength*(patterns[selectedpattern].pattern[p][4])) );
+                    }
+                    
                 }                
             }
         }            
