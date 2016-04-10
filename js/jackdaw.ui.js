@@ -87,6 +87,9 @@ var labeltext = {
                          "sample":[
                                     function(){
                                         console.info("sample trigger something");
+                                        //get at the current track
+                                        //look at trackvoices
+                                        //set keymode/
                                     },
                                     function(which){
                                         console.info("sample mode number button press down = ",which);
@@ -287,10 +290,24 @@ function set_xlabels(_mode){
     for (var x = 0; x < x_buttons.length; x++) {
         x_buttons[x].className="";
 
-        if(_mode =="shift" || mode=="voice" || mode=="fx" ){
+        if(mode =="shift" || mode=="voice" || mode=="fx" ){
             if(x==currenttrackselected-1){
                 x_buttons[x].className="buttonRed";                
             }                   
+        }
+
+        //should this be in the other place??
+        if(mode=="sample"){
+            if(trackvoices[currenttrackselected-1][1]==false){
+                //drummode
+                x_buttons[4].className="buttonRed";                
+
+            }
+            if(trackvoices[currenttrackselected-1][2]==true){
+                //oneshot
+                x_buttons[5].className="buttonRed";                
+
+            }
         }
     }
 
