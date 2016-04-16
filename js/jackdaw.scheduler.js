@@ -230,7 +230,7 @@ function draw() {
         // var x = document.getElementsByTagName("STYLE")[0];
         // x.innerHTML=".beatnum"+adjustedNote+"{ outline: solid #999999 3px!important;  }";
 
-        // console.log("beatNumber", adjustedNote );
+        console.log("beatNumber", totalbeatsplayednow,totalsubdivsplayed+1,loopcount );
         if(songplay==true){
             Jackdaw.SongGrid.update(totalbeatsplayednow,totalsubdivsplayed+1,loopcount)         
         }  

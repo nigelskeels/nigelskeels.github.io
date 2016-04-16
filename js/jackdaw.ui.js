@@ -49,6 +49,55 @@ var labeltext = {
                                     function(){
                                         //init step mode
                                         console.info("step trigger something");
+
+                                        //get the pattern, check the beats and subbeats
+                                        // console.info("selectedpattern =",selectedpattern, "step beats = ",ss," sub beats = ",ss);
+                                        // console.info("selectedpattern =",selectedpattern,patterns[selectedpattern].beats,patterns[selectedpattern].snap);
+
+                                        var lightsetting = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] 
+
+
+                                        // //loop through patterns[selectedpattern].pattern find tracks that are currenttrackselected
+                                        for (var p = 0; p < patterns[selectedpattern].pattern.length; p++) {
+                                            if(patterns[selectedpattern].pattern[p][0]==currenttrackselected){
+
+                                                // console.info("show beats in track",currenttrackselected,"  = ",patterns[selectedpattern].pattern[p])
+
+                                         
+                                                var count = 0;
+                                                for (var i = 0; i < patterns[selectedpattern].beats; i++) {
+                                                    for (var s = 0; s < ppb; s++) {
+                                                        if(s %patterns[selectedpattern].snap === 0){
+                                                            
+                                                            if(s==0){
+                                                             
+                                                                lightsetting[count]=1;
+
+                                                                // console.info("test ",patterns[selectedpattern].pattern[p],i+1)
+                                                                // if(patterns[selectedpattern].pattern[p][1]==i+1){
+                                                                //     lightsetting[count]=3;
+                                                                // }else{
+                                                                //     lightsetting[count]=1;
+                                                                // }
+                                                            }
+                                                            
+                                                            else{                                                    
+                                                                lightsetting[count]=2;
+                                                            }
+                                                            count++;
+                                                            console.info("beat ui ",i,s," count = ",count)
+                                                        }
+                                                    }
+                                                };
+                                                Setpadlights(lightsetting)
+
+                                            }
+                                        };
+
+
+
+
+
                                     },
                                     function(which){
                                         console.info("step mode number button press down = ",which);
