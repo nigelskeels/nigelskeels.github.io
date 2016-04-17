@@ -32,6 +32,8 @@ var loopcount = 0;
 var volumeNode;
 var secondsPerBeat;
 
+var beatpos=0;
+
 // First, let's shim the requestAnimationFrame API, with a setTimeout fallback
 window.requestAnimFrame = (function(){
     return  window.requestAnimationFrame ||
@@ -224,21 +226,29 @@ function draw() {
         notesInQueue.splice(0,1);   // remove note from queue
     }
 
+
+
     
     if(last16thNoteDrawn != currentNote){
         var adjustedNote = currentNote+1;            
         // var x = document.getElementsByTagName("STYLE")[0];
         // x.innerHTML=".beatnum"+adjustedNote+"{ outline: solid #999999 3px!important;  }";
-
-        console.log("beatNumber", totalbeatsplayednow,totalsubdivsplayed+1,loopcount );
+    
+        // console.log("beatNumber", totalbeatsplayednow,totalsubdivsplayed+1,loopcount );
         if(songplay==true){
             Jackdaw.SongGrid.update(totalbeatsplayednow,totalsubdivsplayed+1,loopcount)         
-        }  
+        }
+        
+        if(currentNote==0){
+            beatpos=0
+        }else{
+            beatpos++;
+        }
+        Jackdaw.Ui.beatpositionindicator(beatpos)  
 
         if(adjustedNote==1){
             loopcount++;
         }
-
     }
 
     requestAnimFrame(draw);

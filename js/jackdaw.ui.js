@@ -6,6 +6,8 @@ var keysdownarray = [];
 var mode = "pattern";
 var lastbeforeshift = "pattern";
 var padlights = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+var lightsetting = [];
+var stepassignment = [];
 
 var labeltext = {   
                     "buttons":{
@@ -14,7 +16,7 @@ var labeltext = {
                                         //init pattern mode
                                         console.info("pattern trigger something");
 
-                                        var lightsetting = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] 
+                                        lightsetting = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] 
                                         var count=0;
 
                                         console.info("what patterns",patterns,selectedpattern);
@@ -54,10 +56,34 @@ var labeltext = {
                                         // console.info("selectedpattern =",selectedpattern, "step beats = ",ss," sub beats = ",ss);
                                         // console.info("selectedpattern =",selectedpattern,patterns[selectedpattern].beats,patterns[selectedpattern].snap);
 
-                                        var lightsetting = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] 
+                                        lightsetting = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+                                        stepassignment = [];
+                                       
+                                        for (var p = 0; p < patterns[selectedpattern].pattern.length; p++) {
+                                            var count = 0;
+                                            for (var i = 0; i < patterns[selectedpattern].beats; i++) {
+                                                for (var s = 0; s < ppb; s++) {
+                                                    if(s %patterns[selectedpattern].snap === 0){
+                                                        
+                                                        if(s==0){
+                                                            lightsetting[count]=1;
+                                                        }
+                                                        
+                                                        else{                                                    
+                                                            lightsetting[count]=2;
+                                                        }
+                                                        count++;
+                                                        stepassignment[count]=[i+1,s];
+                                                        console.info("test beat ui ",i,s," count = ",count)
+                                                    }
+                                                }
+                                            };
+                                        };
 
 
-                                        // //loop through patterns[selectedpattern].pattern find tracks that are currenttrackselected
+
+
+                                        //loop through patterns[selectedpattern].pattern find tracks that are currenttrackselected
                                         for (var p = 0; p < patterns[selectedpattern].pattern.length; p++) {
                                             if(patterns[selectedpattern].pattern[p][0]==currenttrackselected){
 
@@ -71,36 +97,39 @@ var labeltext = {
                                                             
                                                             if(s==0){
                                                              
-                                                                lightsetting[count]=1;
+                                                                // lightsetting[count]=1;
 
                                                                 // console.info("test ",patterns[selectedpattern].pattern[p],i+1)
-                                                                // if(patterns[selectedpattern].pattern[p][1]==i+1){
-                                                                //     lightsetting[count]=3;
-                                                                // }else{
-                                                                //     lightsetting[count]=1;
-                                                                // }
+                                                                if(patterns[selectedpattern].pattern[p][1]==i+1 && patterns[selectedpattern].pattern[p][2]==0){
+                                                                    lightsetting[count]=3;
+                                                                }
+                                                            }
+                                                            else{
+                                                                if(patterns[selectedpattern].pattern[p][1]==i+1 && patterns[selectedpattern].pattern[p][2]==s){
+                                                                    lightsetting[count]=4;
+                                                                }
+
+                                                                // console.info("beat ui ",i,s," count = ",count)
                                                             }
                                                             
-                                                            else{                                                    
-                                                                lightsetting[count]=2;
-                                                            }
                                                             count++;
-                                                            console.info("beat ui ",i,s," count = ",count)
                                                         }
                                                     }
                                                 };
-                                                Setpadlights(lightsetting)
 
                                             }
                                         };
+                                        
+                                        Setpadlights(lightsetting)
+                                        console.info("stepassignment",stepassignment);
 
-
+//384,192,96,48,24
 
 
 
                                     },
                                     function(which){
-                                        console.info("step mode number button press down = ",which);
+                                        console.info("step mode number button press down = ",which,stepassignment[which]);
                                     },
                                     function(which){
                                         console.info("step mode number button press up = ",which);
@@ -110,7 +139,7 @@ var labeltext = {
                           "voice":[
                                     function(){
                                         console.info("Voice trigger something",bufferLoader.bufferList);
-                                        var lightsetting = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] 
+                                        lightsetting = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] 
                                         
                                         var count=0;
                                         for(i in bufferLoader.bufferList){
@@ -513,14 +542,23 @@ function Changeslider(which,value){
     console.info("Change slider = ",which,value)
 }
 
-
+function Beatpositionindicator(beatpos){
+    // console.info("pos =",beatpos);
+    if(mode=="step"){
+        Setpadlights(lightsetting);
+        var currentbeatlights = lightsetting.slice();
+        currentbeatlights[beatpos]=0;
+        Setpadlights(currentbeatlights);
+    }
+}
 
 
 return{
-              init:Init,
-    setbuttonstate:Setbuttonstate,
-      changeslider:Changeslider,
-      setpadlights:Setpadlights
+                     init:Init,
+           setbuttonstate:Setbuttonstate,
+             changeslider:Changeslider,
+             setpadlights:Setpadlights,
+    beatpositionindicator:Beatpositionindicator
 };
 
 
