@@ -70,11 +70,11 @@ var labeltext = {
                                                         }
                                                         
                                                         else{                                                    
-                                                            lightsetting[count]=2;
+                                                            lightsetting[count]=0;
                                                         }
                                                         count++;
                                                         stepassignment[count]=[i+1,s];
-                                                        console.info("test beat ui ",i,s," count = ",count)
+                                                        // console.info("test beat ui ",i,s," count = ",count)
                                                     }
                                                 }
                                             };
@@ -101,12 +101,12 @@ var labeltext = {
 
                                                                 // console.info("test ",patterns[selectedpattern].pattern[p],i+1)
                                                                 if(patterns[selectedpattern].pattern[p][1]==i+1 && patterns[selectedpattern].pattern[p][2]==0){
-                                                                    lightsetting[count]=3;
+                                                                    lightsetting[count]=2;
                                                                 }
                                                             }
                                                             else{
                                                                 if(patterns[selectedpattern].pattern[p][1]==i+1 && patterns[selectedpattern].pattern[p][2]==s){
-                                                                    lightsetting[count]=4;
+                                                                    lightsetting[count]=2;
                                                                 }
 
                                                                 // console.info("beat ui ",i,s," count = ",count)
@@ -121,7 +121,7 @@ var labeltext = {
                                         };
                                         
                                         Setpadlights(lightsetting)
-                                        console.info("stepassignment",stepassignment);
+                                        // console.info("stepassignment",stepassignment);
 
 //384,192,96,48,24
 
@@ -130,6 +130,32 @@ var labeltext = {
                                     },
                                     function(which){
                                         console.info("step mode number button press down = ",which,stepassignment[which]);
+
+                                        function checkselected(){
+                                            for (var p = 0; p < patterns[selectedpattern].pattern.length; p++) {
+                                               if(patterns[selectedpattern].pattern[p][0]==currenttrackselected){
+                                                 if(patterns[selectedpattern].pattern[p][1]==stepassignment[which][0] && patterns[selectedpattern].pattern[p][2]==stepassignment[which][1]){
+                                                    return p;
+                                                 }
+                                               }
+                                            }
+                                            return "false";
+                                        }
+                                        
+                                        var check = checkselected();
+
+                                        if(check=="false"){
+                                          console.log("Beat not selected");
+                                          patterns[selectedpattern].pattern.push([currenttrackselected,stepassignment[which][0],stepassignment[which][1],1,1,1])
+                                        }
+                                        else{
+                                          console.log("Beat is selected");
+                                          patterns[selectedpattern].pattern.splice(check,1)
+                                        }
+
+                                        //now reload the lights
+                                        labeltext.buttons["step"][0]();
+
                                     },
                                     function(which){
                                         console.info("step mode number button press up = ",which);
@@ -547,7 +573,7 @@ function Beatpositionindicator(beatpos){
     if(mode=="step"){
         Setpadlights(lightsetting);
         var currentbeatlights = lightsetting.slice();
-        currentbeatlights[beatpos]=0;
+        currentbeatlights[beatpos]=1;
         Setpadlights(currentbeatlights);
     }
 }
