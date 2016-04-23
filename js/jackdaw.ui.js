@@ -197,12 +197,12 @@ var labeltext = {
                                     },
                                     function(which){
                                         console.info("sample mode number button press down = ",which);
-                                        Jackdaw.Realtimeinteraction.playsound(drumsound,which,1,13);
+                                        Jackdaw.Realtimeinteraction.playsound(which,1,13);
 
                                     },
                                     function(which){
                                         console.info("sample mode number button press up = ",which);
-                                        Jackdaw.Realtimeinteraction.stopsound(drumsound,which,1,13);
+                                        Jackdaw.Realtimeinteraction.stopsound(which,1,13);
                                     },
                                     ["Slices +"],
                                     ["Slices -"],
@@ -506,13 +506,13 @@ function pianokeydown(e){
 
     console.info("pianokeydown",e.target.id, rate);
 
-    Jackdaw.Realtimeinteraction.playsound(drumsound,lastsliceplayed,rate,e.target.id.replace("key_",""))
+    Jackdaw.Realtimeinteraction.playsound(false,rate,e.target.id.replace("key_",""))
 }
 
 function pianokeyup(e){
     var rate = (e.target.id.replace("key_","") *0.06)+0.24;
     console.info("pianokeyup",e.target.id);
-    Jackdaw.Realtimeinteraction.stopsound(drumsound,lastsliceplayed,rate,e.target.id.replace("key_",""))
+    Jackdaw.Realtimeinteraction.stopsound(false,rate,e.target.id.replace("key_",""))
 }
 
 
@@ -520,7 +520,7 @@ function keydowntest(e){
     if(keysdownarray.indexOf(e.which)==-1){
         var rate = ((e.which-48) *0.06)+0.24;
         // Playsound(drumsound,e.which-48);
-        Jackdaw.Realtimeinteraction.playsound(drumsound,lastsliceplayed,rate,(e.which-48));
+        Jackdaw.Realtimeinteraction.playsound(rate,(e.which-48));
         keysdownarray.push(e.which)          
         console.log("Keydown",e.which-48,rate)
     }
@@ -533,7 +533,7 @@ function keyuptest(e){
     keysdownarray.splice(pos,1);
     console.log("Keyup",e.which-48);
     // Stopsound(drumsound,e.which-48);
-    Jackdaw.Realtimeinteraction.stopsound(drumsound,lastsliceplayed,rate,(e.which-48));
+    Jackdaw.Realtimeinteraction.stopsound(rate,(e.which-48));
 }
 
 function Setbuttonstate(slice,pressedstate,keyid,colour){

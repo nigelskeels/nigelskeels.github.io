@@ -40,17 +40,37 @@ function Setpadplaymode(_playmode){
 }
 
 
-function Playsound(which,slice,pitch,keyid){
+function Playsound(slice,pitch,keyid){
 
-        var which = drumsound;
+        // var which = trackvoices[currenttrackselected-1][0];
+
         var pitch = pitch || "1";
 
-        console.log("play sound ",which,slice,pitch);
+        if(slice==false){
+            if(trackvoices[currenttrackselected-1][1]!=false){
+                slice=trackvoices[currenttrackselected-1][1];
+            }
+            else{
+                slice=keyid;
+                pitch=1;
+            } 
+        }
 
+
+    
         Jackdaw.Ui.setbuttonstate(slice,true,keyid,"buttonRed")
-        lastsliceplayed=slice;
+
+
+    
+
+        console.log("play sound ",trackvoices[currenttrackselected-1][1], slice,pitch,keyid);
+        // console.log("play sound ",slice,pitch);
+
+
         
-        var soundname = which;
+
+
+        var soundname = trackvoices[currenttrackselected-1][0];;
         if(sound[soundname+slice+"_"+pitch]!=undefined){
             sound[soundname+slice+"_"+pitch].stop();
         }
@@ -90,15 +110,27 @@ function Playsound(which,slice,pitch,keyid){
         console.log("sound",sound);
 }
 
-function Stopsound(which,slice,pitch,keyid){
+function Stopsound(slice,pitch,keyid){
     
-    var which = drumsound;
     var pitch = pitch || "1";
+    
+    if(slice==false){
+        if(trackvoices[currenttrackselected-1][1]!=false){
+            slice=trackvoices[currenttrackselected-1][1];
+        }
+        else{
+            slice=keyid;
+            pitch=1;
+        } 
+    }
 
     Jackdaw.Ui.setbuttonstate(slice,false,keyid,"buttonRed")
+    
+
+    
 
     if(playmode=="noteon"){
-        var soundname = which;    
+        var soundname = trackvoices[currenttrackselected-1][0];    
         if(sound[soundname+slice+"_"+pitch]!=undefined){
                 sound[soundname+slice+"_"+pitch].stop();
                 delete sound[soundname+slice+"_"+pitch];
