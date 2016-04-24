@@ -1,5 +1,5 @@
 var noteResolution = 0;     // 0 == 16th, 1 == 8th, 2 == quarter note
-var tempo = 120.0;          // tempo (in beats per minute)
+var tempo = 60.0;          // tempo (in beats per minute)
 var ppb = 384;
 
 Jackdaw.Scheduler = ( function( window, undefined ) {

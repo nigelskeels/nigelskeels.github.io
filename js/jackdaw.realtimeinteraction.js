@@ -46,25 +46,27 @@ function Playsound(slice,pitch,keyid){
 
         var pitch = pitch || "1";
 
-        if(slice==false){
+        // if(slice==false){
             if(trackvoices[currenttrackselected-1][1]!=false){
                 slice=trackvoices[currenttrackselected-1][1];
             }
             else{
-                slice=keyid;
+                if(slice==false){
+                    slice=keyid;
+                }else{
+                    keyid=slice;
+                }
                 pitch=1;
             } 
-        }
+        // }
+
+            Jackdaw.Ui.setbuttonstate(slice,true,keyid,"buttonRed")
 
 
     
-        Jackdaw.Ui.setbuttonstate(slice,true,keyid,"buttonRed")
 
-
-    
-
-        console.log("play sound ",trackvoices[currenttrackselected-1][1], slice,pitch,keyid);
-        // console.log("play sound ",slice,pitch);
+        // console.log("play sound ",trackvoices[currenttrackselected-1][1], slice,pitch,keyid);
+        console.log("play sound ",slice,keyid);
 
 
         
@@ -94,6 +96,7 @@ function Playsound(slice,pitch,keyid){
         sound[soundname+slice+"_"+pitch].connect(context.destination);                    
         sound[soundname+slice+"_"+pitch].loop = true;
         if(playmode=="noteon"){
+       //  if(trackvoices[currenttrackselected-1][2]==false){
             sound[soundname+slice+"_"+pitch].start(0,starttime);
             sound[soundname+slice+"_"+pitch].loopStart = starttime;
             sound[soundname+slice+"_"+pitch].loopEnd = starttime+slicelength;
@@ -114,22 +117,25 @@ function Stopsound(slice,pitch,keyid){
     
     var pitch = pitch || "1";
     
-    if(slice==false){
         if(trackvoices[currenttrackselected-1][1]!=false){
             slice=trackvoices[currenttrackselected-1][1];
         }
         else{
-            slice=keyid;
+            if(slice==false){
+                slice=keyid;
+            }else{
+                keyid=slice;
+            }
             pitch=1;
         } 
-    }
 
     Jackdaw.Ui.setbuttonstate(slice,false,keyid,"buttonRed")
     
 
     
 
-    if(playmode=="noteon"){
+     if(playmode=="noteon"){
+    //if(trackvoices[currenttrackselected-1][2]==false){
         var soundname = trackvoices[currenttrackselected-1][0];    
         if(sound[soundname+slice+"_"+pitch]!=undefined){
                 sound[soundname+slice+"_"+pitch].stop();

@@ -8,6 +8,7 @@ var lastbeforeshift = "pattern";
 var padlights = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 var lightsetting = [];
 var stepassignment = [];
+var laststepselected=1;
 
 var labeltext = {   
                     "buttons":{
@@ -130,6 +131,7 @@ var labeltext = {
                                     },
                                     function(which){
                                         console.info("step mode number button press down = ",which,stepassignment[which]);
+                                        laststepselected=which;
 
                                         function checkselected(){
                                             for (var p = 0; p < patterns[selectedpattern].pattern.length; p++) {
@@ -146,7 +148,7 @@ var labeltext = {
 
                                         if(check=="false"){
                                           console.log("Beat not selected");
-                                          patterns[selectedpattern].pattern.push([currenttrackselected,stepassignment[which][0],stepassignment[which][1],1,1,1])
+                                          // patterns[selectedpattern].pattern.push([currenttrackselected,stepassignment[which][0],stepassignment[which][1],1,1,1])
                                         }
                                         else{
                                           console.log("Beat is selected");
@@ -197,6 +199,9 @@ var labeltext = {
                                     },
                                     function(which){
                                         console.info("sample mode number button press down = ",which);
+                                        //if not in drum mode
+                                        trackvoices[currenttrackselected-1][1]=which;
+
                                         Jackdaw.Realtimeinteraction.playsound(which,1,13);
 
                                     },
@@ -208,12 +213,24 @@ var labeltext = {
                                     ["Slices -"],
                                     ["Import"],
                                     ["Insert"],
-                                    ["Keymode", function(){ 
+                                    ["Drums", function(){ 
                                                               console.log('hello keymode');
-                                                              Setpadlights([1,2,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+                                                              trackvoices[currenttrackselected-1][1]=false;
+                                                              set_xlabels(mode)
+                                                              // Setpadlights([1,2,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
                                                           }
                                     ],
-                                    ["Drummode"],["Reverse"],["Delete"]
+                                    ["Loop", function(){
+                                                            console.info("Hello loopmode");
+                                                            if(trackvoices[currenttrackselected-1][2]==true){
+                                                                trackvoices[currenttrackselected-1][2]=false;
+                                                            }else{
+                                                                trackvoices[currenttrackselected-1][2]=true;
+                                                            }
+                                                            set_xlabels(mode);
+                                                        }
+
+                                    ],["Reverse"],["Delete"]
                                   ],
                              "fx":[
                                     function(){
@@ -503,8 +520,19 @@ function Setpadplaymode(_playmode){
 
 function pianokeydown(e){
     var rate = (e.target.id.replace("key_","") *0.06)+0.24;
+    var keyid = e.target.id.replace("key_","");
 
     console.info("pianokeydown",e.target.id, rate);
+     
+    if(mode=="step"){
+
+        console.info("piano down = ",e.target.id," at step = ",laststepselected);
+        //next bit is wrong
+        patterns[selectedpattern].pattern.push([currenttrackselected,stepassignment[laststepselected][0],stepassignment[laststepselected][1],1,1,keyid])
+        // patterns[selectedpattern].pattern.push([currenttrackselected,stepassignment[which][0],stepassignment[which][1],1,1,1])
+
+
+    } 
 
     Jackdaw.Realtimeinteraction.playsound(false,rate,e.target.id.replace("key_",""))
 }
@@ -553,6 +581,7 @@ function Setbuttonstate(slice,pressedstate,keyid,colour){
             Setpadlights()
 
     var key = document.getElementById("key_"+keyid);
+
            if(key!=null){
                 console.info("keyid",keyid,key)
                 if(pressedstate==true){
