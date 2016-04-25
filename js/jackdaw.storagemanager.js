@@ -72,8 +72,9 @@ var sounds = {"git":"sounds/Guitar1.wav","drumkit3":"sounds/drumkit3.wav","amen"
 // trackvoices [ sound ,slicetoplay for pitch or false for drums, oneshot/repeat, total slices for this sound OR slicepoint times [[in,out],[in,out],[in,out]]
 var trackvoices =  [
                      ["drumkit3",  false,  true,  40],
-                     ["git",          12,  true,  [0,1.23]],
-                     ["git",          50,  false, 200],
+                     ["git",          12,  true,  30],
+                     // ["git",          12,  true,  [ 2, 2.5] ],
+                     ["git",          50,  false, 20],
                      ["amen",          1,  true, 40]
                    ];
 

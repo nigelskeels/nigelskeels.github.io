@@ -1,9 +1,8 @@
 var sound = {};
-var slices = 40;
+// var slices = 40;
 var lastsliceplayed=1;
 var drumsound="drumkit3";
 var bufferLoader;
-var playmode="noteon";
 
 
 Jackdaw.Realtimeinteraction = ( function() {
@@ -33,20 +32,13 @@ function Init(){
 
 }
 
-function Setpadplaymode(_playmode){
-    playmode=_playmode;
-    console.info("setpadplaymode ",playmode);
-
-}
 
 
 function Playsound(slice,pitch,keyid){
 
-        // var which = trackvoices[currenttrackselected-1][0];
 
         var pitch = pitch || "1";
 
-        // if(slice==false){
             if(trackvoices[currenttrackselected-1][1]!=false){
                 slice=trackvoices[currenttrackselected-1][1];
             }
@@ -58,7 +50,6 @@ function Playsound(slice,pitch,keyid){
                 }
                 pitch=1;
             } 
-        // }
 
             Jackdaw.Ui.setbuttonstate(slice,true,keyid,"buttonRed")
 
@@ -86,6 +77,7 @@ function Playsound(slice,pitch,keyid){
         if(pitch!=undefined){
              sound[soundname+slice+"_"+pitch].playbackRate.value=pitch;
         }
+         var slices = trackvoices[currenttrackselected-1][3];
          var slicelength=sound[soundname+slice+"_"+pitch].buffer.duration/slices;
 
         // console.log("Slicelength = ",slicelength)
@@ -95,8 +87,8 @@ function Playsound(slice,pitch,keyid){
 
         sound[soundname+slice+"_"+pitch].connect(context.destination);                    
         sound[soundname+slice+"_"+pitch].loop = true;
-        if(playmode=="noteon"){
-       //  if(trackvoices[currenttrackselected-1][2]==false){
+        //if(playmode=="noteon"){
+        if(trackvoices[currenttrackselected-1][2]==false){
             sound[soundname+slice+"_"+pitch].start(0,starttime);
             sound[soundname+slice+"_"+pitch].loopStart = starttime;
             sound[soundname+slice+"_"+pitch].loopEnd = starttime+slicelength;
@@ -134,8 +126,7 @@ function Stopsound(slice,pitch,keyid){
 
     
 
-     if(playmode=="noteon"){
-    //if(trackvoices[currenttrackselected-1][2]==false){
+    if(trackvoices[currenttrackselected-1][2]==false){
         var soundname = trackvoices[currenttrackselected-1][0];    
         if(sound[soundname+slice+"_"+pitch]!=undefined){
                 sound[soundname+slice+"_"+pitch].stop();
@@ -189,7 +180,6 @@ return{
               init:Init,
          playsound:Playsound,
          stopsound:Stopsound,
-    setpadplaymode:Setpadplaymode,
     startrecording:Startrecording,
      stoprecording:Stoprecording
 };

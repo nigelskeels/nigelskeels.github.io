@@ -8,7 +8,7 @@ var lastbeforeshift = "pattern";
 var padlights = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 var lightsetting = [];
 var stepassignment = [];
-var laststepselected=1;
+var beatpos = 1;
 
 var labeltext = {   
                     "buttons":{
@@ -131,7 +131,7 @@ var labeltext = {
                                     },
                                     function(which){
                                         console.info("step mode number button press down = ",which,stepassignment[which]);
-                                        laststepselected=which;
+                                        beatpos=which;
 
                                         function checkselected(){
                                             for (var p = 0; p < patterns[selectedpattern].pattern.length; p++) {
@@ -193,9 +193,15 @@ var labeltext = {
                          "sample":[
                                     function(){
                                         console.info("sample trigger something");
-                                        //get at the current track
-                                        //look at trackvoices
-                                        //set keymode/
+
+                                        //read how many slices
+                                        //set the lights to show it
+                                        lightsetting = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]; 
+                                        for (var i = 0; i < trackvoices[currenttrackselected-1][3]; i++) {
+                                            lightsetting[i]=2;
+                                        };
+                                        Setpadlights(lightsetting);
+                                        
                                     },
                                     function(which){
                                         console.info("sample mode number button press down = ",which);
@@ -209,18 +215,30 @@ var labeltext = {
                                         console.info("sample mode number button press up = ",which);
                                         Jackdaw.Realtimeinteraction.stopsound(which,1,13);
                                     },
-                                    ["Slices +"],
-                                    ["Slices -"],
+                                    ["Slices +",function(){
+                                        trackvoices[currenttrackselected-1][3]++;
+                                        //now reload the lights
+                                        labeltext.buttons["sample"][0]();
+                                    }],
+                                    ["Slices -",function(){
+                                        trackvoices[currenttrackselected-1][3]--;
+                                        //now reload the lights
+                                        labeltext.buttons["sample"][0]();
+                                    }],
                                     ["Import"],
                                     ["Insert"],
                                     ["Drums", function(){ 
                                                               console.log('hello keymode');
-                                                              trackvoices[currenttrackselected-1][1]=false;
+                                                              if(trackvoices[currenttrackselected-1][1]!=false){
+                                                                trackvoices[currenttrackselected-1][1]=false;
+                                                              }else{
+                                                                trackvoices[currenttrackselected-1][1]=beatpos;
+                                                              }
                                                               set_xlabels(mode)
                                                               // Setpadlights([1,2,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
                                                           }
                                     ],
-                                    ["Loop", function(){
+                                    ["Oneshot", function(){
                                                             console.info("Hello loopmode");
                                                             if(trackvoices[currenttrackselected-1][2]==true){
                                                                 trackvoices[currenttrackselected-1][2]=false;
@@ -235,6 +253,8 @@ var labeltext = {
                              "fx":[
                                     function(){
                                         console.info("fx trigger something");
+                                        lightsetting = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]; 
+                                        Setpadlights(lightsetting);
                                     },
                                     function(which){
                                         console.info("fx mode number button press down = ",which);
@@ -274,7 +294,7 @@ function Init(){
 
     console.log("Hello ui");
 
-
+    var slices = trackvoices[currenttrackselected-1][3];
 
     for (var i = 1; i <= slices; i++) {
         var slicebutton = document.createElement("button");
@@ -525,13 +545,10 @@ function pianokeydown(e){
     console.info("pianokeydown",e.target.id, rate);
      
     if(mode=="step"){
-
-        console.info("piano down = ",e.target.id," at step = ",laststepselected);
-        //next bit is wrong
-        patterns[selectedpattern].pattern.push([currenttrackselected,stepassignment[laststepselected][0],stepassignment[laststepselected][1],1,1,keyid])
-        // patterns[selectedpattern].pattern.push([currenttrackselected,stepassignment[which][0],stepassignment[which][1],1,1,1])
-
-
+        console.info("piano down = ",e.target.id," at step = ",beatpos);
+        patterns[selectedpattern].pattern.push([currenttrackselected,stepassignment[beatpos][0],stepassignment[beatpos][1],1,1,keyid])
+        //set lights on buttons
+        labeltext.buttons["step"][0]();
     } 
 
     Jackdaw.Realtimeinteraction.playsound(false,rate,e.target.id.replace("key_",""))
@@ -597,12 +614,13 @@ function Changeslider(which,value){
     console.info("Change slider = ",which,value)
 }
 
-function Beatpositionindicator(beatpos){
+function Beatpositionindicator(_beatpos){
     // console.info("pos =",beatpos);
+    beatpos=_beatpos;
     if(mode=="step"){
         Setpadlights(lightsetting);
         var currentbeatlights = lightsetting.slice();
-        currentbeatlights[beatpos]=1;
+        currentbeatlights[_beatpos]=1;
         Setpadlights(currentbeatlights);
     }
 }
