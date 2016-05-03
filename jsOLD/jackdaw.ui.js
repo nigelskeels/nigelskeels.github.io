@@ -6,11 +6,9 @@ var keysdownarray = [];
 var mode = "pattern";
 var lastbeforeshift = "pattern";
 var padlights = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-var xbutlights = [0,0,0,0,0,0,0,0];
 var lightsetting = [];
 var stepassignment = [];
 var beatpos = 1;
-var deletemode = false;
 
 var labeltext = {   
                     "buttons":{
@@ -91,6 +89,7 @@ var labeltext = {
                                             if(patterns[selectedpattern].pattern[p][0]==currenttrackselected){
 
                                                 // console.info("show beats in track",currenttrackselected,"  = ",patterns[selectedpattern].pattern[p])
+
                                          
                                                 var count = 0;
                                                 for (var i = 0; i < patterns[selectedpattern].beats; i++) {
@@ -126,6 +125,9 @@ var labeltext = {
                                         // console.info("stepassignment",stepassignment);
 
 //384,192,96,48,24
+
+
+
                                     },
                                     function(which){
                                         console.info("step mode number button press down = ",which,stepassignment[which]);
@@ -150,27 +152,17 @@ var labeltext = {
                                         }
                                         else{
                                           console.log("Beat is selected");
-                                          if(deletemode==true){
-                                            patterns[selectedpattern].pattern.splice(check,1)
-                                          }
+                                          patterns[selectedpattern].pattern.splice(check,1)
                                         }
+
                                         //now reload the lights
                                         labeltext.buttons["step"][0]();
+
                                     },
                                     function(which){
                                         console.info("step mode number button press up = ",which);
                                     },
-                                    ["Quantalise +"],["Quantalise -"],["Length"],["Active Step"],[""],[""],[""],["Delete",function(){
-                                                                                                                                        console.info("Delete button down - stepmode");
-                                                                                                                                        deletemode=true;
-                                                                                                                                        set_xlabels(mode)
-                                                                                                                                    },
-                                                                                                                          function(){   
-                                                                                                                                        console.info("Delete button Up - stepmode");
-                                                                                                                                        deletemode=false;
-                                                                                                                                        set_xlabels(mode)
-                                                                                                                                     }
-                                    ]
+                                    ["Quantalise +"],["Quantalise -"],["Length"],["Active Step"],[""],[""],[""],["Delete"]
                                   ],
                           "voice":[
                                     function(){
@@ -340,21 +332,20 @@ function Init(){
     document.addEventListener("keydown", keydowntest);
     document.addEventListener("keyup",keyuptest);
 
-    document.getElementById("piano").addEventListener("mousedown",Pianokeydown);
-    document.getElementById("piano").addEventListener("mouseup",Pianokeyup);
+    document.getElementById("piano").addEventListener("mousedown",pianokeydown);
+    document.getElementById("piano").addEventListener("mouseup",pianokeyup);
     document.getElementById("piano").addEventListener("touchstart",function(e){
         e.preventDefault();
-        Pianokeydown(e);
+        pianokeydown(e);
     });
     document.getElementById("piano").addEventListener("touchend",function(e){   
         e.preventDefault();
-        Pianokeyup(e);
+        pianokeyup(e);
     });
 
     var functions_y_buttons = document.getElementById("functions_y").addEventListener("mousedown",y_but_down);
     var functions_y_buttons = document.getElementById("functions_y").addEventListener("mouseup",y_but_up);
     var functions_x_buttons = document.getElementById("functions_x").addEventListener("mousedown",x_but_down);
-    var functions_x_buttons = document.getElementById("functions_x").addEventListener("mouseup",x_but_up);
 
     set_xlabels("pattern");
 
@@ -436,33 +427,30 @@ function set_xlabels(_mode){
     mode=_mode;
  
     //reset all x button leds
-    var xbutlightsetting = [0,0,0,0,0,0,0,0];
+    var x_buttons = document.getElementById("functions_x").getElementsByTagName("button");
+    for (var x = 0; x < x_buttons.length; x++) {
+        x_buttons[x].className="";
 
-    if(mode =="shift" || mode=="voice" || mode=="fx" ){
-        xbutlightsetting[currenttrackselected-1] = 1;
-    }
-
-    if(mode=="sample"){
-        
-        if(trackvoices[currenttrackselected-1][1]==false){
-            //drummode
-            xbutlightsetting[4]=1;               
-
+        if(mode =="shift" || mode=="voice" || mode=="fx" ){
+            if(x==currenttrackselected-1){
+                x_buttons[x].className="buttonRed";                
+            }                   
         }
-        if(trackvoices[currenttrackselected-1][2]==true){
-            //oneshot
-            xbutlightsetting[5]=1;               
+
+        //should this be in the other place??
+        if(mode=="sample"){
+            if(trackvoices[currenttrackselected-1][1]==false){
+                //drummode
+                x_buttons[4].className="buttonRed";                
+
+            }
+            if(trackvoices[currenttrackselected-1][2]==true){
+                //oneshot
+                x_buttons[5].className="buttonRed";                
+
+            }
         }
     }
-
-    if(mode=="song" || mode=="step" || mode=="sample"){
-        if(deletemode==true){
-            // x_buttons[7].className="buttonRedblink";
-            xbutlightsetting[7] = 3;
-        }
-    }
-
-    Setxbutlights(xbutlightsetting);
 
     var functions_x_labels = document.getElementById("functions_x").getElementsByTagName("label");
     for (var i = 0; i < functions_x_labels.length; i++) {
@@ -481,11 +469,18 @@ function set_xlabels(_mode){
 function x_but_down(e){
     var functions_x_buttons = e.target.parentNode.getElementsByTagName("button");
     if(e.target.localName=="button"){
-        // console.log("xbut test", e.target.id.slice(1) )
+        // for (var i = 0; i < functions_x_buttons.length; i++) {
+        //     functions_x_buttons[i].className="";
+        // }
+        // console.info("x_but_down = ",e,e.target.id.slice(1));
+        // e.target.className="buttonRed";
+        console.log("xbut test", e.target.id.slice(1) )
         var which = parseInt(e.target.id.slice(1))+2;
-        // console.log("xbut", labeltext["buttons"][mode][(which)][0])
+        console.log("xbut", labeltext["buttons"][mode][(which)][0])
 
         if(labeltext["buttons"][mode][which][1]!=undefined){
+            labeltext["buttons"][mode][which][1];
+
             //this triggers the function if there is one stored in the array.
             if(labeltext["buttons"][mode][which][1]!=undefined){
                 // console.info("xbut function to call", labeltext["buttons"][mode][e.target.id.slice(1)-1][1])
@@ -501,68 +496,40 @@ function x_but_down(e){
     }
 }
 
-function x_but_up(e){
-    var functions_x_buttons = e.target.parentNode.getElementsByTagName("button");
-    if(e.target.localName=="button"){
-        var which = parseInt(e.target.id.slice(1))+2;
-        // console.log("xbut", labeltext["buttons"][mode][(which)][0])
-        if(labeltext["buttons"][mode][which][1]!=undefined){
-            if(labeltext["buttons"][mode][which][2]!=undefined){
-                labeltext["buttons"][mode][which][2]();
-            }
-        }
-    }
-}
 
-
+    
 
 function Setpadlights(_padlights){
     // var padlights = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
     if(_padlights){
         padlights = _padlights;
     }
 
     var butts = document.getElementById("butts").getElementsByTagName("button");
     for (var i = 0; i < butts.length; i++) {
-        butts[i].className = returnlightcolour(padlights[i])
+        switch(padlights[i]) {
+            case 1:
+                //red
+                butts[i].className="buttonRed";
+                break;
+            case 2:
+                //green
+                butts[i].className="buttonGreen";
+                break;
+            case 3:
+                //flash red
+                butts[i].className="buttonRedblink";
+                break;
+            case 4:
+                //flash green
+                butts[i].className="buttonGreenblink";
+                break;
+            default:
+                //off
+                butts[i].className="";
+        }
     };
-}
-
-function Setxbutlights(_xbutlights){
-    if(_xbutlights){
-        xbutlights = _xbutlights;
-    }
-
-    var butts = document.getElementById("functions_x").getElementsByTagName("button");
-    for (var i = 0; i < butts.length; i++) {
-        butts[i].className = returnlightcolour(xbutlights[i])
-    };
-}
-
-function returnlightcolour(which){
-    var colourtoreturn;
-    switch(which) {
-        case 1:
-            //red
-            colourtoreturn="buttonRed";
-            break;
-        case 2:
-            //green
-            colourtoreturn="buttonGreen";
-            break;
-        case 3:
-            //flash red
-            colourtoreturn="buttonRedblink";
-            break;
-        case 4:
-            //flash green
-            colourtoreturn="buttonGreenblink";
-            break;
-        default:
-            //off
-            colourtoreturn="";
-    }
-    return colourtoreturn;
 }
 
 
@@ -571,12 +538,11 @@ function Setpadplaymode(_playmode){
     console.info("setpadplaymode ",playmode);
 }
 
-function Pianokeydown(e){
-    //midi key presses need to come in here too!
+function pianokeydown(e){
     var rate = (e.target.id.replace("key_","") *0.06)+0.24;
     var keyid = e.target.id.replace("key_","");
 
-    console.info("Pianokeydown",e.target.id, rate);
+    console.info("pianokeydown",e.target.id, rate);
      
     if(mode=="step"){
         console.info("piano down = ",e.target.id," at step = ",beatpos);
@@ -588,9 +554,9 @@ function Pianokeydown(e){
     Jackdaw.Realtimeinteraction.playsound(false,rate,e.target.id.replace("key_",""))
 }
 
-function Pianokeyup(e){
+function pianokeyup(e){
     var rate = (e.target.id.replace("key_","") *0.06)+0.24;
-    console.info("Pianokeyup",e.target.id);
+    console.info("pianokeyup",e.target.id);
     Jackdaw.Realtimeinteraction.stopsound(false,rate,e.target.id.replace("key_",""))
 }
 
@@ -665,9 +631,7 @@ return{
            setbuttonstate:Setbuttonstate,
              changeslider:Changeslider,
              setpadlights:Setpadlights,
-    beatpositionindicator:Beatpositionindicator,
-             pianokeydown:Pianokeydown,
-               pianokeyup:Pianokeyup
+    beatpositionindicator:Beatpositionindicator
 };
 
 

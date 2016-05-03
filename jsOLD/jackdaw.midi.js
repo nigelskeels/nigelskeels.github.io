@@ -32,16 +32,6 @@ function onMIDIInit(midi) {
     printout.innerHTML="No MIDI devices present on your browser.";
     // alert("No MIDI input devices present.  You're gonna have a bad time.");
   }
-
-  // for (var output in midiAccess.outputs) {
-  //   console.log( "Output port [type:'" + output.type + "'] id:'" + output.id +
-  //     "' manufacturer:'" + output.manufacturer + "' name:'" + output.name +
-  //     "' version:'" + output.version + "'" );
-  // }
-
-  // var output = midiAccess.outputs.get(portID);
-  // var noteOnMessage = [90, 0, 01]; 
-  // output.send( noteOnMessage );  //omitting the timestamp means send immediately.
 }
 
 
@@ -57,25 +47,18 @@ function MIDIMessageEventHandler(event) {
       if (event.data[2]!=0) {  // if velocity != 0, this is a note-on message
         console.log(event.data[1]);
         printout.innerHTML=event.data[1];
+        var rate = ((event.data[1]-49) *0.06)+0.24;
         
-    var holdingobject={}
-        holdingobject.target={};
-        holdingobject.id={};
-        holdingobject.target.id = "key_"+(event.data[1]-47) 
-        Jackdaw.Ui.pianokeydown(holdingobject);
+        Jackdaw.Scheduler.playsound(drumsound,lastsliceplayed,rate,(event.data[1]-49));
         return;
       }
       // if velocity == 0, fall thru: it's a note-off.  MIDI's weird, y'all.
     case 0x80:
       console.log(event.data[1]);
       printout.innerHTML=event.data[1];
+      var rate = ((event.data[1]-49) *0.06)+0.24;
 
-      // Jackdaw.Realtimeinteraction.stopsound(false,rate,(event.data[1]-47))
-      var holdingobject={}
-          holdingobject.target={};
-          holdingobject.id={};
-          holdingobject.target.id = "key_"+(event.data[1]-47) 
-          Jackdaw.Ui.pianokeyup(holdingobject);
+      Jackdaw.Scheduler.stopsound(drumsound,lastsliceplayed,rate,(event.data[1]-49))
       return;
   }
 }

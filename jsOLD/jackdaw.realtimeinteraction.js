@@ -36,7 +36,6 @@ function Init(){
 
 function Playsound(slice,pitch,keyid){
 
-        console.log("play sound ",slice,pitch,keyid);
 
         var pitch = pitch || "1";
 
@@ -58,6 +57,7 @@ function Playsound(slice,pitch,keyid){
     
 
         // console.log("play sound ",trackvoices[currenttrackselected-1][1], slice,pitch,keyid);
+        console.log("play sound ",slice,keyid);
 
 
         
