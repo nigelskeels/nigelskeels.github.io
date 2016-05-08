@@ -54,9 +54,6 @@ function Playsound(slice,pitch,keyid){
 
             Jackdaw.Ui.setbuttonstate(slice,true,keyid,"buttonRed")
 
-
-    
-
         // console.log("play sound ",trackvoices[currenttrackselected-1][1], slice,pitch,keyid);
 
 

@@ -73,7 +73,7 @@ var labeltext = {
                                                         }
                                                         
                                                         else{                                                    
-                                                            lightsetting[count]=0;
+                                                            lightsetting[count]=3;
                                                         }
                                                         count++;
                                                         stepassignment[count]=[i+1,s];
@@ -311,27 +311,27 @@ function Init(){
         slicebutton.id="slice"+i;
         document.getElementById("butts").appendChild(slicebutton);
 
-        (function(_slicebutton,_i,_drumsound){
+        (function(_slicebutton,_i){
             
             _slicebutton.addEventListener("mousedown", function(){
-                numberbuttonpressdown(_drumsound,_i);
+                Numberbuttonpressdown(_i);
             });
             
             _slicebutton.addEventListener("mouseup", function(){
-                numberbuttonpressup(_drumsound,_i);
+                Numberbuttonpressup(_i);
             });
 
             _slicebutton.addEventListener("touchstart", function(e){
                e.preventDefault();
-               numberbuttonpressdown(_drumsound,_i);
+               Numberbuttonpressdown(_i);
             });
 
             _slicebutton.addEventListener("touchend", function(e){
                e.preventDefault();
-               numberbuttonpressup(_drumsound,_i);
+               Numberbuttonpressup(_i);
             });
             
-        })(slicebutton,i,drumsound)
+        })(slicebutton,i)
 
     };
     
@@ -365,11 +365,11 @@ function Init(){
 }
 
 
-function numberbuttonpressdown(drumsound,i){
+function Numberbuttonpressdown(i){
    labeltext.buttons[mode][1](i);
 }
 
-function numberbuttonpressup(drumsound,i){
+function Numberbuttonpressup(i){
    labeltext.buttons[mode][2](i);
 }
 
@@ -458,7 +458,7 @@ function set_xlabels(_mode){
     if(mode=="song" || mode=="step" || mode=="sample"){
         if(deletemode==true){
             // x_buttons[7].className="buttonRedblink";
-            xbutlightsetting[7] = 3;
+            xbutlightsetting[7] = 4;
         }
     }
 
@@ -526,6 +526,7 @@ function Setpadlights(_padlights){
     for (var i = 0; i < butts.length; i++) {
         butts[i].className = returnlightcolour(padlights[i])
     };
+    Jackdaw.Midi.setnumberpadlights(padlights);
 }
 
 function Setxbutlights(_xbutlights){
@@ -552,11 +553,19 @@ function returnlightcolour(which){
             break;
         case 3:
             //flash red
-            colourtoreturn="buttonRedblink";
+            colourtoreturn="buttonYellow";
             break;
         case 4:
+            //flash red
+            colourtoreturn="buttonRedblink";
+            break;
+        case 5:
             //flash green
             colourtoreturn="buttonGreenblink";
+            break;
+        case 5:
+            //flash green
+            colourtoreturn="buttonYellowblink";
             break;
         default:
             //off
@@ -618,6 +627,8 @@ function keyuptest(e){
 function Setbuttonstate(slice,pressedstate,keyid,colour){
     // console.log("setbuttonstate",slice)
     // var but = document.getElementById("slice"+slice);
+    if(mode=="sample"){
+
             if(pressedstate==true){
                 // but.className=colour;
                 if(colour=="buttonRed"){
@@ -628,19 +639,25 @@ function Setbuttonstate(slice,pressedstate,keyid,colour){
                 }
             }else{
                 padlights[slice-1]=0;
+                if(mode=="sample"){
+                    //reset lights to show sample
+                    labeltext.buttons["sample"][0]();              
+                }
             }
             Setpadlights()
 
-    var key = document.getElementById("key_"+keyid);
+            var key = document.getElementById("key_"+keyid);
 
-           if(key!=null){
+            if(key!=null){
                 console.info("keyid",keyid,key)
                 if(pressedstate==true){
                     key.className="anchor down";
                 }else{
                     key.className="anchor";
                 }
-           }
+            }
+    }    
+
 }
 
 
@@ -667,7 +684,9 @@ return{
              setpadlights:Setpadlights,
     beatpositionindicator:Beatpositionindicator,
              pianokeydown:Pianokeydown,
-               pianokeyup:Pianokeyup
+               pianokeyup:Pianokeyup,
+      numberbuttonpressup:Numberbuttonpressup,
+    numberbuttonpressdown:Numberbuttonpressdown
 };
 
 
