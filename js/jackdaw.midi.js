@@ -25,6 +25,10 @@ Jackdaw.Midi = ( function( window, undefined ) {
     console.log( "MIDI ready!" );
     midi = midiAccess;  // store in the global (in real usage, would probably keep in an object instance)
     listInputsAndOutputs(midi);
+    midi.onstatechange = function(e){
+      alert("MIDI device "+e.port.state);
+      listInputsAndOutputs(midi);
+    }
   }
 
   function onMIDIFailure(msg) {
@@ -41,7 +45,7 @@ Jackdaw.Midi = ( function( window, undefined ) {
     for ( var input = inputs.next(); input && !input.done; input = inputs.next()) {
       input.value.onmidimessage = MIDIMessageEventHandler;
       haveAtLeastOneDevice = true;
-      
+      console.log("Midi Inputs =",input.value)
       // console.log(midiAccess.inputs.values())
     }
 
@@ -52,7 +56,7 @@ Jackdaw.Midi = ( function( window, undefined ) {
 
     var outputs=midiAccess.outputs.values();
     for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
-      console.log("outputs",output)
+      console.log("Midi outputs",output.value);
       thisid=output.value.id;
     }
 
