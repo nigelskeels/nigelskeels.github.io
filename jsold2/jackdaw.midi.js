@@ -25,10 +25,6 @@ Jackdaw.Midi = ( function( window, undefined ) {
     console.log( "MIDI ready!" );
     midi = midiAccess;  // store in the global (in real usage, would probably keep in an object instance)
     listInputsAndOutputs(midi);
-    midi.onstatechange = function(e){
-      alert("MIDI device "+e.port.state);
-      listInputsAndOutputs(midi);
-    }
   }
 
   function onMIDIFailure(msg) {
@@ -45,7 +41,7 @@ Jackdaw.Midi = ( function( window, undefined ) {
     for ( var input = inputs.next(); input && !input.done; input = inputs.next()) {
       input.value.onmidimessage = MIDIMessageEventHandler;
       haveAtLeastOneDevice = true;
-      console.log("Midi Inputs =",input.value)
+      
       // console.log(midiAccess.inputs.values())
     }
 
@@ -56,7 +52,7 @@ Jackdaw.Midi = ( function( window, undefined ) {
 
     var outputs=midiAccess.outputs.values();
     for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
-      console.log("Midi outputs",output.value);
+      console.log("outputs",output)
       thisid=output.value.id;
     }
 
@@ -79,11 +75,7 @@ Jackdaw.Midi = ( function( window, undefined ) {
                         8:24,9:25,10:26,11:27,12:28,13:29,14:30,15:31,
                         16:16,17:17,18:18,19:19,20:20,21:21,22:22,23:23,
                         24:8,25:9,26:10,27:11,28:12,29:13,30:14,31:15,
-                        32:0,33:1,34:2,35:3,36:4,37:5,38:6,39:7,
-                        "play":91,"rec":93,"shift_big":98,
-                        "x_1":64,"x_2":65,"x_3":66,"x_4":67,"x_5":68,"x_6":69,"x_7":70,"x_8":71,
-                        "song":82,"step":83,"voice":84,"sample":85,"fx":86,"shift":81,
-
+                        32:0,33:1,34:2,35:3,36:4,37:5,38:6,39:7
                       }
   
 
@@ -169,17 +161,7 @@ function MIDIMessageEventHandler(event) {
         }
         if(event.data[0]==144){
           //number key down
-          if( isNaN(reversemap(event.data[1])) ){
-
-              if(reversemap(event.data[1]).charAt(0)=="x"){
-                  alert("xxxxxxxxxxxxxxxxxxxxxx "+reversemap(event.data[1]))
-              }else{
-                  alert("yyyyyyyyyyyyyyyyyyyyyy "+reversemap(event.data[1]))
-              }
-
-          }else{
-            Jackdaw.Ui.numberbuttonpressdown(1+(parseInt(reversemap(event.data[1]))));
-          }
+          Jackdaw.Ui.numberbuttonpressdown(1+(parseInt(reversemap(event.data[1]))));
         }    
         return;
       }
@@ -205,15 +187,8 @@ function MIDIMessageEventHandler(event) {
     case 0xB0:
           //cc value
           console.log("CC value = ",event.data[2], "knob = k",event.data[1]);
-
           var slider = document.getElementById("slider"+(event.data[1]-47))
-          if(slider!=null){
-            slider.value=event.data[2];
-          }else{
-            if(event.data[1]==64 && event.data[2]==127 ){
-                alert("sustain button")
-            }
-          }
+          slider.value=event.data[2];
   }
 }
 

@@ -116,11 +116,12 @@ function scheduleNote( beatNumber, time, totalsubbeat, totalbeatsplayed) {
                     sound[soundname].connect(sound[soundname].volumeNode);
                     sound[soundname].volumeNode.connect(context.destination);
 
+
                     var amountslices=trackvoices[t][3]
-                    var slicelength=sound[soundname].buffer.duration/amountslices;
+                    var slicelength=sound[soundname].buffer.duration/(amountslices);
                     var starttime = (slicelength*(slice-1));
 
-                    console.info("oneshot ",trackvoices[t][2], " note length",patterns[selectedpattern].pattern[p][4]);        
+            console.info("oneshot ",trackvoices[t][2], " note length",patterns[selectedpattern].pattern[p][4]);        
                     console.info("trigger =",time,starttime,slicelength)
                     
                     if(trackvoices[t][2]==true){
@@ -160,9 +161,6 @@ function scheduleNote( beatNumber, time, totalsubbeat, totalbeatsplayed) {
     // sound["hihat"].start( time );
     // sound["hihat"].stop( time + noteLength );        
 }
-
-
-
 
 function scheduler() {
     while (nextNoteTime < context.currentTime + scheduleAheadTime ) {

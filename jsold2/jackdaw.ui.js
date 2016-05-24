@@ -11,7 +11,6 @@ var lightsetting = [];
 var stepassignment = [];
 var beatpos = 1;
 var deletemode = false;
-var displayoffset = 0;
 
 var labeltext = {   
                     "buttons":{
@@ -56,7 +55,6 @@ var labeltext = {
                                         //init step mode
                                         console.info("step trigger something");
 
-
                                         //get the pattern, check the beats and subbeats
                                         // console.info("selectedpattern =",selectedpattern, "step beats = ",ss," sub beats = ",ss);
                                         // console.info("selectedpattern =",selectedpattern,patterns[selectedpattern].beats,patterns[selectedpattern].snap);
@@ -66,7 +64,7 @@ var labeltext = {
                                        
                                         for (var p = 0; p < patterns[selectedpattern].pattern.length; p++) {
                                             var count = 0;
-                                            for (var i = displayoffset; i < patterns[selectedpattern].beats; i++) {
+                                            for (var i = 0; i < patterns[selectedpattern].beats; i++) {
                                                 for (var s = 0; s < ppb; s++) {
                                                     if(s %patterns[selectedpattern].snap === 0){
                                                         
@@ -95,7 +93,7 @@ var labeltext = {
                                                 // console.info("show beats in track",currenttrackselected,"  = ",patterns[selectedpattern].pattern[p])
                                          
                                                 var count = 0;
-                                                for (var i = displayoffset; i < patterns[selectedpattern].beats; i++) {
+                                                for (var i = 0; i < patterns[selectedpattern].beats; i++) {
                                                     for (var s = 0; s < ppb; s++) {
                                                         if(s %patterns[selectedpattern].snap === 0){
                                                             
@@ -162,55 +160,16 @@ var labeltext = {
                                     function(which){
                                         console.info("step mode number button press up = ",which);
                                     },
-                                    ["Up",
-                                        function(){
-                                            if(patterns[selectedpattern].beats>displayoffset+1){
-                                                displayoffset=displayoffset+1;
-                                                labeltext.buttons["step"][0]();
-                                                console.info("displayoffset",displayoffset); 
-                                            }
-                                        }
-                                    ],
-                                    ["Down",
-                                        function(){
-                                            if(displayoffset>0){
-                                                displayoffset=displayoffset-1;
-                                                labeltext.buttons["step"][0](); 
-                                                console.info("displayoffset",displayoffset); 
-                                            } 
-                                        }
-                                    ],
-                                    ["Quantalise +",
-                                        function(){
-                                            if(patterns[selectedpattern].snap!=24){
-                                                patterns[selectedpattern].snap=patterns[selectedpattern].snap/2;
-                                                labeltext.buttons["step"][0]();  
-                                            }
-                                            console.info("snap for quant = ",patterns[selectedpattern].snap)
-                                        }
-                                    ],
-                                    ["Quantalise -",
-                                        function(){
-                                            //options 24 = 1/16, 48 = 1/8, 96 = 1/4, 192 = 1/2, 384 = 1/1
-                                            if(patterns[selectedpattern].snap!=384){
-                                                patterns[selectedpattern].snap=patterns[selectedpattern].snap*2;
-                                                labeltext.buttons["step"][0]();  
-                                            }
-                                            console.info("snap for quant = ",patterns[selectedpattern].snap)
-                                        }
-                                    ],
-                                    ["Length"],["Active Step"],[""],
-                                    ["Delete",
-                                        function(){
-                                                    console.info("Delete button down - stepmode");
-                                                    deletemode=true;
-                                                    set_xlabels(mode)
-                                        },
-                                        function(){   
-                                                    console.info("Delete button Up - stepmode");
-                                                    deletemode=false;
-                                                    set_xlabels(mode)
-                                        }
+                                    ["Quantalise +"],["Quantalise -"],["Length"],["Active Step"],[""],[""],[""],["Delete",function(){
+                                                                                                                                        console.info("Delete button down - stepmode");
+                                                                                                                                        deletemode=true;
+                                                                                                                                        set_xlabels(mode)
+                                                                                                                                    },
+                                                                                                                          function(){   
+                                                                                                                                        console.info("Delete button Up - stepmode");
+                                                                                                                                        deletemode=false;
+                                                                                                                                        set_xlabels(mode)
+                                                                                                                                     }
                                     ]
                                   ],
                           "voice":[
@@ -225,17 +184,14 @@ var labeltext = {
                                                 lightsetting[count]=1;
                                                 count++;
                                             } 
+
                                         }
 
                                         Setpadlights(lightsetting)
 
                                     },
                                     function(which){
-                                        var keys = Object.keys( bufferLoader.bufferList );
-                                        console.info("voice mode number button press down = ",which,keys[which-1]);
-                                        trackvoices[currenttrackselected-1][0]=keys[which-1];
-                                        Jackdaw.Realtimeinteraction.playsound(1,1,13);
-
+                                        console.info("voice mode number button press down = ",which);
                                     },
                                     function(which){
                                         console.info("voice mode number button press up = ",which);
@@ -395,8 +351,8 @@ function Init(){
         Pianokeyup(e);
     });
 
-    var functions_y_buttons = document.getElementById("functions_y").addEventListener("mousedown",Y_but_down);
-    var functions_y_buttons = document.getElementById("functions_y").addEventListener("mouseup",Y_but_up);
+    var functions_y_buttons = document.getElementById("functions_y").addEventListener("mousedown",y_but_down);
+    var functions_y_buttons = document.getElementById("functions_y").addEventListener("mouseup",y_but_up);
     var functions_x_buttons = document.getElementById("functions_x").addEventListener("mousedown",x_but_down);
     var functions_x_buttons = document.getElementById("functions_x").addEventListener("mouseup",x_but_up);
 
@@ -443,7 +399,7 @@ function transportbuts_mousedown(e){
 }
 
 
-function Y_but_down(e){
+function y_but_down(e){
     var functions_y_buttons = e.target.parentNode.getElementsByTagName("button");
     if(e.target.localName=="button"){
         
@@ -456,14 +412,14 @@ function Y_but_down(e){
             }
             lastbeforeshift=e.target.id;
 
-            // console.info("Y_but_down = ",e,e.target.id);
+            // console.info("y_but_down = ",e,e.target.id);
         }
         e.target.className="buttonRed";
         set_xlabels(e.target.id);
     }
 }
 
-function Y_but_up(e){
+function y_but_up(e){
     var functions_y_buttons = e.target.parentNode.getElementsByTagName("button");
     if(e.target.localName=="button"){
         
@@ -710,17 +666,12 @@ function Changeslider(which,value){
 }
 
 function Beatpositionindicator(_beatpos){
-    // console.info("pos =",beatpos,patterns[selectedpattern].snap,displayoffset);
+    // console.info("pos =",beatpos);
     beatpos=_beatpos;
-    beatposoffset=_beatpos-((ppb / patterns[selectedpattern].snap) * displayoffset);
-    
-    console.info("pos calc =",_beatpos,beatpos );
-    
-    
     if(mode=="step"){
         Setpadlights(lightsetting);
         var currentbeatlights = lightsetting.slice();
-        currentbeatlights[beatposoffset]=1;
+        currentbeatlights[_beatpos]=1;
         Setpadlights(currentbeatlights);
     }
 }
@@ -735,9 +686,7 @@ return{
              pianokeydown:Pianokeydown,
                pianokeyup:Pianokeyup,
       numberbuttonpressup:Numberbuttonpressup,
-    numberbuttonpressdown:Numberbuttonpressdown,
-               y_but_down:Y_but_down,
-                 y_but_up:Y_but_up
+    numberbuttonpressdown:Numberbuttonpressdown
 };
 
 

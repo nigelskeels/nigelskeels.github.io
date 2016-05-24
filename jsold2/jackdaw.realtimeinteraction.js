@@ -38,26 +38,29 @@ function Playsound(slice,pitch,keyid){
 
         console.log("play sound ",slice,pitch,keyid);
 
-        var soundname = trackvoices[currenttrackselected-1][0];
-        var pitchmodeslice = trackvoices[currenttrackselected-1][1];
         var pitch = pitch || "1";
 
-        if(pitchmodeslice==false){
-            if(slice==false){
-                slice=keyid;
-            }else{
-                keyid=slice;
+            if(trackvoices[currenttrackselected-1][1]!=false){
+                slice=trackvoices[currenttrackselected-1][1];
             }
-            pitch=1;
-        }
-        else{
-            slice=pitchmodeslice; 
-        } 
+            else{
+                if(slice==false){
+                    slice=keyid;
+                }else{
+                    keyid=slice;
+                }
+                pitch=1;
+            } 
 
-        Jackdaw.Ui.setbuttonstate(slice,true,keyid,"buttonRed")
+            Jackdaw.Ui.setbuttonstate(slice,true,keyid,"buttonRed")
 
         // console.log("play sound ",trackvoices[currenttrackselected-1][1], slice,pitch,keyid);
 
+
+        
+
+
+        var soundname = trackvoices[currenttrackselected-1][0];;
         if(sound[soundname+slice+"_"+pitch]!=undefined){
             sound[soundname+slice+"_"+pitch].stop();
         }
@@ -71,15 +74,16 @@ function Playsound(slice,pitch,keyid){
         if(pitch!=undefined){
              sound[soundname+slice+"_"+pitch].playbackRate.value=pitch;
         }
-        sound[soundname+slice+"_"+pitch].connect(context.destination);                    
-        sound[soundname+slice+"_"+pitch].loop = true;
-        
-        var amountslices = trackvoices[currenttrackselected-1][3];
-        var slicelength=sound[soundname+slice+"_"+pitch].buffer.duration/amountslices;
+         var slices = trackvoices[currenttrackselected-1][3];
+         var slicelength=sound[soundname+slice+"_"+pitch].buffer.duration/slices;
+
+        // console.log("Slicelength = ",slicelength)
+
         var starttime = (slicelength*(slice-1));
-        
         console.info("Currenttime = ",context.currentTime," starttime = ",starttime, " Endtime = ", starttime+slice+length)
 
+        sound[soundname+slice+"_"+pitch].connect(context.destination);                    
+        sound[soundname+slice+"_"+pitch].loop = true;
         //if(playmode=="noteon"){
         if(trackvoices[currenttrackselected-1][2]==false){
             sound[soundname+slice+"_"+pitch].start(0,starttime);

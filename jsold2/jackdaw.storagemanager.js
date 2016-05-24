@@ -76,8 +76,6 @@ var trackvoices =  [
                      // ["git",          12,  true,  [ 2, 2.5] ],
                      ["git",          50,  false, 20],
                      ["amen",          1,  true, 40]
-                     // ["synth",          1,  true, 1]
-
                    ];
 
 //in patterns the array values are [track,beat,subbeat,volume]
