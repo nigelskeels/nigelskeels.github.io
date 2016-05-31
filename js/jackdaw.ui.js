@@ -397,8 +397,8 @@ function Init(){
 
     var functions_y_buttons = document.getElementById("functions_y").addEventListener("mousedown",Y_but_down);
     var functions_y_buttons = document.getElementById("functions_y").addEventListener("mouseup",Y_but_up);
-    var functions_x_buttons = document.getElementById("functions_x").addEventListener("mousedown",x_but_down);
-    var functions_x_buttons = document.getElementById("functions_x").addEventListener("mouseup",x_but_up);
+    var functions_x_buttons = document.getElementById("functions_x").addEventListener("mousedown",X_but_down);
+    var functions_x_buttons = document.getElementById("functions_x").addEventListener("mouseup",X_but_up);
 
     set_xlabels("pattern");
 
@@ -522,12 +522,17 @@ function set_xlabels(_mode){
 }
 
 
-function x_but_down(e){
-    var functions_x_buttons = e.target.parentNode.getElementsByTagName("button");
-    if(e.target.localName=="button"){
+function X_but_down(e,midipressed){
+   
+    if(midipressed!=undefined || e.target.localName=="button"){
         // console.log("xbut test", e.target.id.slice(1) )
-        var which = parseInt(e.target.id.slice(1))+2;
         // console.log("xbut", labeltext["buttons"][mode][(which)][0])
+        if(midipressed==undefined){
+            var which = parseInt(e.target.id.slice(1))+2;
+        }else{
+            // console.log("midi",midipressed.replace("x_", "") );
+            var which = parseInt(midipressed.replace("x_", ""))+2;
+        }
 
         if(labeltext["buttons"][mode][which][1]!=undefined){
             //this triggers the function if there is one stored in the array.
@@ -545,8 +550,7 @@ function x_but_down(e){
     }
 }
 
-function x_but_up(e){
-    var functions_x_buttons = e.target.parentNode.getElementsByTagName("button");
+function X_but_up(e){
     if(e.target.localName=="button"){
         var which = parseInt(e.target.id.slice(1))+2;
         // console.log("xbut", labeltext["buttons"][mode][(which)][0])
@@ -566,11 +570,12 @@ function Setpadlights(_padlights){
         padlights = _padlights;
     }
 
+    Jackdaw.Midi.setnumberpadlights(padlights);
+    
     var butts = document.getElementById("butts").getElementsByTagName("button");
     for (var i = 0; i < butts.length; i++) {
         butts[i].className = returnlightcolour(padlights[i])
     };
-    Jackdaw.Midi.setnumberpadlights(padlights);
 }
 
 function Setxbutlights(_xbutlights){
@@ -714,14 +719,15 @@ function Beatpositionindicator(_beatpos){
     beatpos=_beatpos;
     beatposoffset=_beatpos-((ppb / patterns[selectedpattern].snap) * displayoffset);
     
-    console.info("pos calc =",_beatpos,beatpos );
+    console.info("pos calc =",beatpos,beatposoffset );
     
-    
-    if(mode=="step"){
-        Setpadlights(lightsetting);
-        var currentbeatlights = lightsetting.slice();
-        currentbeatlights[beatposoffset]=1;
-        Setpadlights(currentbeatlights);
+    if(beatposoffset>=0 || beatpos==0){
+
+        if(mode=="step"){
+            var currentbeatlights = lightsetting.slice();
+            currentbeatlights[beatposoffset]=1;
+            Setpadlights(currentbeatlights);
+        }
     }
 }
 
@@ -736,6 +742,8 @@ return{
                pianokeyup:Pianokeyup,
       numberbuttonpressup:Numberbuttonpressup,
     numberbuttonpressdown:Numberbuttonpressdown,
+               x_but_down:X_but_down,
+                 x_but_up:X_but_up,
                y_but_down:Y_but_down,
                  y_but_up:Y_but_up
 };

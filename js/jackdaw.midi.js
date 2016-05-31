@@ -2,7 +2,6 @@ Jackdaw.Midi = ( function( window, undefined ) {
 
   var midi = null;  // global MIDIAccess object
   var thisid = null;
-
   var printout;
 
   function Init(){
@@ -26,7 +25,7 @@ Jackdaw.Midi = ( function( window, undefined ) {
     midi = midiAccess;  // store in the global (in real usage, would probably keep in an object instance)
     listInputsAndOutputs(midi);
     midi.onstatechange = function(e){
-      alert("MIDI device "+e.port.state);
+      console.log("MIDI device "+e.port.state);
       listInputsAndOutputs(midi);
     }
   }
@@ -51,7 +50,7 @@ Jackdaw.Midi = ( function( window, undefined ) {
 
     if (!haveAtLeastOneDevice){
       // printout.innerHTML="No MIDI devices present on your browser.";
-      alert("No MIDI input devices present.  You're gonna have a bad time.");
+      console.log("No MIDI input devices present.  You're gonna have a bad time.");
     }
 
     var outputs=midiAccess.outputs.values();
@@ -89,9 +88,15 @@ Jackdaw.Midi = ( function( window, undefined ) {
 
   function Setnumberpadlights(padlights){
 
-      for (var i = 0; i < padlights.length; i++) {
+
+
+      for (var i = 0; i < 40; i++) {
          var colorcode;
          switch(padlights[i]){
+           case 0:
+             //red
+             colorcode=00;
+             break;
            case 1:
              //red
              colorcode=03;
@@ -118,16 +123,16 @@ Jackdaw.Midi = ( function( window, undefined ) {
              break;
            default: 
              //blank off
-             colorcode=00;
          }
-         if (thisid){
-          var output = midi.outputs.get(thisid);
-          output.send( [144,padlightsmap[i],colorcode] );
+         if(padlightsmap[i]!=undefined){
+           if (thisid){
+            var output = midi.outputs.get(thisid);
+            output.send( [144,padlightsmap[i],colorcode] );
+           }
          }
       };
 
   }
-
 
 
 
@@ -149,7 +154,7 @@ function reversemap(value){
 
 function MIDIMessageEventHandler(event) {
   
-  console.log("input event = ",event.data[0],event.data[1],event.data[2]);
+ console.log("input event = ",event.data[0],event.data[1],event.data[2]);
  printout.innerHTML = "input event = "+event.data[0]+","+event.data[1]+","+event.data[2]
   // Mask off the lower nibble (MIDI channel, which we don't care about)
   switch (event.data[0] & 0xf0) {
@@ -172,9 +177,10 @@ function MIDIMessageEventHandler(event) {
           if( isNaN(reversemap(event.data[1])) ){
 
               if(reversemap(event.data[1]).charAt(0)=="x"){
-                  alert("xxxxxxxxxxxxxxxxxxxxxx "+reversemap(event.data[1]))
+                  console.log("xxxxxxxxxxxxxxxxxxxxxx "+reversemap(event.data[1]))
+                  Jackdaw.Ui.x_but_down(undefined,reversemap(event.data[1]));
               }else{
-                  alert("yyyyyyyyyyyyyyyyyyyyyy "+reversemap(event.data[1]))
+                  console.log("yyyyyyyyyyyyyyyyyyyyyy "+reversemap(event.data[1]))
               }
 
           }else{
