@@ -2,26 +2,26 @@ var sound = {};
 // var slices = 40;
 var lastsliceplayed=1;
 var drumsound="drumkit3";
-// var bufferLoader;
-// var context = null;
+var bufferLoader;
 
 
 Jackdaw.Realtimeinteraction = ( function() {
 
+var context = null;
 var recorder;
 
 
 function Init(){
     
-    // context = new AudioContext();
+    context = new AudioContext();
     
     //using the global sounds!!!
 
-    // bufferLoader = new BufferLoader(
-    //     context,
-    //     sounds
-    // );
-    // bufferLoader.load();
+    bufferLoader = new BufferLoader(
+        context,
+        sounds
+    );
+    bufferLoader.load();
 
 
     //recorder
@@ -165,7 +165,6 @@ function getbufferedsound(){
         bufferLoader.bufferList["sample"]=newBuffer;
         drumsound="sample"
         console.log("recording buffer = ",bufferLoader.bufferList);
-        trackvoices[currenttrackselected-1][0]="sample";
     });
 }
 

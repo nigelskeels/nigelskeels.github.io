@@ -1,5 +1,4 @@
 var currenttrackselected = 1;
-var stepassignment = [];
 
 Jackdaw.Ui = ( function(  ) {
 
@@ -9,6 +8,7 @@ var lastbeforeshift = "pattern";
 var padlights = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 var xbutlights = [0,0,0,0,0,0,0,0];
 var lightsetting = [];
+var stepassignment = [];
 var beatpos = 1;
 var deletemode = false;
 var displayoffset = 0;
@@ -546,7 +546,6 @@ function X_but_down(e,midipressed){
            console.log("shifting",e.target.id.slice(1)); 
            currenttrackselected=e.target.id.slice(1);
            set_xlabels(mode);
-           labeltext.buttons["step"][0]();
         }
     }
 }
@@ -638,14 +637,8 @@ function Pianokeydown(e){
     console.info("Pianokeydown",e.target.id, rate);
      
     if(mode=="step"){
-        if(isPlaying){  
-           var beatposNOW=beatpos+1;
-        }else{
-           var beatposNOW=beatpos;
-        }
-        console.info("piano down = ",e.target.id," at step = ",beatposNOW);
-        patterns[selectedpattern].pattern.push([currenttrackselected,stepassignment[beatposNOW][0],stepassignment[beatposNOW][1],1,1,keyid])
-
+        console.info("piano down = ",e.target.id," at step = ",beatpos);
+        patterns[selectedpattern].pattern.push([currenttrackselected,stepassignment[beatpos][0],stepassignment[beatpos][1],1,1,keyid])
         //set lights on buttons
         labeltext.buttons["step"][0]();
     } 

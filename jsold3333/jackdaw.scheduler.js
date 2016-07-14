@@ -1,9 +1,6 @@
 var noteResolution = 0;     // 0 == 16th, 1 == 8th, 2 == quarter note
-var tempo = 100.0;          // tempo (in beats per minute)
+var tempo = 60.0;          // tempo (in beats per minute)
 var ppb = 384;
-var isPlaying = false;          // Are we currently playing?
-var context = null;
-var bufferLoader;
 
 Jackdaw.Scheduler = ( function( window, undefined ) {
 
@@ -15,7 +12,10 @@ var current16thNoteTotal;       //i added this to see the current total of notes
 var totalbeatsplayed;           //added to keep track of what beat you are on 
 var notesInQueue = [];          // the notes that have been put into the web audio,
 
+var bufferLoader;
 
+var context = null;
+var isPlaying = false;          // Are we currently playing?
 var startTime;                  // The start time of the entire sequence.
 var lookahead = 25.0;           // How frequently to call scheduling function 
                                 //(in milliseconds)
@@ -132,8 +132,7 @@ function scheduleNote( beatNumber, time, totalsubbeat, totalbeatsplayed) {
                         sound[soundname].loop = true;
                         sound[soundname].start(time,starttime);
                         sound[soundname].loopStart = starttime; 
-                        // sound[soundname].loopEnd = starttime+slicelength;
-                        sound[soundname].loopEnd = starttime+(slicelength*patterns[selectedpattern].pattern[p][4]);
+                        sound[soundname].loopEnd = starttime+slicelength;
                         // sound[soundname].stop( time + patterns[selectedpattern].pattern[p][4] );
                         //the length needs to be calculated beats and subbeat relative to tempo here.
                         // sound[soundname].stop( time + (slicelength*2) );

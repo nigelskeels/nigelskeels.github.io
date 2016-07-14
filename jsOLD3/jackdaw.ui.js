@@ -546,7 +546,6 @@ function X_but_down(e,midipressed){
            console.log("shifting",e.target.id.slice(1)); 
            currenttrackselected=e.target.id.slice(1);
            set_xlabels(mode);
-           labeltext.buttons["step"][0]();
         }
     }
 }
