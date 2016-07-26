@@ -35,6 +35,7 @@ var labeltext = {
                                                 count++;
                                              }
                                         }
+                                        Jackdaw.Midi.setotherlights("pattern",03)
                                         Setpadlights(lightsetting)
 
 

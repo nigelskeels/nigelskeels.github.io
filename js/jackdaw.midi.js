@@ -56,7 +56,9 @@ Jackdaw.Midi = ( function( window, undefined ) {
     var outputs=midiAccess.outputs.values();
     for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
       console.log("Midi outputs",output.value);
-      thisid=output.value.id;
+      if(output.value.name=="APC Key 25"){
+        thisid=output.value.id;
+      }
     }
 
     console.log("output id = ",thisid)
@@ -81,14 +83,12 @@ Jackdaw.Midi = ( function( window, undefined ) {
                         32:0,33:1,34:2,35:3,36:4,37:5,38:6,39:7,
                         "play":91,"rec":93,"shift_big":98,
                         "x_1":64,"x_2":65,"x_3":66,"x_4":67,"x_5":68,"x_6":69,"x_7":70,"x_8":71,
-                        "song":82,"step":83,"voice":84,"sample":85,"fx":86,"shift":81,
+                        "pattern":82,"step":83,"voice":84,"sample":85,"fx":86,"shift":81,
 
                       }
   
 
   function Setnumberpadlights(padlights){
-
-
 
       for (var i = 0; i < 40; i++) {
          var colorcode;
@@ -131,9 +131,15 @@ Jackdaw.Midi = ( function( window, undefined ) {
            }
          }
       };
-
   }
 
+
+  function Setotherlights(which,colorcode){
+          if (thisid){
+            var output = midi.outputs.get(thisid);
+            output.send( [144,padlightsmap[which],colorcode] );
+          }
+  }
 
 
   // function sendsysexec(){
@@ -230,7 +236,8 @@ function MIDIMessageEventHandler(event) {
 
 return{
                     init:Init,
-      setnumberpadlights:Setnumberpadlights
+      setnumberpadlights:Setnumberpadlights,
+          setotherlights:Setotherlights
 };
 
 
