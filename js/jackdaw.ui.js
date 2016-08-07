@@ -1,10 +1,11 @@
 var currenttrackselected = 1;
 var stepassignment = [];
+var mode = "pattern";
+var recordmode = false;
 
 Jackdaw.Ui = ( function(  ) {
 
 var keysdownarray = [];
-var mode = "pattern";
 var lastbeforeshift = "pattern";
 var padlights = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 var xbutlights = [0,0,0,0,0,0,0,0];
@@ -19,6 +20,7 @@ var labeltext = {
                                     function(){
                                         //init pattern mode
                                         console.info("pattern trigger something");
+
 
                                         lightsetting = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] 
                                         var count=0;
@@ -35,7 +37,8 @@ var labeltext = {
                                                 count++;
                                              }
                                         }
-                                        Jackdaw.Midi.setotherlights("pattern",03)
+                                        reset_Ylights("pattern");
+                                        Jackdaw.Midi.setotherlights("pattern",03,true)
                                         Setpadlights(lightsetting)
 
 
@@ -124,7 +127,8 @@ var labeltext = {
 
                                             }
                                         };
-                                        
+                                        reset_Ylights("step");
+                                        Jackdaw.Midi.setotherlights("step",03,true)
                                         Setpadlights(lightsetting)
                                         // console.info("stepassignment",stepassignment);
 
@@ -227,8 +231,10 @@ var labeltext = {
                                                 count++;
                                             } 
                                         }
-
+                                        reset_Ylights("voice");
+                                        Jackdaw.Midi.setotherlights("voice",03,true)
                                         Setpadlights(lightsetting)
+
 
                                     },
                                     function(which){
@@ -253,6 +259,8 @@ var labeltext = {
                                         for (var i = 0; i < trackvoices[currenttrackselected-1][3]; i++) {
                                             lightsetting[i]=2;
                                         };
+                                        reset_Ylights("sample");
+                                        Jackdaw.Midi.setotherlights("sample",03,true)
                                         Setpadlights(lightsetting);
                                         
                                     },
@@ -307,6 +315,11 @@ var labeltext = {
                                     function(){
                                         console.info("fx trigger something");
                                         lightsetting = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]; 
+                                        Jackdaw.Midi.setotherlights("fx",03,true);
+                                        
+                                        Jackdaw.Midi.setotherlights("x_"+currenttrackselected,03);
+                                        reset_Ylights("fx");
+
                                         Setpadlights(lightsetting);
                                     },
                                     function(which){
@@ -321,6 +334,7 @@ var labeltext = {
                           "shift":[
                                     function(){
                                         console.info("shift trigger something");
+                                        reset_Ylights("shift");
                                     },
                                     function(which){
                                         console.info("shift mode number button press down = ",which);
@@ -423,6 +437,11 @@ function transportbuts_mousedown(e){
     var functions_y_buttons = e.target.parentNode.getElementsByTagName("button");
     if(e.target.localName=="button"){
         console.log("transportbuts_mousedown",e.target.id);
+        if(e.target.id=="record"){
+           recordbuttonpressed();
+        }
+
+
         if(mode=="sample"){
             if(e.target.id=="record"){
                 Jackdaw.Realtimeinteraction.startrecording();
@@ -444,24 +463,37 @@ function transportbuts_mousedown(e){
 }
 
 
-function Y_but_down(e){
-    var functions_y_buttons = e.target.parentNode.getElementsByTagName("button");
-    if(e.target.localName=="button"){
-        
-        labeltext.buttons[e.target.id][0]();
 
-
-        if(e.target.id!="shift"){        
-            for (var i = 0; i < functions_y_buttons.length; i++) {
-                functions_y_buttons[i].className="";
-            }
-            lastbeforeshift=e.target.id;
-
-            // console.info("Y_but_down = ",e,e.target.id);
-        }
-        e.target.className="buttonRed";
-        set_xlabels(e.target.id);
+    
+function recordbuttonpressed(){
+    var recbut = document.getElementById("record")
+    if(recordmode==false){
+        recordmode=true;
+        recbut.className="buttonRed";
+        Jackdaw.Midi.setotherlights("rec",3)
+    }else{
+        recordmode=false;
+        recbut.className="";
+        Jackdaw.Midi.setotherlights("rec",00)
     }
+}    
+
+
+
+function Y_but_down(e){
+    if(e.target.localName=="button"){
+        labeltext.buttons[e.target.id][0]();
+    }
+}
+
+function reset_Ylights(which){
+    var functions_y_buttons = document.getElementById("functions_y").getElementsByTagName("button");
+    for (var i = 0; i < functions_y_buttons.length; i++) {
+            functions_y_buttons[i].className="";
+        }
+        lastbeforeshift=which;
+        document.getElementById(which).className="buttonRed"
+        set_xlabels(which);
 }
 
 function Y_but_up(e){
@@ -524,6 +556,7 @@ function set_xlabels(_mode){
 
 
 function X_but_down(e,midipressed){
+    //also incoming midi key presses come here!!!
    
     if(midipressed!=undefined || e.target.localName=="button"){
         // console.log("xbut test", e.target.id.slice(1) )
@@ -532,23 +565,40 @@ function X_but_down(e,midipressed){
             var which = parseInt(e.target.id.slice(1))+2;
         }else{
             // console.log("midi",midipressed.replace("x_", "") );
-            var which = parseInt(midipressed.replace("x_", ""))+2;
-        }
-
-        if(labeltext["buttons"][mode][which][1]!=undefined){
-            //this triggers the function if there is one stored in the array.
-            if(labeltext["buttons"][mode][which][1]!=undefined){
-                // console.info("xbut function to call", labeltext["buttons"][mode][e.target.id.slice(1)-1][1])
-                labeltext["buttons"][mode][which][1]();
+            if(midipressed.indexOf("x_")!=-1){
+                var which = parseInt(midipressed.replace("x_", ""))+2;
+            }else{
+               if(midipressed=="pattern" || midipressed=="step" || midipressed=="voice" || midipressed=="sample" || midipressed=="fx" || midipressed=="shift"){
+                   mode=midipressed;
+                   set_xlabels(mode);
+                   labeltext.buttons[mode][0]();     
+               }
+               if(midipressed=="play"){
+                   Jackdaw.Scheduler.play(); 
+               }
+               if(midipressed=="rec"){
+                   recordbuttonpressed();
+               }
             }
         }
 
-        if(mode=="shift" || mode=="voice" || mode=="fx" ){
-           console.log("shifting",e.target.id.slice(1)); 
-           currenttrackselected=e.target.id.slice(1);
-           set_xlabels(mode);
-           labeltext.buttons["step"][0]();
+        if(which){    
+            if(labeltext["buttons"][mode][which][1]!=undefined){
+                //this triggers the function if there is one stored in the array.
+                if(labeltext["buttons"][mode][which][1]!=undefined){
+                    // console.info("xbut function to call", labeltext["buttons"][mode][e.target.id.slice(1)-1][1])
+                    labeltext["buttons"][mode][which][1]();
+                }
+            }
+    
+            if(mode=="shift" || mode=="voice" || mode=="fx" ){
+               console.log("shifting",which-2); 
+               currenttrackselected=which-2;
+               set_xlabels(mode);
+               labeltext.buttons[mode][0]();
+            }
         }
+
     }
 }
 
@@ -645,7 +695,9 @@ function Pianokeydown(e){
            var beatposNOW=beatpos;
         }
         console.info("piano down = ",e.target.id," at step = ",beatposNOW);
-        patterns[selectedpattern].pattern.push([currenttrackselected,stepassignment[beatposNOW][0],stepassignment[beatposNOW][1],1,1,keyid])
+        if(recordmode==true){
+            patterns[selectedpattern].pattern.push([currenttrackselected,stepassignment[beatposNOW][0],stepassignment[beatposNOW][1],1,1,keyid])
+        }
 
         //set lights on buttons
         labeltext.buttons["step"][0]();

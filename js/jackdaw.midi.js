@@ -134,10 +134,24 @@ Jackdaw.Midi = ( function( window, undefined ) {
   }
 
 
-  function Setotherlights(which,colorcode){
+  function Setotherlights(which,colorcode,reset){
           if (thisid){
             var output = midi.outputs.get(thisid);
+
+            if(reset==true){
+              //switch them all off first
+              for(i in padlightsmap){
+                 if( padlightsmap.hasOwnProperty( i ) ) {
+                    if(isNaN(i) && i!="play" && i!="rec"){
+                        output.send( [144,padlightsmap[i],00] );          
+                    }
+
+                 }
+              }
+            }
+
             output.send( [144,padlightsmap[which],colorcode] );
+
           }
   }
 
@@ -181,14 +195,8 @@ function MIDIMessageEventHandler(event) {
         if(event.data[0]==144){
           //number key down
           if( isNaN(reversemap(event.data[1])) ){
-
-              if(reversemap(event.data[1]).charAt(0)=="x"){
                   console.log("xxxxxxxxxxxxxxxxxxxxxx "+reversemap(event.data[1]))
                   Jackdaw.Ui.x_but_down(undefined,reversemap(event.data[1]));
-              }else{
-                  console.log("yyyyyyyyyyyyyyyyyyyyyy "+reversemap(event.data[1]))
-              }
-
           }else{
             Jackdaw.Ui.numberbuttonpressdown(1+(parseInt(reversemap(event.data[1]))));
           }
@@ -221,6 +229,9 @@ function MIDIMessageEventHandler(event) {
           var slider = document.getElementById("slider"+(event.data[1]-47))
           if(slider!=null){
             slider.value=event.data[2];
+            //50 - 200
+            tempo=((event.data[2]*2)+30);
+            console.info("tempo =",tempo)
           }else{
             if(event.data[1]==64 && event.data[2]==127 ){
                 alert("sustain button")
