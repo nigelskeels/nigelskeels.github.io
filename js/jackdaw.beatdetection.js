@@ -39,7 +39,7 @@ function Calculatetempo(incommingbuffer){
               source.start(0);
 
               var peaks,
-                  initialThresold = 0.9,
+                  initialThresold = 1.1,
                   thresold = initialThresold,
                   minThresold = 0.3,
                   minPeaks = 30;
@@ -49,6 +49,7 @@ function Calculatetempo(incommingbuffer){
                 thresold -= 0.05;
               } while (peaks.length < minPeaks && thresold >= minThresold);
 
+               
               var svg = document.querySelector('#svg');
               svg.innerHTML = '';
               var svgNS = 'http://www.w3.org/2000/svg';
@@ -90,11 +91,56 @@ function Calculatetempo(incommingbuffer){
               var printENBPM = function(tempo) {
                 text.innerHTML += '<div class="small">Other sources: The tempo according to The Echo Nest API is ' +
                       tempo + ' BPM</div>';
+
               };
               
+              console.info("peaks",peaks)
+              addslicebuttons(peaks,buffer)
           });
          
 }
+
+
+function addslicebuttons(peaks,buffer){
+
+  for (var i = 0; i < peaks.length; i++) {
+    
+    var but = document.createElement("button");
+    but.id="slice"+i;
+    but.innerHTML=i;   
+
+    (function(_i){
+
+      but.onclick = function(){
+          // if(_i==0){
+          //   console.log("but",0,peaks[_i])
+          // }else{
+          //   console.log("but",peaks[(_i-1)],peaks[_i])
+          // }
+
+          var source = context.createBufferSource();
+          source.buffer = buffer;                    
+          source.connect(context.destination);       
+          var time = context.currentTime;
+
+
+          var start = peaks[(_i-1)]/44100;
+          var end = peaks[_i]/44100
+
+          console.log("but",start,end)
+
+          source.start(time,start);  
+          source.stop(time+end);  
+      }
+
+    })(i)
+
+    document.body.appendChild(but)
+  };
+
+}
+
+
 
 
 // Function to identify peaks
