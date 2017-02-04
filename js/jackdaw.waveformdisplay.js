@@ -40,9 +40,9 @@ function Drawbuffer(buffer,_zoom) {
         context.fillRect(i,(1+min)*amp,1,Math.max(1,(max-min)*amp));
     }
     //draw diagonal line test
-        context.moveTo(0,0);
-        context.lineTo(200,100);
-        context.stroke();
+        // context.moveTo(0,0);
+        // context.lineTo(200,100);
+        // context.stroke();
 }
 
 

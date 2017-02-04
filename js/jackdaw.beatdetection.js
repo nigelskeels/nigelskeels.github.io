@@ -46,7 +46,7 @@ function Calculatetempo(incommingbuffer){
 
               do {
                 peaks = getPeaksAtThreshold(buffer.getChannelData(0), thresold);
-                thresold -= 0.05;
+                thresold -= 0.10;
               } while (peaks.length < minPeaks && thresold >= minThresold);
 
                
@@ -62,12 +62,12 @@ function Calculatetempo(incommingbuffer){
                 svg.appendChild(rect);
               });
 
-              var rect = document.createElementNS(svgNS, 'rect');
-              rect.setAttributeNS(null, 'id', 'progress');
-              rect.setAttributeNS(null, 'y', 0);
-              rect.setAttributeNS(null, 'width', 1);
-              rect.setAttributeNS(null, 'height', '100%');
-              svg.appendChild(rect);
+              // var rect = document.createElementNS(svgNS, 'rect');
+              // rect.setAttributeNS(null, 'id', 'progress');
+              // rect.setAttributeNS(null, 'y', 0);
+              // rect.setAttributeNS(null, 'width', 1);
+              // rect.setAttributeNS(null, 'height', '100%');
+              // svg.appendChild(rect);
 
               svg.innerHTML = svg.innerHTML;  // force repaint in some browsers
 
@@ -112,25 +112,7 @@ function addslicebuttons(peaks,buffer){
     (function(_i){
 
       but.onclick = function(){
-          // if(_i==0){
-          //   console.log("but",0,peaks[_i])
-          // }else{
-          //   console.log("but",peaks[(_i-1)],peaks[_i])
-          // }
-
-          var source = context.createBufferSource();
-          source.buffer = buffer;                    
-          source.connect(context.destination);       
-          var time = context.currentTime;
-
-
-          var start = peaks[(_i-1)]/44100;
-          var end = peaks[_i]/44100
-
-          console.log("but",start,end)
-
-          source.start(time,start);  
-          source.stop(time+end);  
+          playslice(_i,peaks,buffer)
       }
 
     })(i)
@@ -138,8 +120,40 @@ function addslicebuttons(peaks,buffer){
     document.body.appendChild(but)
   };
 
+  window.onkeyup = function(e) {
+   var key = e.keyCode ? e.keyCode : e.which;
+   var keyval =  parseInt(String.fromCharCode(key));
+   console.log("key",keyval)
+   playslice(keyval,peaks,buffer);
+  
+  }
+
 }
 
+
+function playslice(_i,peaks,buffer){
+          
+          if(peaks[_i]!=undefined){
+
+            var endpadding=0.5;
+            var source = context.createBufferSource();
+            source.buffer = buffer;                    
+            source.connect(context.destination);       
+            var time = context.currentTime;
+
+
+            var start = peaks[(_i)]/44100;
+
+            source.start(time,start);  
+
+            if(_i!=peaks.length-1){
+              var end = peaks[_i+1]/44100
+              source.stop(time+((end-start)-endpadding));
+            }
+
+            console.log("but",start,end)
+          }
+}
 
 
 
