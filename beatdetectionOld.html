@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width">
   <script type="text/javascript" src="js/jackdaw.beatdetection.js"></script>
   <script type="text/javascript" src="js/jackdaw.waveformdisplay.js"></script>
-  <script type="text/javascript" src="js/recorder.js"></script>
  
   <title>Jackdaw Beatdetection</title>
   <style type="text/css">
@@ -26,9 +25,6 @@
 
 <svg width="750" height="200" id="svg"></svg>
 <canvas id="waveform" width="750" height="200"></canvas>
-
-<button id="rec" onClick="Startrecording()">Record</button>
-<button id="play" onClick="Stoprecording()">Play</button>
 
 <script>
 
@@ -64,61 +60,7 @@
                   }
                 };
                 xhr.send();
-
-
-              //recorder
-
-              navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
-              navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
-                console.log('No live audio input: ' + e);
-              });   
-              });
-
-              function startUserMedia(stream){
-                  var input = context.createMediaStreamSource(stream);
-                  console.log('Media stream created.');
-
-                                   
-                  recorder = new Recorder(input);
-                  console.log('Recorder initialised.');
-              }
-
-              function Startrecording(){
-                  recorder.record();
-                  console.log('Recording...');
-              }
-
-              function Stoprecording(){
-                  recorder.stop();
-                  console.log('Stopped recording.');
-                  getbufferedsound();
-                  recorder.clear();
-              }
-
-              function getbufferedsound(){
-                  recorder.getBuffer(function(buffers) {
-                      var newSource = context.createBufferSource();
-                      var newBuffer = context.createBuffer( 2, buffers[0].length, context.sampleRate );
-                      newBuffer.getChannelData(0).set(buffers[0]);
-                      newBuffer.getChannelData(1).set(buffers[1]);
-                      newSource.buffer = newBuffer;
-                      
-                      Jackdaw.Waveformdisplay.drawbuffer(newBuffer)
-
-
-                      // var convert = new ArrayBuffer(newBuffer.length);
-                      // var view   = new Int32Array(newBuffer.getChannelData(0));
-
-                      Jackdaw.Beatdetection.calc( newBuffer ); 
-
-                  });
-              }
-
-
-             
-
-             
-
+    });
 
 </script>
 </body>

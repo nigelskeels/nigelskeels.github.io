@@ -2,6 +2,9 @@ var Jackdaw = {};
 
 Jackdaw.Beatdetection = ( function( window, undefined ) {
 
+    var OfflineContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    var offlineContext = new OfflineContext(1, 2, 44100);
+     //var offlineContext = new OfflineContext(1, 2, 48000);
 
 
 function Init(){
@@ -12,92 +15,91 @@ function Init(){
 
 function Calculatetempo(incommingbuffer){
 
+
+    offlineContext.decodeAudioData(incommingbuffer, function(buffer) {
+      
+      Calc(buffer)
+
+    });
+
+}
+
+function Calc(buffer){
+    
     var text = document.querySelector('#text');
+                        // Create buffer source
+    var source = offlineContext.createBufferSource();
+    source.buffer = buffer;
 
-          // var context = new (window.AudioContext || window.webkitAudioContext) ();
-          
+    // Create filter
+    var filter = offlineContext.createBiquadFilter();
+    filter.type = "lowpass";
 
-            // Create offline context
-            var OfflineContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-            var offlineContext = new OfflineContext(1, 2, 44100);
+    // Pipe the song into the filter, and the filter into the offline context
+    source.connect(filter);
+    filter.connect(offlineContext.destination);
 
-            offlineContext.decodeAudioData(incommingbuffer, function(buffer) {
+    // Schedule the song to start playing at time:0
+    source.start(0);
 
-              // Create buffer source
-              var source = offlineContext.createBufferSource();
-              source.buffer = buffer;
+    var peaks,
+        initialThresold = 1.1,
+        thresold = initialThresold,
+        minThresold = 0.3,
+        minPeaks = 30;
 
-              // Create filter
-              var filter = offlineContext.createBiquadFilter();
-              filter.type = "lowpass";
+    do {
+      peaks = getPeaksAtThreshold(buffer.getChannelData(0), thresold);
+      thresold -= 0.10;
+    } while (peaks.length < minPeaks && thresold >= minThresold);
 
-              // Pipe the song into the filter, and the filter into the offline context
-              source.connect(filter);
-              filter.connect(offlineContext.destination);
+     
+    var svg = document.querySelector('#svg');
+    svg.innerHTML = '';
+    var svgNS = 'http://www.w3.org/2000/svg';
+    peaks.forEach(function(peak) {
+      var rect = document.createElementNS(svgNS, 'rect');
+      rect.setAttributeNS(null, 'x', (100 * peak / buffer.length) + '%');
+      rect.setAttributeNS(null, 'y', 0);
+      rect.setAttributeNS(null, 'width', 1);
+      rect.setAttributeNS(null, 'height', '100%');
+      svg.appendChild(rect);
+    });
 
-              // Schedule the song to start playing at time:0
-              source.start(0);
+    // var rect = document.createElementNS(svgNS, 'rect');
+    // rect.setAttributeNS(null, 'id', 'progress');
+    // rect.setAttributeNS(null, 'y', 0);
+    // rect.setAttributeNS(null, 'width', 1);
+    // rect.setAttributeNS(null, 'height', '100%');
+    // svg.appendChild(rect);
 
-              var peaks,
-                  initialThresold = 1.1,
-                  thresold = initialThresold,
-                  minThresold = 0.3,
-                  minPeaks = 30;
+    svg.innerHTML = svg.innerHTML;  // force repaint in some browsers
 
-              do {
-                peaks = getPeaksAtThreshold(buffer.getChannelData(0), thresold);
-                thresold -= 0.10;
-              } while (peaks.length < minPeaks && thresold >= minThresold);
+    var intervals = countIntervalsBetweenNearbyPeaks(peaks);
 
-               
-              var svg = document.querySelector('#svg');
-              svg.innerHTML = '';
-              var svgNS = 'http://www.w3.org/2000/svg';
-              peaks.forEach(function(peak) {
-                var rect = document.createElementNS(svgNS, 'rect');
-                rect.setAttributeNS(null, 'x', (100 * peak / buffer.length) + '%');
-                rect.setAttributeNS(null, 'y', 0);
-                rect.setAttributeNS(null, 'width', 1);
-                rect.setAttributeNS(null, 'height', '100%');
-                svg.appendChild(rect);
-              });
+    var groups = groupNeighborsByTempo(intervals, buffer.sampleRate);
 
-              // var rect = document.createElementNS(svgNS, 'rect');
-              // rect.setAttributeNS(null, 'id', 'progress');
-              // rect.setAttributeNS(null, 'y', 0);
-              // rect.setAttributeNS(null, 'width', 1);
-              // rect.setAttributeNS(null, 'height', '100%');
-              // svg.appendChild(rect);
+    var top = groups.sort(function(intA, intB) {
+      return intB.count - intA.count;
+    }).splice(0,5);
 
-              svg.innerHTML = svg.innerHTML;  // force repaint in some browsers
+    text.innerHTML =  Math.round(top[0].tempo) + ' BPM</strong>' +
+      ' with ' + top[0].count + ' samples.</div>';
 
-              var intervals = countIntervalsBetweenNearbyPeaks(peaks);
+    text.innerHTML += '<div class="small">Other options are ' +
+      top.slice(1).map(function(group, index) {
+        return group.tempo + ' BPM (' + group.count + ')';
+      }).join(', ') +
+      '</div>';
 
-              var groups = groupNeighborsByTempo(intervals, buffer.sampleRate);
+    var printENBPM = function(tempo) {
+      text.innerHTML += '<div class="small">Other sources: The tempo according to The Echo Nest API is ' +
+            tempo + ' BPM</div>';
 
-              var top = groups.sort(function(intA, intB) {
-                return intB.count - intA.count;
-              }).splice(0,5);
-
-              text.innerHTML =  Math.round(top[0].tempo) + ' BPM</strong>' +
-                ' with ' + top[0].count + ' samples.</div>';
-
-              text.innerHTML += '<div class="small">Other options are ' +
-                top.slice(1).map(function(group, index) {
-                  return group.tempo + ' BPM (' + group.count + ')';
-                }).join(', ') +
-                '</div>';
-
-              var printENBPM = function(tempo) {
-                text.innerHTML += '<div class="small">Other sources: The tempo according to The Echo Nest API is ' +
-                      tempo + ' BPM</div>';
-
-              };
-              
-              console.info("peaks",peaks)
-              addslicebuttons(peaks,buffer)
-          });
-         
+    };
+    
+    console.info("peaks",peaks)
+    addslicebuttons(peaks,buffer)
 }
 
 
@@ -148,7 +150,9 @@ function playslice(_i,peaks,buffer){
 
             if(_i!=peaks.length-1){
               var end = peaks[_i+1]/44100
-              source.stop(time+((end-start)-endpadding));
+              //source.stop(time+((end)));
+               // source.stop(time+((end-start)-endpadding));
+               source.stop(time+((end-start)-endpadding));
             }
 
             console.log("but",start,end)
@@ -226,7 +230,8 @@ function groupNeighborsByTempo(intervalCounts, sampleRate) {
 
 return{
             init:Init,
-  calculatetempo:Calculatetempo
+  calculatetempo:Calculatetempo,
+            calc:Calc
 };
 
 
