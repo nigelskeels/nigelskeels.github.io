@@ -147,12 +147,12 @@ function playslice(_i,peaks,buffer){
             var time = context.currentTime;
 
 
-            var start = peaks[(_i)]/44100;
+            var start = peaks[(_i)]/context.sampleRate;
 
             source.start(time,start);  
 
             if(_i!=peaks.length-1){
-              var end = peaks[_i+1]/44100
+              var end = peaks[_i+1]/context.sampleRate
               //source.stop(time+((end)));
                // source.stop(time+((end-start)-endpadding));
                source.stop(time+((end-start)-endpadding));
