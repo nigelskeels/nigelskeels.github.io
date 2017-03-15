@@ -3,8 +3,8 @@ var Jackdaw = {};
 Jackdaw.Beatdetection = ( function( window, undefined ) {
 
     var OfflineContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-    var offlineContext = new OfflineContext(1, 2, 44100);
-     //var offlineContext = new OfflineContext(1, 2, 48000);
+     //var offlineContext = new OfflineContext(1, 2, 44100);
+    var offlineContext = new OfflineContext(1, 2, 48000);
 
 
 function Init(){
@@ -105,6 +105,9 @@ function Calc(buffer){
 
 function addslicebuttons(peaks,buffer){
 
+  var slicebuts = document.getElementById("slicebuts")
+  slicebuts.innerHTML="";
+
   for (var i = 0; i < peaks.length; i++) {
     
     var but = document.createElement("button");
@@ -119,7 +122,7 @@ function addslicebuttons(peaks,buffer){
 
     })(i)
 
-    document.body.appendChild(but)
+    slicebuts.appendChild(but)
   };
 
   window.onkeyup = function(e) {
