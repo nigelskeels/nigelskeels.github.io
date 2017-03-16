@@ -3,8 +3,10 @@ var Jackdaw = {};
 Jackdaw.Beatdetection = ( function( window, undefined ) {
 
     var OfflineContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-     //var offlineContext = new OfflineContext(1, 2, 44100);
-    var offlineContext = new OfflineContext(1, 2, 48000);
+     var offlineContext = new OfflineContext(1, 2, 44100);
+    //var offlineContext = new OfflineContext(2, 2, 48000);
+
+    var bufferstore;
 
 
 function Init(){
@@ -26,6 +28,8 @@ function Calculatetempo(incommingbuffer){
 
 function Calc(buffer){
     
+   
+
     var text = document.querySelector('#text');
                         // Create buffer source
     var source = offlineContext.createBufferSource();
@@ -43,9 +47,9 @@ function Calc(buffer){
     source.start(0);
 
     var peaks,
-        initialThresold = 1.1,
+        initialThresold = 0.4,
         thresold = initialThresold,
-        minThresold = 0.3,
+        minThresold = 0.5,
         minPeaks = 30;
 
     do {
@@ -57,14 +61,16 @@ function Calc(buffer){
     var svg = document.querySelector('#svg');
     svg.innerHTML = '';
     var svgNS = 'http://www.w3.org/2000/svg';
-    peaks.forEach(function(peak) {
+    // peaks.forEach(function(peak) {
+    for (var i = 0; i < peaks.length; i++) {
       var rect = document.createElementNS(svgNS, 'rect');
-      rect.setAttributeNS(null, 'x', (100 * peak / buffer.length) + '%');
+      rect.setAttributeNS(null, 'x', (100 * peaks[i] / buffer.length) + '%');
       rect.setAttributeNS(null, 'y', 0);
       rect.setAttributeNS(null, 'width', 1);
       rect.setAttributeNS(null, 'height', '100%');
       svg.appendChild(rect);
-    });
+    }
+    // });
 
     // var rect = document.createElementNS(svgNS, 'rect');
     // rect.setAttributeNS(null, 'id', 'progress');
@@ -100,6 +106,7 @@ function Calc(buffer){
     
     console.info("peaks",peaks)
     addslicebuttons(peaks,buffer)
+     bufferstore=buffer;
 }
 
 
@@ -141,24 +148,21 @@ function playslice(_i,peaks,buffer){
           if(peaks[_i]!=undefined){
 
             var endpadding=0.5;
-            var source = context.createBufferSource();
-            source.buffer = buffer;                    
-            source.connect(context.destination);       
+            var newsource = context.createBufferSource();
+            newsource.buffer = buffer;                    
+            newsource.connect(context.destination);       
             var time = context.currentTime;
 
 
-            var start = peaks[(_i)]/context.sampleRate;
+            var start = peaks[(_i)]/buffer.sampleRate;
 
-            source.start(time,start);  
+            newsource.start(time,start);  
 
             if(_i!=peaks.length-1){
-              var end = peaks[_i+1]/context.sampleRate
-              //source.stop(time+((end)));
-               // source.stop(time+((end-start)-endpadding));
-               source.stop(time+((end-start)-endpadding));
+              var end = peaks[_i+1]/buffer.sampleRate
+              newsource.stop(time+(end-start));
             }
-
-            console.log("but",start,end)
+            console.log("but",time,start)
           }
 }
 

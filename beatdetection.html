@@ -99,7 +99,8 @@
               function getbufferedsound(){
                   recorder.getBuffer(function(buffers) {
                       var newSource = context.createBufferSource();
-                      var newBuffer = context.createBuffer( 2, buffers[0].length, context.sampleRate );
+                      //var newBuffer = context.createBuffer( 2, 2, context.sampleRate );
+                       var newBuffer = context.createBuffer( 2, buffers[0].length, context.sampleRate );
                       newBuffer.getChannelData(0).set(buffers[0]);
                       newBuffer.getChannelData(1).set(buffers[1]);
                       newSource.buffer = newBuffer;
