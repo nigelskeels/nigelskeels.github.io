@@ -134,11 +134,7 @@ RN2483.prototype.LoRaWAN = function(devAddr,nwkSKey,appSKey, callback)
     });
   }).then(function(d) {
     return new Promise(function(resolve) {
-      at.cmd("mac set set rx2 3 869525000\r\n",2000,resolve);
-    });
-  }).then(function(d) {
-    return new Promise(function(resolve) {
-      at.cmd("mac ar on\r\n",2000,resolve);
+      at.cmd("mac set rx2 3 869525000\r\n",2000,resolve);
     });
   }).then(function(d) {
     return new Promise(function(resolve) {
