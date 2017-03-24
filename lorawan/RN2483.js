@@ -171,6 +171,14 @@ RN2483.prototype.loraTX = function(msg, callback) {
   });
 };
 
+/// Recieve a message (using LoRaWAN)
+RN2483.prototype.loraRX = function(callback) {
+  var at = this.at;
+  at.registerLine('mac_rx', function(x) {
+    callback(fromHex(x,10))
+  });
+};
+
 
 /** Receive a message from the radio (not using LoRaWAN) with the given timeout
 in miliseconds. If the timeout is reached, callback will be called with 'undefined' */
