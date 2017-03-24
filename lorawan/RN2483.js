@@ -138,11 +138,11 @@ RN2483.prototype.LoRaWAN = function(devAddr,nwkSKey,appSKey, callback)
     });
   }).then(function(d) {
     return new Promise(function(resolve) {
-      at.cmd("mac join ABP\r\n",2000,resolve);
+      at.cmd("mac ar on\r\n",2000,resolve);
     });
   }).then(function(d) {
     return new Promise(function(resolve) {
-      at.cmd("mac ar on\r\n",2000,resolve);
+      at.cmd("mac join ABP\r\n",2000,resolve);
     });
   }).then(function(d) {
     callback(d);
