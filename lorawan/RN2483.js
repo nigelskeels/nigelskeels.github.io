@@ -152,6 +152,11 @@ RN2483.prototype.setMAC = function(on, callback) {
   this.at.cmd("mac "+(on?"resume":"pause")+"\r\n",500,callback);
 };
 
+/// Nigel Send generic query
+RN2483.prototype.sendquery = function(what, callback) {
+  this.at.cmd(what+"\r\n",500,callback);
+};
+
 /// Transmit a message over the radio (not using LoRaWAN)
 RN2483.prototype.radioTX = function(msg, callback) {
   var at = this.at;
