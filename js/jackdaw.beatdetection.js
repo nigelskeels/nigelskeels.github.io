@@ -6,7 +6,9 @@ Jackdaw.Beatdetection = ( function( window, undefined ) {
      var offlineContext = new OfflineContext(1, 2, 44100);
     //var offlineContext = new OfflineContext(2, 2, 48000);
 
-    var bufferstore;
+    var currentpeaks;
+    var currentbuffer;
+    var lastsliceplayed=0;
 
 
 function Init(){
@@ -58,18 +60,18 @@ function Calc(buffer){
     } while (peaks.length < minPeaks && thresold >= minThresold);
 
      
-    var svg = document.querySelector('#svg');
-    svg.innerHTML = '';
-    var svgNS = 'http://www.w3.org/2000/svg';
-    // peaks.forEach(function(peak) {
-    for (var i = 0; i < peaks.length; i++) {
-      var rect = document.createElementNS(svgNS, 'rect');
-      rect.setAttributeNS(null, 'x', (100 * peaks[i] / buffer.length) + '%');
-      rect.setAttributeNS(null, 'y', 0);
-      rect.setAttributeNS(null, 'width', 1);
-      rect.setAttributeNS(null, 'height', '100%');
-      svg.appendChild(rect);
-    }
+    // var svg = document.querySelector('#svg');
+    // svg.innerHTML = '';
+    // var svgNS = 'http://www.w3.org/2000/svg';
+    // // peaks.forEach(function(peak) {
+    // for (var i = 0; i < peaks.length; i++) {
+    //   var rect = document.createElementNS(svgNS, 'rect');
+    //   rect.setAttributeNS(null, 'x', (100 * peaks[i] / buffer.length) + '%');
+    //   rect.setAttributeNS(null, 'y', 0);
+    //   rect.setAttributeNS(null, 'width', 1);
+    //   rect.setAttributeNS(null, 'height', '100%');
+    //   svg.appendChild(rect);
+    // }
     // });
 
     // var rect = document.createElementNS(svgNS, 'rect');
@@ -79,7 +81,7 @@ function Calc(buffer){
     // rect.setAttributeNS(null, 'height', '100%');
     // svg.appendChild(rect);
 
-    svg.innerHTML = svg.innerHTML;  // force repaint in some browsers
+    // svg.innerHTML = svg.innerHTML;  // force repaint in some browsers
 
     var intervals = countIntervalsBetweenNearbyPeaks(peaks);
 
@@ -106,16 +108,38 @@ function Calc(buffer){
     
     console.info("peaks",peaks)
     addslicebuttons(peaks,buffer)
-     bufferstore=buffer;
+    currentpeaks=peaks;
+    currentbuffer=buffer;
 }
 
+function updatestartpointslider(){
+    var startpointslider = document.getElementById("startpointslider")
+    startpointslider.max = currentbuffer.length;
+    startpointslider.value =currentpeaks[lastsliceplayed];
+}
+
+function Updatepeaks(val){
+    console.log(lastsliceplayed,"update startpoint",val)
+    currentpeaks[lastsliceplayed]=val;
+    addslicebuttons(currentpeaks,currentbuffer)
+}
 
 function addslicebuttons(peaks,buffer){
 
   var slicebuts = document.getElementById("slicebuts")
   slicebuts.innerHTML="";
 
+  var svg = document.querySelector('#svg');
+  svg.innerHTML = '';
+  var svgNS = 'http://www.w3.org/2000/svg';
+    
   for (var i = 0; i < peaks.length; i++) {
+    var rect = document.createElementNS(svgNS, 'rect');
+    rect.setAttributeNS(null, 'x', (100 * peaks[i] / buffer.length) + '%');
+    rect.setAttributeNS(null, 'y', 0);
+    rect.setAttributeNS(null, 'width', 1);
+    rect.setAttributeNS(null, 'height', '100%');
+    svg.appendChild(rect);
     
     var but = document.createElement("button");
     but.id="slice"+i;
@@ -132,18 +156,20 @@ function addslicebuttons(peaks,buffer){
     slicebuts.appendChild(but)
   };
 
+  svg.innerHTML = svg.innerHTML;  // force repaint in some browsers
+
   window.onkeyup = function(e) {
    var key = e.keyCode ? e.keyCode : e.which;
    var keyval =  parseInt(String.fromCharCode(key));
    console.log("key",keyval)
    playslice(keyval,peaks,buffer);
-  
   }
 
 }
 
 
 function playslice(_i,peaks,buffer){
+
           
           if(peaks[_i]!=undefined){
 
@@ -162,6 +188,8 @@ function playslice(_i,peaks,buffer){
               var end = peaks[_i+1]/buffer.sampleRate
               newsource.stop(time+(end-start));
             }
+            lastsliceplayed=_i;
+            updatestartpointslider();
             console.log("but",time,start)
           }
 }
@@ -238,7 +266,8 @@ function groupNeighborsByTempo(intervalCounts, sampleRate) {
 return{
             init:Init,
   calculatetempo:Calculatetempo,
-            calc:Calc
+            calc:Calc,
+     updatepeaks:Updatepeaks
 };
 
 

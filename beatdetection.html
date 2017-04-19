@@ -29,7 +29,10 @@
 
 <button id="rec" onClick="Startrecording()">Record</button>
 <button id="play" onClick="Stoprecording()">Play</button>
+
 <div id="slicebuts"></div>
+<br>
+<input id="startpointslider" onInput="Jackdaw.Beatdetection.updatepeaks(this.value)" min="1" max="100" step="1" value="0" type="range"/>
 
 <script>
 
