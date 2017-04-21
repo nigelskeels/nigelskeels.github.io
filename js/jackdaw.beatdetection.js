@@ -1,3 +1,5 @@
+    var currentpeaks;
+    var currentends;
 var Jackdaw = {};
 
 Jackdaw.Beatdetection = ( function( window, undefined ) {
@@ -6,7 +8,6 @@ Jackdaw.Beatdetection = ( function( window, undefined ) {
      var offlineContext = new OfflineContext(1, 2, 44100);
     //var offlineContext = new OfflineContext(2, 2, 48000);
 
-    var currentpeaks;
     var currentbuffer;
     var lastsliceplayed=0;
 
@@ -107,8 +108,14 @@ function Calc(buffer){
     };
     
     console.info("peaks",peaks)
-    addslicebuttons(peaks,buffer)
+    addslicebuttons(peaks,peaks,buffer)
     currentpeaks=peaks;
+    currentends=peaks.slice();
+    currentends.splice(0,1);
+    //currentends=currentendshold;
+    
+    currentends.push(buffer.length);
+
     currentbuffer=buffer;
 }
 
@@ -118,13 +125,25 @@ function updatestartpointslider(){
     startpointslider.value =currentpeaks[lastsliceplayed];
 }
 
+function updateendpointslider(){
+    var endpointslider = document.getElementById("endpointslider")
+    endpointslider.max = currentbuffer.length;
+    endpointslider.value =currentends[lastsliceplayed];
+}
+
 function Updatepeaks(val){
     console.log(lastsliceplayed,"update startpoint",val)
     currentpeaks[lastsliceplayed]=val;
-    addslicebuttons(currentpeaks,currentbuffer)
+    addslicebuttons(currentpeaks,currentends,currentbuffer)
 }
 
-function addslicebuttons(peaks,buffer){
+function Updateends(val){
+    console.log(lastsliceplayed,"update currentends",val)
+    currentends[lastsliceplayed]=val;
+    addslicebuttons(currentpeaks,currentends,currentbuffer)
+}
+
+function addslicebuttons(peaks,ends,buffer){
 
   var slicebuts = document.getElementById("slicebuts")
   slicebuts.innerHTML="";
@@ -139,7 +158,17 @@ function addslicebuttons(peaks,buffer){
     rect.setAttributeNS(null, 'y', 0);
     rect.setAttributeNS(null, 'width', 1);
     rect.setAttributeNS(null, 'height', '100%');
+    
     svg.appendChild(rect);
+
+    var rect2 = document.createElementNS(svgNS, 'rect');
+    rect2.setAttributeNS(null, 'x', (100 * ends[i] / buffer.length) + '%');
+    rect2.setAttributeNS(null, 'y', 0);
+    rect2.setAttributeNS(null, 'width', 2);
+    rect2.setAttributeNS(null, 'height', '100%');
+
+
+    svg.appendChild(rect2);
     
     var but = document.createElement("button");
     but.id="slice"+i;
@@ -148,7 +177,7 @@ function addslicebuttons(peaks,buffer){
     (function(_i){
 
       but.onclick = function(){
-          playslice(_i,peaks,buffer)
+          playslice(_i,peaks,ends,buffer)
       }
 
     })(i)
@@ -162,13 +191,13 @@ function addslicebuttons(peaks,buffer){
    var key = e.keyCode ? e.keyCode : e.which;
    var keyval =  parseInt(String.fromCharCode(key));
    console.log("key",keyval)
-   playslice(keyval,peaks,buffer);
+   playslice(keyval,peaks,ends,buffer);
   }
 
 }
 
 
-function playslice(_i,peaks,buffer){
+function playslice(_i,peaks,ends,buffer){
 
           
           if(peaks[_i]!=undefined){
@@ -185,11 +214,13 @@ function playslice(_i,peaks,buffer){
             newsource.start(time,start);  
 
             if(_i!=peaks.length-1){
-              var end = peaks[_i+1]/buffer.sampleRate
+              // var end = peaks[_i+1]/buffer.sampleRate
+              var end = ends[_i]/buffer.sampleRate
               newsource.stop(time+(end-start));
             }
             lastsliceplayed=_i;
             updatestartpointslider();
+            updateendpointslider();
             console.log("but",time,start)
           }
 }
@@ -267,7 +298,8 @@ return{
             init:Init,
   calculatetempo:Calculatetempo,
             calc:Calc,
-     updatepeaks:Updatepeaks
+     updatepeaks:Updatepeaks,
+      updateends:Updateends
 };
 
 
