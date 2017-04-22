@@ -1,5 +1,6 @@
     var currentpeaks;
     var currentends;
+    var currentbuffer;
 var Jackdaw = {};
 
 Jackdaw.Beatdetection = ( function( window, undefined ) {
@@ -8,7 +9,6 @@ Jackdaw.Beatdetection = ( function( window, undefined ) {
      var offlineContext = new OfflineContext(1, 2, 44100);
     //var offlineContext = new OfflineContext(2, 2, 48000);
 
-    var currentbuffer;
     var lastsliceplayed=0;
 
 
@@ -61,29 +61,6 @@ function Calc(buffer){
     } while (peaks.length < minPeaks && thresold >= minThresold);
 
      
-    // var svg = document.querySelector('#svg');
-    // svg.innerHTML = '';
-    // var svgNS = 'http://www.w3.org/2000/svg';
-    // // peaks.forEach(function(peak) {
-    // for (var i = 0; i < peaks.length; i++) {
-    //   var rect = document.createElementNS(svgNS, 'rect');
-    //   rect.setAttributeNS(null, 'x', (100 * peaks[i] / buffer.length) + '%');
-    //   rect.setAttributeNS(null, 'y', 0);
-    //   rect.setAttributeNS(null, 'width', 1);
-    //   rect.setAttributeNS(null, 'height', '100%');
-    //   svg.appendChild(rect);
-    // }
-    // });
-
-    // var rect = document.createElementNS(svgNS, 'rect');
-    // rect.setAttributeNS(null, 'id', 'progress');
-    // rect.setAttributeNS(null, 'y', 0);
-    // rect.setAttributeNS(null, 'width', 1);
-    // rect.setAttributeNS(null, 'height', '100%');
-    // svg.appendChild(rect);
-
-    // svg.innerHTML = svg.innerHTML;  // force repaint in some browsers
-
     var intervals = countIntervalsBetweenNearbyPeaks(peaks);
 
     var groups = groupNeighborsByTempo(intervals, buffer.sampleRate);
@@ -95,11 +72,11 @@ function Calc(buffer){
     text.innerHTML =  Math.round(top[0].tempo) + ' BPM</strong>' +
       ' with ' + top[0].count + ' samples.</div>';
 
-    text.innerHTML += '<div class="small">Other options are ' +
-      top.slice(1).map(function(group, index) {
-        return group.tempo + ' BPM (' + group.count + ')';
-      }).join(', ') +
-      '</div>';
+    // text.innerHTML += '<div class="small">Other options are ' +
+    //   top.slice(1).map(function(group, index) {
+    //     return group.tempo + ' BPM (' + group.count + ')';
+    //   }).join(', ') +
+    //   '</div>';
 
     var printENBPM = function(tempo) {
       text.innerHTML += '<div class="small">Other sources: The tempo according to The Echo Nest API is ' +
@@ -108,13 +85,12 @@ function Calc(buffer){
     };
     
     console.info("peaks",peaks)
-    addslicebuttons(peaks,peaks,buffer)
+    // addslicebuttons(peaks,peaks,buffer)
     currentpeaks=peaks;
     currentends=peaks.slice();
-    currentends.splice(0,1);
-    //currentends=currentendshold;
-    
+    currentends.splice(0,1);    
     currentends.push(buffer.length);
+    addslicebuttons(currentpeaks,currentends,buffer)
 
     currentbuffer=buffer;
 }
@@ -133,13 +109,13 @@ function updateendpointslider(){
 
 function Updatepeaks(val){
     console.log(lastsliceplayed,"update startpoint",val)
-    currentpeaks[lastsliceplayed]=val;
+    currentpeaks[lastsliceplayed]=parseInt(val);
     addslicebuttons(currentpeaks,currentends,currentbuffer)
 }
 
 function Updateends(val){
     console.log(lastsliceplayed,"update currentends",val)
-    currentends[lastsliceplayed]=val;
+    currentends[lastsliceplayed]=parseInt(val);
     addslicebuttons(currentpeaks,currentends,currentbuffer)
 }
 
@@ -213,11 +189,11 @@ function playslice(_i,peaks,ends,buffer){
 
             newsource.start(time,start);  
 
-            if(_i!=peaks.length-1){
+            // if(_i!=peaks.length-1){
               // var end = peaks[_i+1]/buffer.sampleRate
               var end = ends[_i]/buffer.sampleRate
               newsource.stop(time+(end-start));
-            }
+            // }
             lastsliceplayed=_i;
             updatestartpointslider();
             updateendpointslider();
@@ -291,15 +267,38 @@ function groupNeighborsByTempo(intervalCounts, sampleRate) {
   return tempoCounts;
 }
 
+function Getcurrentslicebuffer(thisslice){
+
+      if(thisslice==undefined){
+        var thisslice = lastsliceplayed
+      }
+      
+      var newbufferlength = currentends[thisslice]-currentpeaks[thisslice]
+      var tmp = context.createBuffer( currentbuffer.numberOfChannels, newbufferlength, currentbuffer.sampleRate );
+
+      for (var i=0; i< currentbuffer.numberOfChannels; i++) {
+        var channel = tmp.getChannelData(i);
+        var slicedata = currentbuffer.getChannelData(i).slice(currentpeaks[thisslice],currentends[thisslice]);
+        channel.set( slicedata, 0);
+      }
+    Jackdaw.Audioexport.download(tmp,"slice_"+thisslice,"audio/wav");
+}
 
 
+function Getallslices(){
+  for (var i = 0; i < currentpeaks.length; i++) {
+      Getcurrentslicebuffer(i);
+  };
+}
 
 return{
-            init:Init,
-  calculatetempo:Calculatetempo,
-            calc:Calc,
-     updatepeaks:Updatepeaks,
-      updateends:Updateends
+                    init:Init,
+          calculatetempo:Calculatetempo,
+                    calc:Calc,
+             updatepeaks:Updatepeaks,
+              updateends:Updateends,
+   getcurrentslicebuffer:Getcurrentslicebuffer,
+            getallslices:Getallslices
 };
 
 

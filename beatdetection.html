@@ -7,6 +7,8 @@
   <script type="text/javascript" src="js/jackdaw.beatdetection.js"></script>
   <script type="text/javascript" src="js/jackdaw.waveformdisplay.js"></script>
   <script type="text/javascript" src="js/recorder.js"></script>
+  <script type="text/javascript" src="js/jackdaw.audioexport.js"></script>
+
  
   <title>Jackdaw Beatdetection</title>
   <style type="text/css">
@@ -14,6 +16,10 @@
        fill:orange;
        position: absolute;
        left: 9px;
+    }
+    .downloadlink{
+      clear:both;
+      display: block;
     }
   </style>
 </head>
@@ -34,6 +40,9 @@
 <br>
 <input id="startpointslider" onInput="Jackdaw.Beatdetection.updatepeaks(this.value)" min="1" max="100" step="1" value="0" type="range"/>
 <input id="endpointslider" onInput="Jackdaw.Beatdetection.updateends(this.value)" min="1" max="100" step="1" value="0" type="range"/>
+<button onClick="Jackdaw.Beatdetection.getcurrentslicebuffer()">Export slice</button>
+<button onClick="Jackdaw.Beatdetection.getallslices()">Export all slices</button>
+
 <script>
 
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -60,11 +69,6 @@
                           }, 
                             function(e){console.log("error ",e)}
                           );
-                          // context.decodeAudioData(this.response, function(buffer) {
-                          //   Jackdaw.Beatdetection.calculatetempo(buffer); 
-                          // }, 
-                          //   function(e){console.log("error ",e)}
-                          // );
                   }
                 };
                 xhr.send();
