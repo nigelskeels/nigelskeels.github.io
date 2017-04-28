@@ -284,6 +284,47 @@ function Getcurrentslicebuffer(thisslice){
     Jackdaw.Audioexport.download(tmp,"slice_"+thisslice,"audio/wav");
 }
 
+function Reverseslice(){
+
+    var thisslice = lastsliceplayed
+
+    var tmp = context.createBuffer( currentbuffer.numberOfChannels, currentbuffer.length, currentbuffer.sampleRate );
+
+    for (var i=0; i< currentbuffer.numberOfChannels; i++) {
+      var channel = tmp.getChannelData(i);
+      
+      var auddata = currentbuffer.getChannelData(i);
+      var slicedata = currentbuffer.getChannelData(i).slice(currentpeaks[thisslice],currentends[thisslice]);
+      var reversed = slicedata.reverse();
+      var out = splicer(auddata,currentpeaks[thisslice],slicedata.length,reversed)
+
+      channel.set( out, 0);
+    }
+
+    currentbuffer=tmp;
+    Jackdaw.Waveformdisplay.drawbuffer(currentbuffer)
+    addslicebuttons(currentpeaks,currentends,currentbuffer);
+}
+
+//this is used as ordinary js slice won't work with typedarray
+function splicer(arr, starting, deleteCount, elements) {
+  if (arguments.length === 1) {
+    return arr;
+  }
+  starting = Math.max(starting, 0);
+  deleteCount = Math.max(deleteCount, 0);
+  elements = elements || [];
+
+
+  const newSize = arr.length - deleteCount + elements.length;
+  const splicedArray = new arr.constructor(newSize);
+
+  splicedArray.set(arr.subarray(0, starting));
+  splicedArray.set(elements, starting);
+  splicedArray.set(arr.subarray(starting + deleteCount), starting + elements.length);
+  return splicedArray;
+};
+
 
 function Getallslices(){
   for (var i = 0; i < currentpeaks.length; i++) {
@@ -298,7 +339,8 @@ return{
              updatepeaks:Updatepeaks,
               updateends:Updateends,
    getcurrentslicebuffer:Getcurrentslicebuffer,
-            getallslices:Getallslices
+            getallslices:Getallslices,
+            reverseslice:Reverseslice
 };
 
 
