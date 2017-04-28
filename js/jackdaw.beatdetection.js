@@ -281,7 +281,7 @@ function Getcurrentslicebuffer(thisslice){
         var slicedata = currentbuffer.getChannelData(i).slice(currentpeaks[thisslice],currentends[thisslice]);
         channel.set( slicedata, 0);
       }
-    Jackdaw.Audioexport.download(tmp,"slice_"+thisslice,"audio/wav");
+      Jackdaw.Audioexport.download(tmp,"slice_"+thisslice,"audio/wav");
 }
 
 function Reverseslice(){
@@ -292,12 +292,10 @@ function Reverseslice(){
 
     for (var i=0; i< currentbuffer.numberOfChannels; i++) {
       var channel = tmp.getChannelData(i);
-      
       var auddata = currentbuffer.getChannelData(i);
       var slicedata = currentbuffer.getChannelData(i).slice(currentpeaks[thisslice],currentends[thisslice]);
       var reversed = slicedata.reverse();
       var out = splicer(auddata,currentpeaks[thisslice],slicedata.length,reversed)
-
       channel.set( out, 0);
     }
 
@@ -305,6 +303,41 @@ function Reverseslice(){
     Jackdaw.Waveformdisplay.drawbuffer(currentbuffer)
     addslicebuttons(currentpeaks,currentends,currentbuffer);
 }
+
+function Boostbass(){
+    //fx applied to the whole file, but should only be the slice like above
+
+    var offlineContext = new OfflineContext(1, currentbuffer.length, 44100);
+
+    var fxbuffer = offlineContext.createBufferSource();
+    fxbuffer.buffer = currentbuffer;
+
+    // Create filter
+    var filter = offlineContext.createBiquadFilter();
+    filter.type = "lowpass";
+
+    // Pipe the song into the filter, and the filter into the offline context
+    fxbuffer.connect(filter);
+    filter.connect(offlineContext.destination);
+    fxbuffer.start(0);
+
+    offlineContext.startRendering().then(function(renderedBuffer){
+      currentbuffer=renderedBuffer;
+      Jackdaw.Waveformdisplay.drawbuffer(currentbuffer)
+      addslicebuttons(currentpeaks,currentends,currentbuffer);
+    }).catch(function(err) {
+          console.log('Rendering failed: ' + err);
+    });
+ 
+}
+
+
+function Getallslices(){
+  for (var i = 0; i < currentpeaks.length; i++) {
+      Getcurrentslicebuffer(i);
+  };
+}
+
 
 //this is used as ordinary js slice won't work with typedarray
 function splicer(arr, starting, deleteCount, elements) {
@@ -314,7 +347,6 @@ function splicer(arr, starting, deleteCount, elements) {
   starting = Math.max(starting, 0);
   deleteCount = Math.max(deleteCount, 0);
   elements = elements || [];
-
 
   const newSize = arr.length - deleteCount + elements.length;
   const splicedArray = new arr.constructor(newSize);
@@ -326,11 +358,8 @@ function splicer(arr, starting, deleteCount, elements) {
 };
 
 
-function Getallslices(){
-  for (var i = 0; i < currentpeaks.length; i++) {
-      Getcurrentslicebuffer(i);
-  };
-}
+
+
 
 return{
                     init:Init,
@@ -340,7 +369,8 @@ return{
               updateends:Updateends,
    getcurrentslicebuffer:Getcurrentslicebuffer,
             getallslices:Getallslices,
-            reverseslice:Reverseslice
+            reverseslice:Reverseslice,
+               boostbass:Boostbass
 };
 
 
