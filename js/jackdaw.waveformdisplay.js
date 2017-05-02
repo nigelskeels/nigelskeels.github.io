@@ -11,6 +11,8 @@ function Init(){
 function Drawbuffer(buffer,_zoom) {
 
     canvas = document.getElementById("waveform");
+    hitpoints = document.getElementById("svg");
+
     
     if(buffer!=undefined){
         lastbuffer = buffer;
@@ -19,6 +21,8 @@ function Drawbuffer(buffer,_zoom) {
     }
 
     var width =  _zoom || canvas.width;
+    canvas.width=width;
+    hitpoints.width=width;
     var height = canvas.height;
     var context = canvas.getContext('2d');
 

@@ -26,6 +26,10 @@
       background-color: red;
       color: white;
     }
+    #canvascontainer{
+      overflow-x:auto;
+      width:700px;
+    }
   </style>
 </head>
 
@@ -35,8 +39,10 @@
   
 <div id="text"></div>
 
-<svg width="750" height="200" id="svg"></svg>
-<canvas id="waveform" width="750" height="200"></canvas>
+<div id="canvascontainer">
+  <svg width="750" height="200" id="svg"></svg>
+  <canvas id="waveform" width="750" height="200"></canvas>
+</div>
 
 <button id="rec" onClick="Startrecording(this)">Record</button>
 <!-- <button id="play" onClick="Stoprecording()">Play</button> -->
