@@ -95,6 +95,7 @@
               }
 
               function Startrecording(){
+                  context = new AudioContext();
                   recorder.record();
                   console.log('Recording...');
               }
