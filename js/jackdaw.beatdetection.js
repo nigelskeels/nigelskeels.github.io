@@ -107,16 +107,22 @@ function updateendpointslider(){
     endpointslider.value =currentends[lastsliceplayed];
 }
 
-function Updatepeaks(val){
+function Updatepeaks(val,midi){
     console.log(lastsliceplayed,"update startpoint",val)
     currentpeaks[lastsliceplayed]=parseInt(val);
     addslicebuttons(currentpeaks,currentends,currentbuffer)
+    if(midi==true){
+      updatestartpointslider()
+    }
 }
 
-function Updateends(val){
+function Updateends(val,midi){
     console.log(lastsliceplayed,"update currentends",val)
     currentends[lastsliceplayed]=parseInt(val);
     addslicebuttons(currentpeaks,currentends,currentbuffer)
+    if(midi==true){
+      updateendpointslider()
+    }
 }
 
 function addslicebuttons(peaks,ends,buffer){
@@ -153,7 +159,7 @@ function addslicebuttons(peaks,ends,buffer){
     (function(_i){
 
       but.onclick = function(){
-          playslice(_i,peaks,ends,buffer)
+          Playslice(_i,peaks,ends,buffer)
       }
 
     })(i)
@@ -167,13 +173,13 @@ function addslicebuttons(peaks,ends,buffer){
    var key = e.keyCode ? e.keyCode : e.which;
    var keyval =  parseInt(String.fromCharCode(key));
    console.log("key",keyval)
-   playslice(keyval,peaks,ends,buffer);
+   Playslice(keyval,peaks,ends,buffer);
   }
 
 }
 
 
-function playslice(_i,peaks,ends,buffer){
+function Playslice(_i,peaks,ends,buffer){
 
           
           if(peaks[_i]!=undefined){
@@ -370,7 +376,8 @@ return{
    getcurrentslicebuffer:Getcurrentslicebuffer,
             getallslices:Getallslices,
             reverseslice:Reverseslice,
-               boostbass:Boostbass
+               boostbass:Boostbass,
+               playslice:Playslice
 };
 
 

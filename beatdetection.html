@@ -8,6 +8,7 @@
   <script type="text/javascript" src="js/jackdaw.waveformdisplay.js"></script>
   <script type="text/javascript" src="js/recorder.js"></script>
   <script type="text/javascript" src="js/jackdaw.audioexport.js"></script>
+  <script type="text/javascript" src="js/jackdaw.midicircuit.js"></script>
 
  
   <title>Jackdaw Beatdetection</title>
@@ -21,6 +22,10 @@
       clear:both;
       display: block;
     }
+    .recording{
+      background-color: red;
+      color: white;
+    }
   </style>
 </head>
 
@@ -33,8 +38,8 @@
 <svg width="750" height="200" id="svg"></svg>
 <canvas id="waveform" width="750" height="200"></canvas>
 
-<button id="rec" onClick="Startrecording()">Record</button>
-<button id="play" onClick="Stoprecording()">Play</button>
+<button id="rec" onClick="Startrecording(this)">Record</button>
+<!-- <button id="play" onClick="Stoprecording()">Play</button> -->
 
 <div id="slicebuts"></div>
 <br>
@@ -55,6 +60,8 @@
     document.addEventListener("DOMContentLoaded",function(){
 
              Jackdaw.Beatdetection.init();
+             Jackdaw.Midicircuit.init();
+             var recbut;
 
               // images = ["sounds/snaredry.wav","sounds/snare.wav","sounds/kick.wav","sounds/hihat.wav"];
                file = "sounds/somegit.wav";
@@ -94,19 +101,23 @@
                   console.log('Recorder initialised.');
               }
 
-              function Startrecording(){
-                  context = new AudioContext();
-                  recorder.record();
-                  console.log('Recording...');
+              function Startrecording(but){
+                  recbut = but;
+                  if(recbut.className!="recording"){
+                    recbut.className = "recording";
+                    context = new AudioContext();
+                    recorder.record();
+                    console.log('Recording...');
+                  }else{
+                    recbut.className = "";
+                    recorder.stop();
+                    console.log('Stopped recording.');
+                    getbufferedsound();
+                    recorder.clear();
+                  }
               }
 
-              function Stoprecording(){
-                  recorder.stop();
-                  console.log('Stopped recording.');
-                  getbufferedsound();
-                  recorder.clear();
-              }
-
+ 
               function getbufferedsound(){
                   recorder.getBuffer(function(buffers) {
                       var newSource = context.createBufferSource();
