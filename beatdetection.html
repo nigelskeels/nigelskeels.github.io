@@ -79,12 +79,10 @@
                 xhr.onload = function(e) {
                   if (this.status == 200) {
 
-                          var resp = this.response
-
-                          Jackdaw.Beatdetection.calculatetempo(resp); 
                           
-                          context.decodeAudioData(resp, function(buffer) {
+                          context.decodeAudioData(this.response, function(buffer) {
                             Jackdaw.Waveformdisplay.drawbuffer(buffer)
+                            Jackdaw.Beatdetection.calculatetempo(this.response); 
                           }, 
                             function(e){console.log("error ",e)}
                           );
