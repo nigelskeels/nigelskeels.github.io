@@ -1,0 +1,158 @@
+<script type="text/javascript">
+
+(function() {
+'use strict';
+ 
+// Feature detect
+// if (!(window.customElements && document.body.attachShadow)) {
+//   document.querySelector('knob-component').innerHTML = "<b>Your browser doesn't support Shadow DOM and Custom Elements v1.</b>";
+//   return;
+// }
+
+ 
+customElements.define('knob-component', class extends HTMLElement {
+
+  constructor() {
+    super(); // always call super() first in the ctor.
+
+
+    // Create shadow DOM for the component.
+    let shadowRoot = this.attachShadow({mode: 'open'});
+
+    this.knobvalue=this.getAttribute("value")|| 100;
+    this.knobmin=this.getAttribute("min")|| 0;
+    this.knobmax=this.getAttribute("max")|| 128;
+
+    shadowRoot.innerHTML = `
+    <style>
+        :host {
+          display: block;
+          width: 52px;
+          height:52px;
+        }
+        #knob{
+          position:relative;
+          width:100%;
+          height:100%;
+          background:#999;
+          border-radius:50%;
+          cursor:n-resize;
+        }
+        #knob::after{
+          position:absolute;
+          left:50%;
+          content:"|";
+          font-weight:bolder;
+          color:#505050;
+        }        
+
+
+    </style>
+      
+        <div id="knob" class="knobclass" draggable="true" title="Knob"></div>
+        
+    `;
+
+    this.knob = this.shadowRoot.querySelector('#knob');
+    this.starty;
+    this.startval;
+  }
+  
+
+  connectedCallback() { 
+    var _this=this;
+
+
+    this.knob.addEventListener("drag", this._dragging.bind(this), true);
+    
+    this.knob.addEventListener("dragstart", function(e){
+      //next bit to hide the knob image whne dragging
+      var crt = this.cloneNode(true);
+      crt.style.display = "none"; 
+      e.dataTransfer.setDragImage(crt, 0, 0);
+      _this.starty=e.clientY;
+      _this.startval=_this.knobvalue;
+
+    }, true);
+
+
+    this.knob.addEventListener("wheel", function(e){
+
+      console.log("wheel",e.deltaY)
+
+          var valtoset = _this.knobvalue;
+
+          if(e.deltaY>0){
+             valtoset-=5;
+          }else{
+             valtoset-=-5;
+          }
+
+          if(valtoset<_this.knobmin){
+              valtoset=_this.knobmin;
+          }
+          if(valtoset>_this.knobmax){
+              valtoset=_this.knobmax;
+          }
+          _this.value = valtoset;
+
+    },{
+      capture: true,
+      passive: true
+    });
+
+
+
+  }
+
+  static get observedAttributes() {
+    return ['value'];
+  }
+
+ 
+  _adjustknobangle(val){
+      var angle = (360/this.knobmax)*val+"deg";
+      this.knob.style.transform = "rotate("+angle+")";
+  }
+
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    console.log("attributeChangedCallback",name, oldValue, newValue)
+    if(name=="value"){
+      this._adjustknobangle(newValue)
+    }
+  }  
+ 
+
+
+  _dragging(e){
+    this.style.cursor = "pointer";
+    if(e.screenY!=0){  
+
+        var offset=parseInt(this.starty)-(e.y)
+        offset=offset+parseInt(this.startval)+(this.knob.style.height/2);
+
+        if(offset>this.knobmin && offset<this.knobmax){
+          this.value=offset;
+        }
+     }
+  }
+
+
+  set value(val){
+      this.knobvalue = val;
+      this.setAttribute('value', val);
+      this._adjustknobangle(val);
+  } 
+
+  get value(){
+    return this.knobvalue;
+  }
+
+
+  
+});
+   
+})();
+
+</script>
