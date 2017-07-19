@@ -1,101 +1,98 @@
 <!DOCTYPE html>
+
 <html>
 <head>
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="viewport" content="width=device-width">
-  <title>Native recorder</title>
-</head>
-
-<body>
-  
-
-  <button id="record">record</button>
-  <button id="stop">stop</button>
- 
-
-    <script>
-  
-    window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    navigator.getUserMedia = ( navigator.getUserMedia ||
-                       navigator.webkitGetUserMedia ||
-                       navigator.mozGetUserMedia ||
-                       navigator.msGetUserMedia);
-
-    var context = new AudioContext();
-    
-    var record = document.querySelector('#record');
-    var stop = document.querySelector('#stop');
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Live input record and playback</title>
+  <style type='text/css'>
    
-    
-    if (navigator.getUserMedia) {
+  </style>
+</head>
+<body>
+
+  <button id="record">Rec</button>
+  <button id="stop">Stop</button>
+  <div id="soundClips"></div>
+
+
+
+  <script type="text/javascript">
+        var record = document.getElementById("record")
+        var stop = document.getElementById("stop")
+        var soundClips = document.getElementById('soundClips');
+
+     
+      if (navigator.mediaDevices) {
         console.log('getUserMedia supported.');
 
         var constraints = { audio: true };
         var chunks = [];
 
-        var onSuccess = function(stream) {
-            var mediaRecorder = new MediaRecorder(stream);
+        navigator.mediaDevices.getUserMedia(constraints)
+        .then(function(stream) {
 
-            record.onclick = function() {
-              mediaRecorder.start();
-              console.log(mediaRecorder.state);
-              console.log("recorder started");
-              record.style.background = "red";
-              stop.disabled = false;
-              record.disabled = true;
-            }
+          var mediaRecorder = new MediaRecorder(stream);
 
-            stop.onclick = function() {
-              mediaRecorder.stop();
-              console.log(mediaRecorder.state);
-              console.log("recorder stopped");
-              record.style.background = "";
-              record.style.color = "";
+          // visualize(stream);
 
-              stop.disabled = true;
-              record.disabled = false;
-            }
+          record.onclick = function() {
+            mediaRecorder.start();
+            console.log(mediaRecorder.state);
+            console.log("recorder started");
+            record.style.background = "red";
+            record.style.color = "black";
+          }
 
-            mediaRecorder.onstop = function(e) {
-              console.log("onstop() called.",e);
-              
-               var blob = new Blob(chunks, { 'type' : 'audio/wav' });
-               chunks = [];
+          stop.onclick = function() {
+            mediaRecorder.stop();
+            console.log(mediaRecorder.state);
+            console.log("recorder stopped");
+            record.style.background = "";
+            record.style.color = "";
+          }
 
-               var reader = new FileReader();
-               reader.addEventListener("loadend", function() {
-                  context.decodeAudioData(reader.result, function(buffer) {
-                    playsound(buffer); 
-                  }, 
-                  function(e){console.log("error ",e)});
-              });
-              reader.readAsArrayBuffer(blob);
-            }
+          mediaRecorder.onstop = function(e) {
+            console.log("data available after MediaRecorder.stop() called.");
 
-            mediaRecorder.ondataavailable = function(e) {
-              chunks.push(e.data);
+            var clipName = prompt('Enter a name for your sound clip');
+
+            var clipContainer = document.createElement('article');
+            var clipLabel = document.createElement('p');
+            var audio = document.createElement('audio');
+            var deleteButton = document.createElement('button');
+           
+            clipContainer.classList.add('clip');
+            audio.setAttribute('controls', '');
+            deleteButton.innerHTML = "Delete";
+            clipLabel.innerHTML = clipName;
+
+            clipContainer.appendChild(audio);
+            clipContainer.appendChild(clipLabel);
+            clipContainer.appendChild(deleteButton);
+            soundClips.appendChild(clipContainer);
+
+            audio.controls = true;
+            var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+            chunks = [];
+            var audioURL = URL.createObjectURL(blob);
+            audio.src = audioURL;
+            console.log("recorder stopped",audio.src);
+
+            deleteButton.onclick = function(e) {
+              evtTgt = e.target;
+              evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
             }
           }
 
-          var onError = function(err) {
-            console.log('The following error occured: ' + err);
+          mediaRecorder.ondataavailable = function(e) {
+            chunks.push(e.data);
           }
+        })
+        .catch(function(err) {
+          console.log('The following error occured: ' + err);
+        })
+      }
 
-          navigator.getUserMedia(constraints, onSuccess, onError);
-
-
-    } else {
-       console.log('getUserMedia not supported on your browser!');
-    }
-
-
-    function playsound(thisbuffer){
-          var source = context.createBufferSource();
-          source.buffer = thisbuffer;                    
-          source.connect(context.destination);       
-          source.start(0);                   
-    }
-
-
-</script>
+  </script>
 </body>
+</html>
