@@ -1,14 +1,15 @@
 <!DOCTYPE html>
+<!-- <html manifest="jackdawsampler.appcache"> -->
 <html>
 <head>
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width">
-  <link rel="import" href="circuit_ui/circuit_component/circuit_component.html" >
+  <link rel="import" href="/sampler/circuit_ui/circuit_component/circuit_component.html" >
   <script type="text/javascript" src="js/jackdaw.beatdetection.js"></script>
   <script type="text/javascript" src="js/jackdaw.waveformdisplay.js"></script>
   <script type="text/javascript" src="js/recorder.js"></script>
   <script type="text/javascript" src="js/jackdaw.audioexport.js"></script>
-  <!-- // <script type="text/javascript" src="js/jackdaw.midicircuit.js"></script> -->
+  <script type="text/javascript" src="js/jackdaw.midicircuit.js"></script>
 
  
   <title>Jackdaw Beatdetection</title>
@@ -56,8 +57,8 @@
 
 <button onClick="Jackdaw.Beatdetection.getcurrentslicebuffer()">Export slice</button>
 <button onClick="Jackdaw.Beatdetection.getallslices()">Export all slices</button>
-<br><br>
-<circuit-component name="nigel"></circuit-component>
+
+<!-- <circuit-component name="nigel"></circuit-component> -->
 
 <script>
 
@@ -68,7 +69,7 @@
     document.addEventListener("DOMContentLoaded",function(){
 
              Jackdaw.Beatdetection.init();
-             // Jackdaw.Midicircuit.init();
+             Jackdaw.Midicircuit.init();
              var recbut;
 
               // images = ["sounds/snaredry.wav","sounds/snare.wav","sounds/kick.wav","sounds/hihat.wav"];

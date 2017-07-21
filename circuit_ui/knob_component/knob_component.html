@@ -22,6 +22,7 @@ customElements.define('knob-component', class extends HTMLElement {
     this.knobvalue=this.getAttribute("value")|| 100;
     this.knobmin=this.getAttribute("min")|| 0;
     this.knobmax=this.getAttribute("max")|| 128;
+    this.offsetangle=this.getAttribute("offsetangle")|| 0;
 
     shadowRoot.innerHTML = `
     <style>
@@ -111,7 +112,7 @@ customElements.define('knob-component', class extends HTMLElement {
 
  
   _adjustknobangle(val){
-      var angle = (360/this.knobmax)*val+"deg";
+      var angle = ((360/this.knobmax)*val)-this.offsetangle+"deg";
       this.knob.style.transform = "rotate("+angle+")";
   }
 

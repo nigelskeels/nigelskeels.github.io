@@ -1,5 +1,5 @@
-var Jackdaw = {};
-Jackdaw.Midi = ( function( window, undefined ) {
+var Hypermodernism = {};
+Hypermodernism.Midi = ( function( window, undefined ) {
 
   var midi = null;  // global MIDIAccess object
   var thisid = null;
