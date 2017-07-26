@@ -6,9 +6,8 @@
   <link rel="import" href="circuit_ui/circuit_component/circuit_component.html" >
   <script type="text/javascript" src="js/jackdaw.beatdetection.js"></script>
   <script type="text/javascript" src="js/jackdaw.waveformdisplay.js"></script>
+  <script type="text/javascript" src="js/recorder.js"></script>
   <script type="text/javascript" src="js/jackdaw.audioexport.js"></script>
-  <script type="text/javascript" src="js/jackdaw.nativerecorder.js"></script>
-
   <!-- // <script type="text/javascript" src="js/jackdaw.midicircuit.js"></script> -->
 
  
@@ -69,10 +68,7 @@
     document.addEventListener("DOMContentLoaded",function(){
 
              Jackdaw.Beatdetection.init();
-             Jackdaw.Nativerecorder.init();
              // Jackdaw.Midicircuit.init();
-
-
              var recbut;
 
               // images = ["sounds/snaredry.wav","sounds/snare.wav","sounds/kick.wav","sounds/hihat.wav"];
@@ -99,49 +95,74 @@
                 };
                 xhr.send();
 
+
+              //recorder
+
+              navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+              navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
+                console.log('No live audio input: ' + e);
               });
 
-             
+
+
+
+              });
+
+              function startUserMedia(stream){
+                  var input = context.createMediaStreamSource(stream);
+                  console.log('Media stream created.');
+
+                                   
+                  recorder = new Recorder(input);
+                  console.log('Recorder initialised.');
+              }
 
               function Startrecording(but){
                   recbut = but;
                   if(recbut.className!="recording"){
                     recbut.className = "recording";
-                    Jackdaw.Nativerecorder.startrecorder();
+                    context = new AudioContext();
+                    recorder.record();
+                    console.log('Recording...');
                   }else{
                     recbut.className = "";
-                    Jackdaw.Nativerecorder.stoprecorder();
+                    recorder.stop();
+                    console.log('Stopped recording.');
+                    getbufferedsound();
+                    recorder.clear();
                   }
               }
-   
 
-              document.body.addEventListener('nativerecorderevent', function (ev) { 
-
-                  console.log("nativerecorderevent",ev.detail) 
-                  
-                  let fileReader = new FileReader();
-                  let arrayBuffer;
-
-                  fileReader.onloadend = () => {
-                      arrayBuffer = fileReader.result;
-
-                      context.decodeAudioData(arrayBuffer, function(buffers) {
-                        Jackdaw.Waveformdisplay.drawbuffer(buffers)
-                        Jackdaw.Beatdetection.calc( buffers ); 
-                      });
-                  }
-
-                  fileReader.readAsArrayBuffer(ev.detail);                
-
-              }, false);
-           
+ 
+              function getbufferedsound(){
+                  recorder.getBuffer(function(buffers) {
+                      var newSource = context.createBufferSource();
+                      //var newBuffer = context.createBuffer( 2, 2, context.sampleRate );
+                       var newBuffer = context.createBuffer( 2, buffers[0].length, context.sampleRate );
+                      newBuffer.getChannelData(0).set(buffers[0]);
+                      newBuffer.getChannelData(1).set(buffers[1]);
+                      newSource.buffer = newBuffer;
+                      
+                      Jackdaw.Waveformdisplay.drawbuffer(newBuffer)
 
 
-              document.body.addEventListener('circuituievent', function (ev) { 
+                      // var convert = new ArrayBuffer(newBuffer.length);
+                      // var view   = new Int32Array(newBuffer.getChannelData(0));
+
+                      Jackdaw.Beatdetection.calc( newBuffer ); 
+
+                  });
+              }
+
+
+             
+
+
+              document.addEventListener('circuituievent', function (ev) { 
 
                     console.log("circuituievent",ev.detail) 
 
-              }, false);
+                }, false);
 
 
 
