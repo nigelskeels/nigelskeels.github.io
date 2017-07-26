@@ -1,9 +1,9 @@
-    var currentpeaks;
-    var currentends;
-    var currentbuffer;
 var Jackdaw = {};
 
 Jackdaw.Beatdetection = ( function( window, undefined ) {
+    var currentpeaks;
+    var currentends;
+    var currentbuffer;
 
     var OfflineContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
      var offlineContext = new OfflineContext(1, 2, 44100);

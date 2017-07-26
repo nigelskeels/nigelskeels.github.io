@@ -64,8 +64,7 @@ customElements.define('circuit-component', class extends HTMLElement {
           border-radius:10px;
           // background-image:url("");
           // background-repeat: no-repeat;
-          // background-position: 746px 562px; 
-          // background-size: 33px 27px;
+          // background-position: 746px 562px;I think he's popped off somewhere          // background-size: 33px 27px;
         }
         .but{
           height:60px;
@@ -234,16 +233,16 @@ customElements.define('circuit-component', class extends HTMLElement {
 
       </style>
       <div id="sliders">
-        <knob-component id="slider1" value="64" min="0" max="128" offsetangle="180"></knob-component>
-        <knob-component id="slider2" value="64" min="0" max="128" offsetangle="180"></knob-component>
-        <knob-component id="slider3" value="64" min="0" max="128" offsetangle="180"></knob-component>
-        <knob-component id="slider4" value="64" min="0" max="128" offsetangle="180"></knob-component>
-        <knob-component id="slider5" value="64" min="0" max="128" offsetangle="180"></knob-component>
-        <knob-component id="slider6" value="64" min="0" max="128" offsetangle="180"></knob-component>
-        <knob-component id="slider7" value="64" min="0" max="128" offsetangle="180"></knob-component>
-        <knob-component id="slider8" value="64" min="0" max="128" offsetangle="180"></knob-component>
-        <knob-component id="slider9" value="64" min="0" max="128" offsetangle="180"></knob-component>
-        <knob-component id="slider10" value="64" min="0" max="128" offsetangle="180"></knob-component>
+        <knob-component id="slider1" mid="48" value="64" min="0" max="128" offsetangle="180"></knob-component>
+        <knob-component id="slider2" mid="49" value="64" min="0" max="128" offsetangle="180"></knob-component>
+        <knob-component id="slider3" mid="50" value="64" min="0" max="128" offsetangle="180"></knob-component>
+        <knob-component id="slider4" mid="51" value="64" min="0" max="128" offsetangle="180"></knob-component>
+        <knob-component id="slider5" mid="52" value="64" min="0" max="128" offsetangle="180"></knob-component>
+        <knob-component id="slider6" mid="53" value="64" min="0" max="128" offsetangle="180"></knob-component>
+        <knob-component id="slider7" mid="54" value="64" min="0" max="128" offsetangle="180"></knob-component>
+        <knob-component id="slider8" mid="55" value="64" min="0" max="128" offsetangle="180"></knob-component>
+        <knob-component id="slider9" mid="56" value="64" min="0" max="128" offsetangle="180"></knob-component>
+        <knob-component id="slider10" mid="57" value="64" min="0" max="128" offsetangle="180"></knob-component>
 
       </div>
       <div id="buttonSlot"></div>
@@ -291,12 +290,14 @@ customElements.define('circuit-component', class extends HTMLElement {
       this.buttonSlot.addEventListener("mousedown", this._onclickbuttondown.bind(this), true);
       this.buttonSlot.addEventListener("mouseup", this._onclickbuttonup.bind(this), true);
 
-      for (var i = 0; i < this.sliders.length; i++) {
-        this.sliders[i].addEventListener("input", function(e){
-          _this._broadcastevent(176,e.path[0].getAttribute("mid"),e.path[0].value)
-        });
+      // for (var i = 0; i < this.sliders.length; i++) {
+        // this.sliders[i].addEventListener("input", function(e){
+        //   _this._broadcastevent(176,e.path[0].getAttribute("mid"),e.path[0].value)
+        // });
+
+         
         
-      };
+      // };
 
      
       var _this=this;
@@ -335,6 +336,14 @@ customElements.define('circuit-component', class extends HTMLElement {
       setTimeout(function(){
         _this._updateshaddowdom()
       },100);  
+
+
+      document.addEventListener('knobuievent', function (ev) { 
+
+          console.log("knobuievent",ev.detail) 
+
+      }, false);
+     
   }
 
 
@@ -475,21 +484,21 @@ customElements.define('circuit-component', class extends HTMLElement {
 
   _broadcastevent(data1,data2,data3){
 
-    var etherlynkuievent = new CustomEvent('etherlynk.ui.event', { 'detail': {'data1':parseInt(data1), 'data2':parseInt(data2), 'data3':parseInt(data3)} });
-    document.body.dispatchEvent(etherlynkuievent);
+    var circuituievent = new CustomEvent('circuit.ui.event', { 'detail': {'data1':parseInt(data1), 'data2':parseInt(data2), 'data3':parseInt(data3)} });
+    document.body.dispatchEvent(circuituievent);
 
 
     //test for key held
     if(parseInt(data1)==144){
 
-      var etherlynkeventbuttondown = new CustomEvent('etherlynk.event.buttondown', { 'detail': {'button':parseInt(data2)} });
-      document.body.dispatchEvent(etherlynkeventbuttondown);
+      var circuiteventbuttondown = new CustomEvent('circuit.event.buttondown', { 'detail': {'button':parseInt(data2)} });
+      document.body.dispatchEvent(circuiteventbuttondown);
 
 
       this.timeout[parseInt(data2)] = setTimeout(function(){
           // console.log("Button held",parseInt(data2))
-          var etherlynkeventheld = new CustomEvent('etherlynk.event.held', { 'detail': {'button':parseInt(data2)} });
-          document.body.dispatchEvent(etherlynkeventheld);
+          var circuiteventheld = new CustomEvent('circuit.event.held', { 'detail': {'button':parseInt(data2)} });
+          document.body.dispatchEvent(circuiteventheld);
       
       }, this.timeoutval);
     }
@@ -497,13 +506,16 @@ customElements.define('circuit-component', class extends HTMLElement {
     if(parseInt(data1)==128){
         clearTimeout(this.timeout[parseInt(data2)])
         
-        var etherlynkeventbuttonup = new CustomEvent('etherlynk.event.buttonup', { 'detail': {'button':parseInt(data2)} });
-        document.body.dispatchEvent(etherlynkeventbuttonup);
+        var circuiteventbuttonup = new CustomEvent('circuit.event.buttonup', { 'detail': {'button':parseInt(data2)} });
+        document.body.dispatchEvent(circuiteventbuttonup);
     };
 
   }
 
-  
+
+   
+
+
 });
    
 })();

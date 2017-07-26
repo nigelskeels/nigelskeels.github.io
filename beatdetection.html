@@ -101,7 +101,11 @@
               navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
               navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
                 console.log('No live audio input: ' + e);
-              });   
+              });
+
+
+
+
               });
 
               function startUserMedia(stream){
@@ -152,6 +156,15 @@
 
 
              
+
+
+              document.addEventListener('circuituievent', function (ev) { 
+
+                    console.log("circuituievent",ev.detail) 
+
+                }, false);
+
+
 
              
 

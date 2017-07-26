@@ -23,6 +23,8 @@ customElements.define('knob-component', class extends HTMLElement {
     this.knobmin=this.getAttribute("min")|| 0;
     this.knobmax=this.getAttribute("max")|| 128;
     this.offsetangle=this.getAttribute("offsetangle")|| 0;
+    this.knobuievent = new Event('knobuievent');
+
 
     shadowRoot.innerHTML = `
     <style>
@@ -119,8 +121,12 @@ customElements.define('knob-component', class extends HTMLElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     console.log("attributeChangedCallback",name, oldValue, newValue)
+    
     if(name=="value"){
       this._adjustknobangle(newValue)
+      
+      this.knobuievent.detail = {'data1':176, 'data2':this.getAttribute("mid"), 'data3':newValue};
+      document.dispatchEvent(this.knobuievent); 
     }
   }  
  

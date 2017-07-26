@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Live input record and playback</title>
+  <style type='text/css'>
+   
+  </style>
+</head>
+<body>
+
+  <button id="record">Rec</button>
+  <button id="stop">Stop</button>
+  <div id="soundClips"></div>
+
+
+
+  <script type="text/javascript">
+        var record = document.getElementById("record")
+        var stop = document.getElementById("stop")
+        var soundClips = document.getElementById('soundClips');
+
+     
+      if (navigator.mediaDevices) {
+        console.log('getUserMedia supported.');
+
+        var constraints = { audio: true, video:false };
+        var chunks = [];
+
+        navigator.mediaDevices.getUserMedia(constraints)
+        .then(function(stream) {
+
+
+          var options = {
+            audioBitsPerSecond : 44100,
+            // audioBitsPerSecond : 128000,
+            // videoBitsPerSecond : 2500000,
+            mimeType : 'audio/webm'
+          }
+          var mediaRecorder = new MediaRecorder(stream,options);
+
+          // visualize(stream);
+
+          record.onclick = function() {
+            mediaRecorder.start();
+            console.log(mediaRecorder.state);
+            console.log("recorder started");
+            record.style.background = "red";
+            record.style.color = "black";
+          }
+
+          stop.onclick = function() {
+            mediaRecorder.stop();
+            console.log(mediaRecorder.state);
+            console.log("recorder stopped");
+            record.style.background = "";
+            record.style.color = "";
+          }
+
+          mediaRecorder.onstop = function(e) {
+            console.log("data available after MediaRecorder.stop() called.",e);
+            console.log("is this the buffer???",chunks);
+
+            var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+            chunks = [];
+            console.log("recorder stopped",blob);
+            
+          }
+
+          mediaRecorder.ondataavailable = function(e) {
+            chunks.push(e.data);
+          }
+        })
+        .catch(function(err) {
+          console.log('The following error occured: ' + err);
+        })
+      }
+
+  </script>
+</body>
+</html>
