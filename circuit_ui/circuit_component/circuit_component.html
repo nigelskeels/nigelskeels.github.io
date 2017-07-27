@@ -44,6 +44,7 @@ customElements.define('circuit-component', class extends HTMLElement {
     this.timeoutval = 500;
     this.midienabled = true;
 
+    this.circuituievent = new Event('circuituievent');
 
     this.defaultbuttonmap = this.buttonmap.slice(0);
 
@@ -339,9 +340,8 @@ customElements.define('circuit-component', class extends HTMLElement {
 
 
       document.addEventListener('knobuievent', function (ev) { 
-
-          console.log("knobuievent",ev.detail) 
-
+          // console.log("knobuievent",ev.detail) 
+          _this._broadcastevent(ev.detail.data1,ev.detail.data2,ev.detail.data3)
       }, false);
      
   }
@@ -457,12 +457,12 @@ customElements.define('circuit-component', class extends HTMLElement {
 
   _onclickbuttondown(e){
       var userclicked = e.path[0].getAttribute("uid")
-      console.info("Clicked > ",userclicked,e)
+      // console.info("Clicked down > ",userclicked,e)
       this._broadcastevent(144,userclicked,127)
   }
   _onclickbuttonup(e){
       var userclicked = e.path[0].getAttribute("uid")
-      console.info("Clicked > ",userclicked)
+      // console.info("Clicked up> ",userclicked)
       this._broadcastevent(128,userclicked,127)
   }
 
@@ -484,37 +484,39 @@ customElements.define('circuit-component', class extends HTMLElement {
 
   _broadcastevent(data1,data2,data3){
 
-    var circuituievent = new CustomEvent('circuit.ui.event', { 'detail': {'data1':parseInt(data1), 'data2':parseInt(data2), 'data3':parseInt(data3)} });
-    document.body.dispatchEvent(circuituievent);
+    var _this=this;  
 
+    if(parseInt(data1)==176){
+      this.circuituievent.detail = {'type':'knob','data1':parseInt(data1), 'data2':parseInt(data2), 'data3':parseInt(data3)};
+      document.body.dispatchEvent(this.circuituievent); 
+    }
 
+    
     //test for key held
     if(parseInt(data1)==144){
 
-      var circuiteventbuttondown = new CustomEvent('circuit.event.buttondown', { 'detail': {'button':parseInt(data2)} });
-      document.body.dispatchEvent(circuiteventbuttondown);
-
+      _this.circuituievent.detail = {'type':'buttondown', 'data1':parseInt(data1), 'data2':parseInt(data2), 'data3':parseInt(data3)};
+       document.body.dispatchEvent(_this.circuituievent); 
 
       this.timeout[parseInt(data2)] = setTimeout(function(){
-          // console.log("Button held",parseInt(data2))
-          var circuiteventheld = new CustomEvent('circuit.event.held', { 'detail': {'button':parseInt(data2)} });
-          document.body.dispatchEvent(circuiteventheld);
       
+          _this.circuituievent.detail = {'type':'buttonheld', 'data1':parseInt(data1), 'data2':parseInt(data2), 'data3':parseInt(data3)};
+          document.body.dispatchEvent(_this.circuituievent); 
+
       }, this.timeoutval);
     }
 
     if(parseInt(data1)==128){
         clearTimeout(this.timeout[parseInt(data2)])
-        
-        var circuiteventbuttonup = new CustomEvent('circuit.event.buttonup', { 'detail': {'button':parseInt(data2)} });
-        document.body.dispatchEvent(circuiteventbuttonup);
+       
+        _this.circuituievent.detail = {'type':'buttonreleased', 'data1':parseInt(data1), 'data2':parseInt(data2), 'data3':parseInt(data3)};
+        document.body.dispatchEvent(_this.circuituievent); 
     };
 
   }
 
 
    
-
 
 });
    

@@ -67,7 +67,7 @@ customElements.define('knob-component', class extends HTMLElement {
 
 
     this.knob.addEventListener("drag", this._dragging.bind(this), true);
-    
+
     this.knob.addEventListener("dragstart", function(e){
       //next bit to hide the knob image whne dragging
       var crt = this.cloneNode(true);
@@ -77,6 +77,15 @@ customElements.define('knob-component', class extends HTMLElement {
       _this.startval=_this.knobvalue;
 
     }, true);
+
+
+
+    this.knob.addEventListener("touchmove", this._touchdragging.bind(this), false);
+
+    this.knob.addEventListener("touchstart", function(e){
+      _this.starty=e.touches[0].clientY;
+      _this.startval=_this.knobvalue;
+    }, false);
 
 
     this.knob.addEventListener("wheel", function(e){
@@ -120,7 +129,7 @@ customElements.define('knob-component', class extends HTMLElement {
 
 
   attributeChangedCallback(name, oldValue, newValue) {
-    console.log("attributeChangedCallback",name, oldValue, newValue)
+    // console.log("attributeChangedCallback",name, oldValue, newValue)
     
     if(name=="value"){
       this._adjustknobangle(newValue)
@@ -137,6 +146,19 @@ customElements.define('knob-component', class extends HTMLElement {
     if(e.screenY!=0){  
 
         var offset=parseInt(this.starty)-(e.y)
+        offset=offset+parseInt(this.startval)+(this.knob.style.height/2);
+
+        if(offset>this.knobmin && offset<this.knobmax){
+          this.value=offset;
+        }
+     }
+  }
+
+  _touchdragging(e){
+    this.style.cursor = "pointer";
+    if(e.touches[0].screenY!=0){  
+
+        var offset=parseInt(this.starty)-(e.touches[0].clientY)
         offset=offset+parseInt(this.startval)+(this.knob.style.height/2);
 
         if(offset>this.knobmin && offset<this.knobmax){
