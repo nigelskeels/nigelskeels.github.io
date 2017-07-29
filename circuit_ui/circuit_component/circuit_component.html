@@ -269,6 +269,15 @@ customElements.define('circuit-component', class extends HTMLElement {
     return this.buttonmap;
   }
 
+  _returnslider(which){
+    return this.sliders[which];
+  } 
+
+  _slidervalue(which,what,val){
+      this.sliders[which][what]=val;
+  }
+
+
   
   setbutton(data){
     var index = this.buttonmap.findIndex(x => x[0]==data[0]);
@@ -516,7 +525,6 @@ customElements.define('circuit-component', class extends HTMLElement {
   }
 
 
-   
 
 });
    

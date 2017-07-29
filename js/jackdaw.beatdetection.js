@@ -99,6 +99,11 @@ function updatestartpointslider(){
     var startpointslider = document.getElementById("startpointslider")
     startpointslider.max = currentbuffer.length;
     startpointslider.value =currentpeaks[lastsliceplayed];
+ 
+    //var startpointslider = document.getElementsByTagName("circuit-component")[0]._returnslider(1)
+    document.getElementsByTagName("circuit-component")[0]._slidervalue(1,"max",currentbuffer.length)
+    document.getElementsByTagName("circuit-component")[0]._slidervalue(1,"value",currentpeaks[lastsliceplayed])
+
 }
 
 function updateendpointslider(){

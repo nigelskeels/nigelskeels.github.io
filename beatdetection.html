@@ -141,6 +141,19 @@
 
                     console.log("circuituievent",ev.detail) 
 
+                    if(ev.detail.data1=176){
+
+                      if(ev.detail.data2=49){
+                        Jackdaw.Beatdetection.updatepeaks(parseInt(ev.detail.data3))
+                      }
+                      if(ev.detail.data2=50){
+                        Jackdaw.Beatdetection.updateends(parseInt(ev.detail.data3))
+                      }
+
+
+
+                    }
+
               }, false);
 
 
