@@ -235,7 +235,7 @@ customElements.define('circuit-component', class extends HTMLElement {
       </style>
       <div id="sliders">
         <knob-component id="slider1" mid="48" value="64" min="0" max="128" offsetangle="180"></knob-component>
-        <knob-component id="slider2" mid="49" value="64" min="0" max="128" offsetangle="180"></knob-component>
+        <knob-component id="slider2" mid="49" value="64" min="0" max="128" step="1000" offsetangle="180"></knob-component>
         <knob-component id="slider3" mid="50" value="64" min="0" max="128" offsetangle="180"></knob-component>
         <knob-component id="slider4" mid="51" value="64" min="0" max="128" offsetangle="180"></knob-component>
         <knob-component id="slider5" mid="52" value="64" min="0" max="128" offsetangle="180"></knob-component>
@@ -274,7 +274,8 @@ customElements.define('circuit-component', class extends HTMLElement {
   } 
 
   _slidervalue(which,what,val){
-      this.sliders[which][what]=val;
+      // this.sliders[which][what]=val;
+      this.sliders[which].setAttribute(what,val)
   }
 
 
