@@ -161,7 +161,7 @@ customElements.define('knob-component', class extends HTMLElement {
         offset=offset+parseInt(this.startval)+(this.knob.style.height/2);
 
         if(offset>this.knobmin && offset<this.knobmax){
-          this.value=offset;
+          this.value=this.knobmax/offset*100;
           console.log("val>>>>",this.knobmax)
         }
      }
@@ -184,7 +184,7 @@ customElements.define('knob-component', class extends HTMLElement {
   set value(val){
       this.knobvalue = val;
       this.setAttribute('value', val);
-      this._adjustknobangle(val);
+      // this._adjustknobangle(val);
   } 
 
   get value(){

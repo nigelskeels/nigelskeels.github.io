@@ -110,6 +110,9 @@ function updateendpointslider(){
     var endpointslider = document.getElementById("endpointslider")
     endpointslider.max = currentbuffer.length;
     endpointslider.value =currentends[lastsliceplayed];
+
+    document.getElementsByTagName("circuit-component")[0]._slidervalue(2,"max",currentbuffer.length)
+    document.getElementsByTagName("circuit-component")[0]._slidervalue(2,"value",currentends[lastsliceplayed])
 }
 
 function Updatepeaks(val,midi){
