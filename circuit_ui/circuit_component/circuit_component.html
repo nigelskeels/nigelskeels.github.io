@@ -1,6 +1,7 @@
 <script src='hypermodernism.midi.js'></script>
 <link rel="import" href="../knob_component/knob_component.html" >
-
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script type="text/javascript">
 (function() {
 'use strict';
@@ -26,13 +27,12 @@ customElements.define('circuit-component', class extends HTMLElement {
 
     this.buttonmap=[
                       [null],
-                      [56,'red','test'],   [57,null],[58,null],[59,null],[60,null],[61,null],[62,null],[63,null],[82,null],    [48,null],
-                      [49,null],    [50,null],[51,null],[52,null],[53,null],[54,null],[55,null],[83,null],[40,null],    [41,null],
-                      [42,null],    [43,null],[44,null],[45,null],[46,null],[47,null],[84,null],[32,null],[33,null],    [34,null],
-                      [35,null],    [36,null],[37,null],[38,null],[39,null],[85,null],[24,null],[25,null],[26,null],    [27,null],
-                      [28,null],    [29,null],[30,null],[31,null],[86,null],[16,null],[17,null],[18,null],[19,null],    [20,null],
-                      [21,null],    [22,null],[23,null],[87,null],[8,null] ,[9,null] ,[10,null],[11,null],[12,null],    [13,null],
-                      [14,null],    [15,null],[88,null],[0,null] ,[1,null] ,[2,null] ,[3,null] ,[4,null] ,[5,null] ,     [6,null] 
+                      [56,'grey','Scales'],   [57,'grey','Oct '],[58,'grey','Oct'],[59,'grey','Tempo'],[60,'grey','Swing'],[61,'grey','Clear'],[62,'grey','Duplicate'],[63,'grey','Save'],[82,'grey','Sessions'],         [48,'grey','Shift'],
+                      [49,'grey','Note'],         [50,'grey','Synth 1'],[51,'grey','Sidechain'],[52,'grey','Synth 2'],[53,'grey','Sidechain'],[54,'grey','Drum 1'],[55,'grey','Drum 2'],[83,'grey','Drum 3'],[40,'grey','Drum 4'],    [41,'grey','Patterns'],
+                      [42,'grey',''],    [43,null],[44,null],[45,null],[46,null],[47,null],[84,null],[32,null],[33,null],    [34,'grey',''],
+                      [35,'grey',''],    [36,null],[37,null],[38,null],[39,null],[85,null],[24,null],[25,null],[26,null],    [27,'grey',''],
+                      [28,'grey',''],    [29,null],[30,null],[31,null],[86,null],[16,null],[17,null],[18,null],[19,null],    [20,'grey',''],
+                      [21,'grey',''],    [22,null],[23,null],[87,null],[8,null] ,[9,null] ,[10,null],[11,null],[12,null],    [13,'grey','<i class="material-icons">play_arrow</i>'] 
     ]
 
     
@@ -71,11 +71,12 @@ customElements.define('circuit-component', class extends HTMLElement {
           border-radius:5px;
           margin:4px;
           position:relative;
-          font-family: 'helvetica';
+          font-family: 'Roboto', sans-serif;
           // font-weight:bold;
-          font-size: 14px;
+          font-size: 12px;
           box-sizing: border-box;
           overflow:hidden;
+          outline: 0;
           // white-space: nowrap;
           // text-overflow: ellipsis;
         }
@@ -92,6 +93,11 @@ customElements.define('circuit-component', class extends HTMLElement {
           margin-right:25px;
           margin-left:25px;
         }
+
+        .but label{
+            bottom:2px;
+        }
+
         .round{
           margin-right:30px;
           margin-left:30px;
@@ -100,8 +106,8 @@ customElements.define('circuit-component', class extends HTMLElement {
         .round label{
           display:block;
           position:absolute;
-          top:9px;
-          left:40px;
+          top:14px;
+          // left:40px;
           // white-space: nowrap;
           width:70px;
           text-align:left;
@@ -142,6 +148,11 @@ customElements.define('circuit-component', class extends HTMLElement {
         .yellow{
           background-color:yellow;
           // color:#fff;
+        }
+
+        .grey{
+          background-color:#999999;
+          color:#fff; 
         }
 
         .greenflash{
