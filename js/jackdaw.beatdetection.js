@@ -91,7 +91,6 @@ function Calc(buffer){
     currentends.splice(0,1);    
     currentends.push(buffer.length);
     addslicebuttons(currentpeaks,currentends,buffer)
-
     currentbuffer=buffer;
 }
 
@@ -99,23 +98,20 @@ function updatestartpointslider(){
     var startpointslider = document.getElementById("startpointslider")
     startpointslider.max = currentbuffer.length;
     startpointslider.value =currentpeaks[lastsliceplayed];
- 
-    //var startpointslider = document.getElementsByTagName("circuit-component")[0]._returnslider(1)
-    document.getElementsByTagName("circuit-component")[0]._slidervalue(1,"max",currentbuffer.length)
-    document.getElementsByTagName("circuit-component")[0]._slidervalue(1,"value",currentpeaks[lastsliceplayed])
-
+    var val = ((currentpeaks[lastsliceplayed]/currentbuffer.length)*128)+1
+    document.getElementsByTagName("circuit-component")[0]._slidervalue(1,"value",val)
 }
 
 function updateendpointslider(){
     var endpointslider = document.getElementById("endpointslider")
     endpointslider.max = currentbuffer.length;
     endpointslider.value =currentends[lastsliceplayed];
-
-    document.getElementsByTagName("circuit-component")[0]._slidervalue(2,"max",currentbuffer.length)
-    document.getElementsByTagName("circuit-component")[0]._slidervalue(2,"value",currentends[lastsliceplayed])
+    var val = ((currentends[lastsliceplayed]/currentbuffer.length)*128)+1
+    document.getElementsByTagName("circuit-component")[0]._slidervalue(2,"value",val)
 }
 
-function Updatepeaks(val,midi){
+function Updatepeaks(_val,midi){
+    var val = (currentbuffer.length/128)*_val;
     console.log(lastsliceplayed,"update startpoint",val)
     currentpeaks[lastsliceplayed]=parseInt(val);
     addslicebuttons(currentpeaks,currentends,currentbuffer)
@@ -124,7 +120,10 @@ function Updatepeaks(val,midi){
     }
 }
 
-function Updateends(val,midi){
+function Updateends(_val,midi){
+
+    var val = (currentbuffer.length/128)*_val;
+
     console.log(lastsliceplayed,"update currentends",val)
     currentends[lastsliceplayed]=parseInt(val);
     addslicebuttons(currentpeaks,currentends,currentbuffer)

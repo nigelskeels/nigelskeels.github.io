@@ -24,6 +24,7 @@ customElements.define('knob-component', class extends HTMLElement {
     this.knobmax=this.getAttribute("max")|| 128;
     this.knobstep=this.getAttribute("step")|| 1;
 
+    this.offset;
     this.offsetangle=this.getAttribute("offsetangle")|| 0;
     this.knobuievent = new Event('knobuievent');
 
@@ -157,12 +158,12 @@ customElements.define('knob-component', class extends HTMLElement {
     this.style.cursor = "pointer";
     if(e.screenY!=0){  
 
-        var offset=parseInt(this.starty)-(e.y)
-        offset=offset+parseInt(this.startval)+(this.knob.style.height/2);
+        this.offset=parseInt(this.starty)-(e.y)
+        this.offset=this.offset+parseInt(this.startval)+(this.knob.style.height/2);
+        console.log("this.startval",this.startval)
 
-        if(offset>this.knobmin && offset<this.knobmax){
-          this.value=this.knobmax/offset*100;
-          console.log("val>>>>",this.knobmax)
+        if(this.offset>=this.knobmin && this.offset<this.knobmax){
+           this.value=this.offset;        
         }
      }
   }
@@ -171,20 +172,18 @@ customElements.define('knob-component', class extends HTMLElement {
     this.style.cursor = "pointer";
     if(e.touches[0].screenY!=0){  
 
-        var offset=parseInt(this.starty)-(e.touches[0].clientY)
-        offset=offset+parseInt(this.startval)+(this.knob.style.height/2);
+        this.offset=parseInt(this.starty)-(e.touches[0].clientY)
+        this.offset=this.offset+parseInt(this.startval)+(this.knob.style.height/2);
 
-        if(offset>this.knobmin && offset<this.knobmax){
-          this.value=offset;
+        if(this.offset>this.knobmin && this.offset<this.knobmax){
+          this.value=this.offset;
         }
      }
   }
 
 
   set value(val){
-      this.knobvalue = val;
       this.setAttribute('value', val);
-      // this._adjustknobangle(val);
   } 
 
   get value(){
