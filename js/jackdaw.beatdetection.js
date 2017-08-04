@@ -1,5 +1,6 @@
 var Jackdaw = {};
 
+
 Jackdaw.Beatdetection = ( function( window, undefined ) {
     var currentpeaks;
     var currentends;
@@ -187,6 +188,11 @@ function addslicebuttons(peaks,ends,buffer){
 
 
 function Playslice(_i,peaks,ends,buffer){
+
+
+          var peaks = currentpeaks || peaks;
+          var ends = currentends || ends;
+          var buffer = currentbuffer || buffer;
 
           
           if(peaks[_i]!=undefined){
@@ -389,3 +395,5 @@ return{
 
 
 } )( window );
+
+

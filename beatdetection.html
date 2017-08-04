@@ -137,6 +137,8 @@
               }, false);
            
 
+              var butmap = document.getElementsByTagName("circuit-component")[0].buttonmap;
+
 
               document.body.addEventListener('circuituievent', function (ev) { 
 
@@ -151,16 +153,19 @@
                         Jackdaw.Beatdetection.updateends(parseInt(ev.detail.data3))
                       }
 
-
-
+                    }
+                    if(ev.detail.data1==144){
+                        //Button Down
+                        Jackdaw.Beatdetection.playslice(butmap[parseInt(ev.detail.data2)])
+                    }
+                    if(ev.detail.data1==128){
+                        //BUTTON RELEASED
                     }
 
               }, false);
 
             
-            var test = document.getElementsByTagName("circuit-component")[0]
                           
-
 
 </script>
 </body>
