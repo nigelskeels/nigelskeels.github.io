@@ -50,7 +50,7 @@ Hypermodernism.Midi = ( function( window, undefined ) {
     var outputs=midiAccess.outputs.values();
     for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
       console.log("Midi outputs",output.value);
-      if(output.value.name=="APC Key 25" || output.value.name=="APC MINI"){
+      if(output.value.name=="APC Key 25" || output.value.name=="APC MINI" || output.value.name=="Circuit"){
         thisid=output.value.id;
       }
     }

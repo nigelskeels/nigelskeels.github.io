@@ -156,6 +156,7 @@
                     }
                     if(ev.detail.data1==144){
                         //Button Down
+                        var which = butmap[parseInt(ev.detail.data2)];
                         Jackdaw.Beatdetection.playslice(butmap[parseInt(ev.detail.data2)])
                     }
                     if(ev.detail.data1==128){

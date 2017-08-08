@@ -29,7 +29,7 @@ customElements.define('circuit-component', class extends HTMLElement {
                       [null],
                       [56,'grey','Scales'],   [57,'grey','Oct '],[58,'grey','Oct'],[59,'grey','Tempo'],[60,'grey','Swing'],[61,'grey','Clear'],[62,'grey','Duplicate'],[63,'grey','Save'],[82,'grey','Sessions'],         [48,'grey','Shift'],
                       [49,'grey','Note'],         [50,'grey','Synth 1'],[51,'grey','Sidechain'],[52,'grey','Synth 2'],[53,'grey','Sidechain'],[54,'grey','Drum 1'],[55,'grey','Drum 2'],[83,'grey','Drum 3'],[40,'grey','Drum 4'],    [41,'grey','Patterns'],
-                      [42,'grey',''],    [43,null],[44,null],[45,null],[46,null],[47,null],[84,null],[32,null],[33,null],    [34,'grey',''],
+                      [42,'grey',''],    [108,null],[109,null],[45,null],[46,null],[47,null],[84,null],[32,null],[33,null],    [34,'grey',''],
                       [35,'grey',''],    [36,null],[37,null],[38,null],[39,null],[85,null],[24,null],[25,null],[26,null],    [27,'grey',''],
                       [28,'grey',''],    [29,null],[30,null],[31,null],[86,null],[16,null],[17,null],[18,null],[19,null],    [20,'grey',''],
                       [21,'grey',''],    [22,null],[23,null],[87,null],[8,null] ,[9,null] ,[10,null],[11,null],[12,null],    [13,'grey','<i class="material-icons">play_arrow</i>'] 
@@ -329,16 +329,16 @@ customElements.define('circuit-component', class extends HTMLElement {
                   _this._broadcastevent(e.detail.data1,e.detail.data2,e.detail.data3)
 
                   switch (e.detail.data1 & 0xf0) {
-                    case 144:
-                        //Note On 
-                        if (e.detail.data2!=0) {  // if velocity != 0, this is a note-on message
-                          console.log("midi call back button= ",midiassignmentmap.pads[e.detail.data2])
-                           return;
-                        }
-                    case 128:
-                          //Note off
-                          console.log("note off = ",e.detail.data2)
-                          return;
+                  //   case 144:
+                  //       //Note On 
+                  //       if (e.detail.data2!=0) {  // if velocity != 0, this is a note-on message
+                  //         console.log("midi call back button= ",midiassignmentmap.pads[e.detail.data2])
+                  //          return;
+                  //       }
+                  //   case 128:
+                  //         //Note off
+                  //         console.log("note off = ",e.detail.data2)
+                  //         return;
 
                     case 176:
                           //cc value
