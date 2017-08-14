@@ -96,17 +96,17 @@ function Calc(buffer){
 }
 
 function updatestartpointslider(){
-    var startpointslider = document.getElementById("startpointslider")
-    startpointslider.max = currentbuffer.length;
-    startpointslider.value =currentpeaks[lastsliceplayed];
+    // var startpointslider = document.getElementById("startpointslider")
+    // startpointslider.max = currentbuffer.length;
+    // startpointslider.value =currentpeaks[lastsliceplayed];
     var val = ((currentpeaks[lastsliceplayed]/currentbuffer.length)*128)+1
     document.getElementsByTagName("circuit-component")[0]._slidervalue(1,"value",val)
 }
 
 function updateendpointslider(){
-    var endpointslider = document.getElementById("endpointslider")
-    endpointslider.max = currentbuffer.length;
-    endpointslider.value =currentends[lastsliceplayed];
+    // var endpointslider = document.getElementById("endpointslider")
+    // endpointslider.max = currentbuffer.length;
+    // endpointslider.value =currentends[lastsliceplayed];
     var val = ((currentends[lastsliceplayed]/currentbuffer.length)*128)+1
     document.getElementsByTagName("circuit-component")[0]._slidervalue(2,"value",val)
 }
@@ -160,19 +160,23 @@ function addslicebuttons(peaks,ends,buffer){
 
     svg.appendChild(rect2);
     
-    var but = document.createElement("button");
-    but.id="slice"+i;
-    but.innerHTML=i;   
+    // var but = document.createElement("button");
+    // but.id="slice"+i;
+    // but.innerHTML=i;   
+
 
     (function(_i){
+      
+      var midibuttnumber = circuitcomponent._getbuttonnumberreverse(_i)
+      circuitcomponent._setbutton([midibuttnumber,'orange','',_i])   
 
-      but.onclick = function(){
-          Playslice(_i,peaks,ends,buffer)
-      }
+      // but.onclick = function(){
+      //     Playslice(_i,peaks,ends,buffer)
+      // }
 
     })(i)
 
-    slicebuts.appendChild(but)
+    // slicebuts.appendChild(but)
   };
 
   svg.innerHTML = svg.innerHTML;  // force repaint in some browsers

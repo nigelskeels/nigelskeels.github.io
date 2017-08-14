@@ -51,8 +51,8 @@
 
 <div id="slicebuts"></div>
 <br>
-<input id="startpointslider" onInput="Jackdaw.Beatdetection.updatepeaks(this.value)" min="1" max="100" step="1" value="0" type="range"/>
-<input id="endpointslider" onInput="Jackdaw.Beatdetection.updateends(this.value)" min="1" max="100" step="1" value="0" type="range"/>
+<!-- <input id="startpointslider" onInput="Jackdaw.Beatdetection.updatepeaks(this.value)" min="1" max="100" step="1" value="0" type="range"/> -->
+<!-- <input id="endpointslider" onInput="Jackdaw.Beatdetection.updateends(this.value)" min="1" max="100" step="1" value="0" type="range"/> -->
 <button onClick="Jackdaw.Beatdetection.reverseslice()">Reverse slice</button>
 <button onClick="Jackdaw.Beatdetection.boostbass()">Boost bass</button>
 
@@ -137,8 +137,7 @@
               }, false);
            
 
-              var butmap = document.getElementsByTagName("circuit-component")[0].buttonmap;
-
+              var circuitcomponent = document.getElementsByTagName("circuit-component")[0];
 
               document.body.addEventListener('circuituievent', function (ev) { 
 
@@ -156,8 +155,8 @@
                     }
                     if(ev.detail.data1==144){
                         //Button Down
-                        var which = butmap[parseInt(ev.detail.data2)];
-                        Jackdaw.Beatdetection.playslice(butmap[parseInt(ev.detail.data2)])
+                        Jackdaw.Beatdetection.playslice(circuitcomponent._getbuttonnumber(parseInt(ev.detail.data2)))
+
                     }
                     if(ev.detail.data1==128){
                         //BUTTON RELEASED
@@ -166,7 +165,11 @@
               }, false);
 
             
-                          
+               
+              //test
+              // document.getElementsByTagName("circuit-component")[0]._setbutton([108,'red','Boaty'])   
+       
+
 
 </script>
 </body>
