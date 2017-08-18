@@ -165,7 +165,14 @@
                             Jackdaw.Beatdetection.playslice(circuitcomponent._getbuttonnumber(parseInt(ev.detail.data2)))
                           }else{
                             console.log("Run fuction...",databut);                       
-                            Jackdaw.Beatdetection[databut]();
+                            //If there is a function stored on the button run it.....
+                            var methods = databut.split(".");
+                            var result = window;
+                            for(var i in methods) {
+                                result = result[methods[i]];
+                            }
+                            //execute it
+                            result();
                           }
                         }
 
