@@ -53,13 +53,14 @@
 <br>
 <!-- <input id="startpointslider" onInput="Jackdaw.Beatdetection.updatepeaks(this.value)" min="1" max="100" step="1" value="0" type="range"/> -->
 <!-- <input id="endpointslider" onInput="Jackdaw.Beatdetection.updateends(this.value)" min="1" max="100" step="1" value="0" type="range"/> -->
-<button onClick="Jackdaw.Beatdetection.reverseslice()">Reverse slice</button>
+<!-- <button onClick="Jackdaw.Beatdetection.reverseslice()">Reverse slice</button>
 <button onClick="Jackdaw.Beatdetection.boostbass()">Boost bass</button>
 
 <button onClick="Jackdaw.Beatdetection.getcurrentslicebuffer()">Export slice</button>
 <button onClick="Jackdaw.Beatdetection.getallslices()">Export all slices</button>
 <br><br>
-<circuit-component name="nigel"></circuit-component>
+ -->
+ <circuit-component name="nigel"></circuit-component>
 
 <script>
 
@@ -155,7 +156,19 @@
                     }
                     if(ev.detail.data1==144){
                         //Button Down
-                        Jackdaw.Beatdetection.playslice(circuitcomponent._getbuttonnumber(parseInt(ev.detail.data2)))
+                        // console.log("testtttt",circuitcomponent._getbuttonnumber(parseInt(ev.detail.data2)) )
+
+                        var databut = circuitcomponent._getbuttonnumber(parseInt(ev.detail.data2))
+                        
+                        if(databut!=undefined){
+                          if(Number.isInteger(databut)){
+                            Jackdaw.Beatdetection.playslice(circuitcomponent._getbuttonnumber(parseInt(ev.detail.data2)))
+                          }else{
+                            console.log("Run fuction...",databut);                       
+                            Jackdaw.Beatdetection[databut]();
+                          }
+                        }
+
 
                     }
                     if(ev.detail.data1==128){
