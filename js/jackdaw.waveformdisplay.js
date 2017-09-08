@@ -1,5 +1,6 @@
 Jackdaw.Waveformdisplay = ( function( window, undefined ) {
 
+var canvascontainer;
 var canvas;
 var lastbuffer;
 
@@ -10,6 +11,7 @@ function Init(){
 
 function Drawbuffer(buffer,_zoom) {
 
+    canvascontainer = document.getElementById("canvascontainer");
     canvas = document.getElementById("waveform");
     hitpoints = document.getElementById("svg");
 
@@ -20,10 +22,16 @@ function Drawbuffer(buffer,_zoom) {
         buffer = lastbuffer; 
     }
 
-    var width =  _zoom || canvas.width;
+    // var width =  _zoom || canvascontainer.width;
+    var width = canvascontainer.offsetWidth;
+    var height = canvascontainer.offsetHeight;
     canvas.width=width;
-    hitpoints.width=width;
-    var height = canvas.height;
+    canvas.height=height;
+    
+    hitpoints.setAttribute("width",  width);
+    hitpoints.setAttribute("height",  height);
+    
+    // var height = canvas.height;
     var context = canvas.getContext('2d');
 
     context.clearRect(0, 0, canvas.width, canvas.height);
