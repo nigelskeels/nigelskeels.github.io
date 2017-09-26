@@ -1,0 +1,150 @@
+<HTML>
+<HEAD>
+	<TITLE>Teddy</TITLE>
+	<style type="text/css">
+	      button,.but {
+	        width:80px;
+	        height:80px;
+	      }
+	      body{
+	      	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	      }
+    </style>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="jackdaw.speechrecog.js"></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="jackdaw.speechsynth.js"></SCRIPT>
+
+	
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="elizabot.js"></SCRIPT>
+	<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="elizadata.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<!--
+
+var eliza = new ElizaBot();
+var elizaLines = new Array();
+
+var displayCols = 60;
+var displayRows = 20;
+
+function elizaReset() {
+	eliza.reset();
+	elizaLines.length = 0;
+	elizaStep();
+}
+
+function elizaStep() {
+	var f = document.forms.e_form;
+	var userinput = f.e_input.value;
+	if (eliza.quit) {
+		f.e_input.value = '';
+		if (confirm("This session is over.\nStart over?")) elizaReset();
+		f.e_input.focus();
+		return;
+	}
+	else if (userinput != '') {
+		var usr = 'YOU:   ' + userinput;
+        var convout = eliza.transform(userinput);
+		var rpl ='Teddy: ' + convout
+        Jackdaw.Speechsynth.speak(convout)
+		elizaLines.push(usr);
+		elizaLines.push(rpl);
+		// display nicely
+		// (fit to textarea with last line free - reserved for extra line caused by word wrap)
+		var temp  = new Array();
+		var l = 0;
+		for (var i=elizaLines.length-1; i>=0; i--) {
+			l += 1 + Math.floor(elizaLines[i].length/displayCols);
+			if (l >= displayRows) break
+			else temp.push(elizaLines[i]);
+		}
+		elizaLines = temp.reverse();
+		f.e_display.value = elizaLines.join('\n');
+	}
+	else if (elizaLines.length == 0) {
+		// no input and no saved lines -> output initial
+		var starttext = eliza.getInitial();
+        var initial = 'Teddy: ' + starttext
+        Jackdaw.Speechsynth.speak(starttext)
+		elizaLines.push(initial);
+		f.e_display.value = initial + '\n';
+	}
+	f.e_input.value = '';
+	f.e_input.focus();
+}
+
+//-->
+</SCRIPT>
+</HEAD>
+
+<BODY onload="window.setTimeout('elizaReset()',100)">
+
+<H3>Teddy</H3>
+
+<image style="float:right;" width="512" height="512" src="ted.svg" onClick="elizaStep();return false"></image>
+
+<FORM NAME="e_form" onsubmit="elizaStep();return false">
+    <TEXTAREA NAME="e_display" COLS="55" ROWS="10"></TEXTAREA>
+    <BR>
+    <INPUT TYPE="text" NAME="e_input" SIZE="50" id="speachtotext">
+    	  <BR>
+    <INPUT class="but" TYPE="submit" VALUE="&nbsp;Talk&nbsp;"> 
+    <INPUT class="but" TYPE="reset" VALUE="Reset" onClick="window.setTimeout('elizaReset()',100)">
+</FORM>
+
+
+<form>
+<BR><BR>
+<div>
+  <label for="rate">Rate</label><input type="range" min="0.5" max="2" value="0.6" step="0.1" id="rate">
+  <div class="rate-value">1</div>
+  <div class="clearfix"></div>
+</div>
+<div>
+  <label for="pitch">Pitch</label><input type="range" min="0" max="2" value="1.7" step="0.1" id="pitch">
+  <div class="pitch-value">1</div>
+  <div class="clearfix"></div>
+</div>
+<select>
+
+</select>
+<div class="controls">
+  <button id="play" type="submit">Play</button>
+</div>
+</form>
+
+
+
+
+     
+
+
+<script type="text/javascript">
+            var latesttranslation;
+            Jackdaw.Speechrecog.startrecog()
+            Jackdaw.Speechsynth.init()
+
+             // Jackdaw.Speechrecog.stoprecog()
+
+            document.body.addEventListener('speechrecogevent', function (ev) { 
+                console.log("Speech recog ",ev.detail);
+                latesttranslation=ev.detail;
+                document.getElementById("speachtotext").value = ev.detail;
+            })
+
+			// document.body.addEventListener('speechrecogeventfinal', function (ev) { 
+   //              console.log("Speech recog ",ev.detail);
+   //              document.getElementById("speachtotext").value = ev.detail;
+   //              elizaStep();
+   //              document.getElementById("speachtotext").value="";
+   //              return false;
+   //          })
+
+
+
+
+
+</script>
+
+
+
+</BODY>
+</HTML>

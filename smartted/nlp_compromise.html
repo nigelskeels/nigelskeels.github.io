@@ -1,0 +1,33 @@
+<html>
+<head>
+    <title>NLP Compromise</title>
+</head>
+<body>
+
+    <script src="compromise.min.js"></script>
+    <script>
+    var thetext ='This is a test Nigel ar you alright said Dele'
+
+
+
+      function donlp(){
+
+            doc = nlp('Ludwig van Beethoven wrote to Josephine Brunsvik')
+
+doc.people().out('list')
+// ['ludwig van beethoven', 'josephine brunsvik']
+
+doc.match('#TitleCase van #LastName').out()
+// 'Ludwig van Beethoven'
+
+return doc.match('#PastTense to').hyphenate().out()
+// 'wrote-to'
+      }
+
+      document.body.innerHTML = donlp();
+
+    </script>
+
+
+</body>
+</html>
