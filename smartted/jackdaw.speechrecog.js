@@ -2,10 +2,7 @@
 Jackdaw.Speechrecog = ( function() {
 
     var recognition = new webkitSpeechRecognition();
-    recognition.lang = "en-GB";
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    
+   
     // var output;
     var status;
     var curruserid;
@@ -16,10 +13,10 @@ Jackdaw.Speechrecog = ( function() {
 
     function Init(){
         console.log("Hello Speech recog");
-        recognition = new webkitSpeechRecognition();
+        
         recognition.lang = "en-GB";
-        recognition.continuous = true;
-        recognition.interimResults = true;
+        recognition.continuous = false;
+        recognition.interimResults = false;
         recognition.maxAlternatives = 1;
         
         // var output;
