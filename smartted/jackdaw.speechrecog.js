@@ -62,15 +62,15 @@ Jackdaw.Speechrecog = ( function() {
       for (var i = 0; i < event.results.length; i++) {
          
           // output.innerHTML=event.results[i][0].transcript;
-        var nativerecorderevent = new CustomEvent('speechrecogevent', { 'detail': event.results[i][0].transcript});
-        document.body.dispatchEvent(nativerecorderevent);
 
          
           if(event.results[i].isFinal==true){
-            
-            currenttranslation.push(event.results[i][0].transcript);
-            
-         
+                currenttranslation.push(event.results[i][0].transcript);
+                var nativerecordereventfinal = new CustomEvent('speechrecogeventfinal', { 'detail': event.results[i][0].transcript});
+                document.body.dispatchEvent(nativerecordereventfinal);
+          }else{
+                var nativerecorderevent = new CustomEvent('speechrecogevent', { 'detail': event.results[i][0].transcript});
+                document.body.dispatchEvent(nativerecorderevent);
           }
       };
 

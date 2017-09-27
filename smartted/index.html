@@ -22,8 +22,8 @@
 var eliza = new ElizaBot();
 var elizaLines = new Array();
 
-var displayCols = 60;
-var displayRows = 20;
+var displayCols = 55;
+var displayRows = 10;
 
 function elizaReset() {
 	eliza.reset();
@@ -44,6 +44,7 @@ function elizaStep() {
 		var usr = 'YOU:   ' + userinput;
         var convout = eliza.transform(userinput);
 		var rpl ='Teddy: ' + convout
+		Jackdaw.Speechrecog.stoprecog()
         Jackdaw.Speechsynth.speak(convout)
 		elizaLines.push(usr);
 		elizaLines.push(rpl);
@@ -63,6 +64,7 @@ function elizaStep() {
 		// no input and no saved lines -> output initial
 		var starttext = eliza.getInitial();
         var initial = 'Teddy: ' + starttext
+        Jackdaw.Speechrecog.stoprecog()
         Jackdaw.Speechsynth.speak(starttext)
 		elizaLines.push(initial);
 		f.e_display.value = initial + '\n';
@@ -119,15 +121,28 @@ function elizaStep() {
 
 <script type="text/javascript">
             var latesttranslation;
-            Jackdaw.Speechrecog.startrecog()
             Jackdaw.Speechsynth.init()
 
              // Jackdaw.Speechrecog.stoprecog()
 
             document.body.addEventListener('speechrecogevent', function (ev) { 
                 console.log("Speech recog ",ev.detail);
+                
+                document.getElementById("speachtotext").value = ev.detail;
+            })
+
+             document.body.addEventListener('speechrecogeventfinal', function (ev) { 
+                console.log("Speech recog speechrecogeventfinal#############",ev.detail);
                 latesttranslation=ev.detail;
                 document.getElementById("speachtotext").value = ev.detail;
+                elizaStep();
+            })
+
+            document.body.addEventListener('voiceended', function (ev) { 
+                console.log("voiceended ",ev.detail);
+            	setTimeout(function(){ 
+            		Jackdaw.Speechrecog.startrecog()
+            	}, 100);
             })
 
 			// document.body.addEventListener('speechrecogeventfinal', function (ev) { 

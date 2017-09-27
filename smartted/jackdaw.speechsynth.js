@@ -57,15 +57,22 @@
         var option = document.createElement('option');
         option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
         
-        if(voices[i].default) {
-          option.textContent += ' -- DEFAULT';
-        }
+        // if(voices[i].default) {
+        //   option.textContent += ' -- DEFAULT';
+        // }
 
         option.setAttribute('data-lang', voices[i].lang);
         option.setAttribute('data-name', voices[i].name);
         voiceSelect.appendChild(option);
+        if(voices[i].name=="Google US English"){
+          option.textContent += ' -- DEFAULT';
+            voiceSelect.selectedIndex=i;
+        }
+      
       }
-      voiceSelect.selectedIndex = 3;
+
+
+      // voiceSelect.selectedIndex = 3;
     }
 
     if (speechSynthesis.onvoiceschanged !== undefined) {
@@ -84,6 +91,14 @@
         utterThis.pitch = pitch.value;
         utterThis.rate = rate.value;
         synth.speak(utterThis);
+
+        utterThis.onend = function(){
+
+          var voicenederevent = new CustomEvent('voiceended', { 'detail': utterThis});
+          document.body.dispatchEvent(voicenederevent);
+      
+        }
+
       
     }
 
