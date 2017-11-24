@@ -494,12 +494,12 @@ customElements.define('circuit-component', class extends HTMLElement {
   }
 
   _onclickbuttondown(e){
-      var userclicked = e.path[0].getAttribute("uid")
-      // console.info("Clicked down > ",userclicked,e)
+      var userclicked = e.target.getAttribute("uid")
+      // console.info("Clicked down > ", e.target.getAttribute("uid"))
       this._broadcastevent(144,userclicked,127)
   }
   _onclickbuttonup(e){
-      var userclicked = e.path[0].getAttribute("uid")
+      var userclicked = e.target.getAttribute("uid")
       // console.info("Clicked up> ",userclicked)
       this._broadcastevent(128,userclicked,127)
   }
