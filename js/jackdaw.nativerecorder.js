@@ -17,32 +17,32 @@ Jackdaw.Nativerecorder = ( function( window ) {
           .then(function(stream) {
 
 
-            // var options = {
-            //   audioBitsPerSecond : 44100,
-            //   // audioBitsPerSecond : 128000,
-            //   // videoBitsPerSecond : 2500000,
-            //   mimeType : 'audio/webm'
-            // }
-            // mediaRecorder = new MediaRecorder(stream,options);
+            var options = {
+              audioBitsPerSecond : 44100,
+              // audioBitsPerSecond : 128000,
+              // videoBitsPerSecond : 2500000,
+              mimeType : 'audio/webm'
+            }
+            mediaRecorder = new MediaRecorder(stream,options);
 
-            // // visualize(stream);
+            // visualize(stream);
 
-            // mediaRecorder.onstop = function(e) {
-            //   console.log("data available after MediaRecorder.stop() called.",e);
-            //   console.log("is this the buffer???",chunks);
+            mediaRecorder.onstop = function(e) {
+              console.log("data available after MediaRecorder.stop() called.",e);
+              console.log("is this the buffer???",chunks);
 
-            //   var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
-            //   var nativerecorderevent = new CustomEvent('nativerecorderevent', { 'detail': blob});
-            //   document.body.dispatchEvent(nativerecorderevent);
+              var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+              var nativerecorderevent = new CustomEvent('nativerecorderevent', { 'detail': blob});
+              document.body.dispatchEvent(nativerecorderevent);
 
-            //   chunks = [];
-            //   console.log("recorder stopped",blob);
+              chunks = [];
+              console.log("recorder stopped",blob);
               
-            // }
+            }
 
-            // mediaRecorder.ondataavailable = function(e) {
-            //   chunks.push(e.data);
-            // }
+            mediaRecorder.ondataavailable = function(e) {
+              chunks.push(e.data);
+            }
 
           })
           .catch(function(err) {
