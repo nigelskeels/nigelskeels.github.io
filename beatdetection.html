@@ -2,10 +2,7 @@
 <html>
 <head>
   <meta name="mobile-web-app-capable" content="yes">
-  <meta 
-     name='viewport' 
-     content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' 
-  />
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
   <script type="text/javascript" src="js/webcomponents-lite.js"></script>
 
   <link rel="import" href="circuit_ui/circuit_component/circuit_component.html" >
@@ -62,6 +59,7 @@
 </div>
 
 <button id="rec" onClick="Startrecording(this)">Record</button>
+<input name="fileupload" id="fileuploader" type="file">
 <!-- <button id="play" onClick="Stoprecording()">Play</button> -->
 
 <div id="slicebuts"></div>
@@ -134,8 +132,21 @@
 
               document.body.addEventListener('nativerecorderevent', function (ev) { 
 
-                  console.log("nativerecorderevent",ev.detail) 
+                  console.log("nativerecorderevent",ev) 
+                  processincomingaudio(ev)
                   
+              }, false);
+
+
+              document.getElementById("fileuploader").addEventListener('change', function (ev) { 
+
+                console.log("fileupload",ev)
+                processincomingaudio(ev.target.files[0])
+
+              })
+
+
+              function processincomingaudio(ev){
                   let fileReader = new FileReader();
                   let arrayBuffer;
 
@@ -148,9 +159,9 @@
                       });
                   }
 
-                  fileReader.readAsArrayBuffer(ev.detail);                
+                  fileReader.readAsArrayBuffer(ev);                
+              }
 
-              }, false);
            
 
               var circuitcomponent = document.getElementsByTagName("circuit-component")[0];
