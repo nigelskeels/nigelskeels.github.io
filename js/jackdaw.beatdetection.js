@@ -5,6 +5,7 @@ Jackdaw.Beatdetection = ( function( window, undefined ) {
     var currentpeaks;
     var currentends;
     var currentbuffer;
+    var initialThresold = 0.4;
 
     var OfflineContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
      var offlineContext = new OfflineContext(1, 2, 44100);
@@ -19,6 +20,13 @@ function Init(){
   
 }
 
+function Setthreshold(val){
+    initialThresold=val;
+    Jackdaw.Waveformdisplay.drawbuffer(currentbuffer)
+    Calc( currentbuffer ); 
+}
+
+
 function Calculatetempo(incommingbuffer){
 
 
@@ -32,6 +40,8 @@ function Calculatetempo(incommingbuffer){
 
 function Calc(buffer){
     
+    currentpeaks=undefined;
+    currentends=undefined;
    
 
     var text = document.querySelector('#text');
@@ -51,7 +61,6 @@ function Calc(buffer){
     source.start(0);
 
     var peaks,
-        initialThresold = 0.4,
         thresold = initialThresold,
         minThresold = 0.5,
         minPeaks = 30;
@@ -394,7 +403,8 @@ return{
             getallslices:Getallslices,
             reverseslice:Reverseslice,
                boostbass:Boostbass,
-               playslice:Playslice
+               playslice:Playslice,
+            setthreshold:Setthreshold
 };
 
 

@@ -132,8 +132,8 @@
 
               document.body.addEventListener('nativerecorderevent', function (ev) { 
 
-                  console.log("nativerecorderevent",ev) 
-                  processincomingaudio(ev)
+                  console.log("nativerecorderevent",ev.detail) 
+                  processincomingaudio(ev.detail)
                   
               }, false);
 
@@ -171,7 +171,11 @@
                     console.log("circuituievent",ev.detail) 
 
                     if(ev.detail.data1==176){
-
+                      if(ev.detail.data2==48){
+                        var threshval = (0.51/127)*ev.detail.data3
+                        console.log("Threshold ",ev.detail.data3,threshval)
+                        Jackdaw.Beatdetection.setthreshold(threshval)
+                      }
                       if(ev.detail.data2==49){
                         Jackdaw.Beatdetection.updatepeaks(parseInt(ev.detail.data3))
                       }
