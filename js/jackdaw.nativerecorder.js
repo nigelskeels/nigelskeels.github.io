@@ -6,47 +6,49 @@ Jackdaw.Nativerecorder = ( function( window ) {
 
      console.log("Hello Native recorder")
      
-     if (navigator.mediaDevices) {
+     if (navigator.mediaDevices.getUserMedia) {
         console.log('getUserMedia supported.');
 
-        var constraints = { audio: true, video:false };
-        var chunks = [];
+       
+          var constraints = { audio: true, video:false };
+          var chunks = [];
 
-        navigator.mediaDevices.getUserMedia(constraints)
-        .then(function(stream) {
+          navigator.mediaDevices.getUserMedia(constraints)
+          .then(function(stream) {
 
 
-          var options = {
-            audioBitsPerSecond : 44100,
-            // audioBitsPerSecond : 128000,
-            // videoBitsPerSecond : 2500000,
-            mimeType : 'audio/webm'
-          }
-          mediaRecorder = new MediaRecorder(stream,options);
+            // var options = {
+            //   audioBitsPerSecond : 44100,
+            //   // audioBitsPerSecond : 128000,
+            //   // videoBitsPerSecond : 2500000,
+            //   mimeType : 'audio/webm'
+            // }
+            // mediaRecorder = new MediaRecorder(stream,options);
 
-          // visualize(stream);
+            // // visualize(stream);
 
-          mediaRecorder.onstop = function(e) {
-            console.log("data available after MediaRecorder.stop() called.",e);
-            console.log("is this the buffer???",chunks);
+            // mediaRecorder.onstop = function(e) {
+            //   console.log("data available after MediaRecorder.stop() called.",e);
+            //   console.log("is this the buffer???",chunks);
 
-            var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
-            var nativerecorderevent = new CustomEvent('nativerecorderevent', { 'detail': blob});
-            document.body.dispatchEvent(nativerecorderevent);
+            //   var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+            //   var nativerecorderevent = new CustomEvent('nativerecorderevent', { 'detail': blob});
+            //   document.body.dispatchEvent(nativerecorderevent);
 
-            chunks = [];
-            console.log("recorder stopped",blob);
-            
-          }
+            //   chunks = [];
+            //   console.log("recorder stopped",blob);
+              
+            // }
 
-          mediaRecorder.ondataavailable = function(e) {
-            chunks.push(e.data);
-          }
+            // mediaRecorder.ondataavailable = function(e) {
+            //   chunks.push(e.data);
+            // }
 
-        })
-        .catch(function(err) {
-          console.log('The following error occured: ' + err);
-        })
+          })
+          .catch(function(err) {
+            console.log('The following error occured: ' + err);
+          })
+        
       }
 
   }
