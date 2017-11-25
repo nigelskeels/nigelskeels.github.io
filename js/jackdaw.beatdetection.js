@@ -22,6 +22,8 @@ function Init(){
 
 function Setthreshold(val){
     initialThresold=val;
+    var circuitcomponent = document.getElementsByTagName("circuit-component")[0];
+    circuitcomponent._resetdata()
     Jackdaw.Waveformdisplay.drawbuffer(currentbuffer)
     Calc( currentbuffer ); 
 }

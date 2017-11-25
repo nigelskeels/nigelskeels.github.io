@@ -145,6 +145,7 @@
 
               })
 
+              var circuitcomponent = document.getElementsByTagName("circuit-component")[0];
 
               function processincomingaudio(ev){
                   let fileReader = new FileReader();
@@ -154,6 +155,7 @@
                       arrayBuffer = fileReader.result;
 
                       context.decodeAudioData(arrayBuffer, function(buffers) {
+                        circuitcomponent._resetdata()
                         Jackdaw.Waveformdisplay.drawbuffer(buffers)
                         Jackdaw.Beatdetection.calc( buffers ); 
                       });
@@ -164,7 +166,6 @@
 
            
 
-              var circuitcomponent = document.getElementsByTagName("circuit-component")[0];
 
               document.body.addEventListener('circuituievent', function (ev) { 
 

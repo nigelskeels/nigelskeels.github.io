@@ -20,6 +20,7 @@ customElements.define('knob-component', class extends HTMLElement {
     let shadowRoot = this.attachShadow({mode: 'open'});
 
     this.knobvalue=this.getAttribute("value")|| 100;
+    this.knobtitle=this.getAttribute("title")|| "Knob";
     this.knobmin=this.getAttribute("min")|| 0;
     this.knobmax=this.getAttribute("max")|| 128;
     this.knobstep=this.getAttribute("step")|| 1;
@@ -68,6 +69,7 @@ customElements.define('knob-component', class extends HTMLElement {
   connectedCallback() { 
     var _this=this;
 
+    this.knob.title=this.knobtitle
 
     this.knob.addEventListener("drag", this._dragging.bind(this), true);
 

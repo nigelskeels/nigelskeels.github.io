@@ -35,6 +35,7 @@ customElements.define('circuit-component', class extends HTMLElement {
                       [21,'grey',''],    [22,'','',24],[23,'','',25],[87,'','',26],[8,'','',27] ,[9,'','',28] ,[10,'','',29],[11,'','',30],[12,'','',31],    [13,'grey','Play'] 
     ]
 
+    this.buttonmapclone=this.buttonmap.slice(0);
     
     this.slidermap = {80:1,81:2,82:3,83:4,84:5,85:6,86:7,87:8,74:9}
     this.timeout={}
@@ -246,7 +247,7 @@ customElements.define('circuit-component', class extends HTMLElement {
 
       </style>
       <div id="sliders">
-        <knob-component id="slider1" mid="48" value="64" min="0" max="128" step="128" offsetangle="180"></knob-component>
+        <knob-component title="Threshold" id="slider1" mid="48" value="64" min="0" max="128" step="128" offsetangle="180"></knob-component>
         <knob-component id="slider2" mid="49" value="64" min="0" max="128" step="128" offsetangle="180"></knob-component>
         <knob-component id="slider3" mid="50" value="64" min="0" max="128" offsetangle="180"></knob-component>
         <knob-component id="slider4" mid="51" value="64" min="0" max="128" offsetangle="180"></knob-component>
@@ -276,6 +277,12 @@ customElements.define('circuit-component', class extends HTMLElement {
     this.buttonmap=data
     this._updateshaddowdom()
   }
+
+  _resetdata(){
+    this.buttonmap=this.buttonmapclone.slice();
+    this._updateshaddowdom();
+  }
+
 
   get data(){
     return this.buttonmap;
