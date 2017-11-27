@@ -19,10 +19,10 @@ Jackdaw.Audioexport = ( function( window, undefined ) {
     a.target = "_blank";
     a.className = "downloadlink";
     
-    // document.body.appendChild(a)
+    document.body.appendChild(a)
     a.click();
-    window.URL.revokeObjectURL(a.href); 
-    a.remove();
+    // window.URL.revokeObjectURL(a.href); 
+    // a.remove();
   }
 
 
