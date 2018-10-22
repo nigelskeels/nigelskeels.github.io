@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+    <title>Service Worker - Client 1</title>
+     
+</head>
+<body>
+
+    <button onClick="window.open('./client2.html')">Open window 2</button>
+    <button onClick="send_message_to_sw('hello from 1')">Send message</button>
+
+
+    <script>
+        if('serviceWorker' in navigator){
+            navigator.serviceWorker.register('./service-worker.js').then(function(reg){
+                console.log("SW registration succeeded. Scope is "+reg.scope);
+           
+               navigator.serviceWorker.addEventListener('message', event => {
+                  console.log("yo mess1 ", event.data.msg);
+               });
+
+            }).catch(function(err){
+                console.error("SW registration failed with error "+err);
+            });
+
+        }
+
+        function send_message_to_sw(msg){
+            var msg_chan = new MessageChannel();
+            navigator.serviceWorker.controller.postMessage("Client 1 says '"+msg+"'", [msg_chan.port2]);
+        }
+
+
+    </script>
+</body>
+</html>

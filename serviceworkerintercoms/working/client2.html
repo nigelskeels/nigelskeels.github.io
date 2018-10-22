@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+    <title>Service Worker - Client 2</title>
+</head>
+<body>
+    
+    <button onClick="send_message_to_sw('hello from 2')">Send message</button>
+
+    <script>
+        function send_message_to_sw(msg){
+                var msg_chan = new MessageChannel();
+                navigator.serviceWorker.controller.postMessage("Client 2 says '"+msg+"'", [msg_chan.port2]);
+        }
+
+        navigator.serviceWorker.addEventListener('message', event => {
+                 console.log("yo mess2 ",event.data.msg);
+        });
+    </script>
+</body>
+</html>
